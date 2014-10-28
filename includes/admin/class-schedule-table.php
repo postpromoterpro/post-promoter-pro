@@ -67,6 +67,7 @@ class PPP_Schedule_Table extends WP_List_Table {
 	 */
 	public function get_columns() {
 		$columns = array(
+			'cb'             => '<input type="checkbox"/>',
 			'post_title'     => __( 'Post Title', 'ppp-txt' ),
 			'date'           => __( 'Scheduled Date', 'ppp-txt' ),
 			'content'        => __( 'Share Message', 'ppp-txt' ),
@@ -98,12 +99,82 @@ class PPP_Schedule_Table extends WP_List_Table {
 	 * @return string       The HTML to display the date
 	 */
 	public function column_date( $item ) {
-		$date = date_i18n( get_option('date_format') . ' @ ' . get_option('time_format'), $item['date'] );
-		if ( $item['conflict'] ) {
-			$date .= '<br /><small style="color: red">' . __( 'Warning: Multiple items scheduled at this time.', 'ppp-txt' ) . '</small>';
+		return date_i18n( get_option('date_format') . ' @ ' . get_option('time_format'), $item['date'] );
+	}
+
+	/**
+	 * Render the checkbox column
+	 *
+	 * @access public
+	 * @since x.x
+	 * @param array $item Contains all the data for the checkbox column
+	 * @return string Displays a checkbox
+	 */
+	function column_cb( $item ) {
+		$value = implode( '|', $item );
+		return '<input type="checkbox" name="share[]" value="' . esc_attr( $value ) . '" />';
+	}
+
+	/**
+	 * Retrieve the bulk actions
+	 *
+	 * @access public
+	 * @since x.x
+	 * @return array $actions Array of the bulk actions
+	 */
+	public function get_bulk_actions() {
+		$actions = array(
+			'share'        => __( 'Share Now', 'ppp-txt' ),
+			'delete'       => __( 'Delete', 'ppp-txt' ),
+			'share_delete' => __( 'Share Now & Delete', 'ppp-txt' )
+		);
+
+		return $actions;
+	}
+
+	/**
+	 * Process the bulk actions
+	 *
+	 * @access public
+	 * @since x.x
+	 * @return void
+	 */
+	public function process_bulk_action() {
+
+		if( empty( $_REQUEST['_wpnonce'] ) ) {
+			return;
 		}
 
-		return $date;
+		if( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'bulk-shares' ) ) {
+			return;
+		}
+
+		$shares = isset( $_GET['share'] ) ? $_GET['share'] : false;
+
+		if ( ! is_array( $shares ) )
+			$shares = array( $shares );
+
+
+		foreach ( $shares as $share ) {
+
+			switch( $this->current_action() ) {
+
+				case 'share' :
+
+					break;
+
+				case 'delete' :
+
+					break;
+
+				case 'share_delete' :
+
+					break;
+
+			}
+
+		}
+
 	}
 
 	/**
