@@ -32,3 +32,5 @@ $ppp_share_settings  = get_option( 'ppp_share_settings' );
 $current_user = new WP_User(1);
 $current_user->set_role('administrator');
 
+// Include helpers
+require_once 'helpers/shims.php';
