@@ -1,7 +1,7 @@
 # Post Promoter Pro
 ### The Most effective way to promote your WordPress content
 
-[![Build Status](https://travis-ci.org/cklosowski/post-promoter-pro.svg?branch=master)](https://travis-ci.org/cklosowski/post-promoter-pro) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/cklosowski/post-promoter-pro/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/cklosowski/post-promoter-pro/?branch=master) [![Code Coverage](https://scrutinizer-ci.com/g/cklosowski/post-promoter-pro/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/cklosowski/post-promoter-pro/?branch=master)
+[![Build Status](https://travis-ci.org/postpromoterpro/post-promoter-pro.svg?branch=master)](https://travis-ci.org/postpromoterpro/post-promoter-pro) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/postpromoterpro/post-promoter-pro/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/postpromoterpro/post-promoter-pro/?branch=master) [![Code Coverage](https://scrutinizer-ci.com/g/postpromoterpro/post-promoter-pro/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/postpromoterpro/post-promoter-pro/?branch=master)
 
 This is the public repository of _Post Promoter Pro_, the most effective way to share your WordPress content accross your Twitter, Facebook, and LinkedIn accounts.
 
