@@ -54,7 +54,7 @@ function ppp_admin_page() {
 					</th>
 					<td>
 						<?php $default_text = isset( $ppp_options['default_text'] ) ? $ppp_options['default_text'] : ''; ?>
-						<input name="ppp_options[default_text]" value="<?php echo $default_text; ?>" placeholder="Post Title will be used if empty" size="50" />
+						<input type="text" class="regular-text" name="ppp_options[default_text]" value="<?php echo $default_text; ?>" placeholder="Post Title will be used if empty" size="50" />
 						<p id="ppp-text-helper" style="display: none">
 							<small>
 							<?php _e( 'The typical length of a link shortened on Twitter is 23 characters, so keep that in mind when writing your default text.', 'ppp-txt' ); ?>
@@ -143,30 +143,30 @@ function ppp_display_social() {
 					<td id="ppp-analytics-options">
 						<p>
 							<input id="ppp_no_tracking"
-								   name="ppp_share_settings[analytics]"
-								   type="radio"
-								   value="none"
-								   <?php checked( 'none', $analytics_option, true ); ?>
-							/>&nbsp<label for="ppp_no_tracking"><?php _e( 'None', 'ppp-txt' ); ?></label>
+							       name="ppp_share_settings[analytics]"
+							       type="radio"
+							       value="none"
+							       <?php checked( 'none', $analytics_option, true ); ?>
+							/>&nbsp;<label for="ppp_no_tracking"><?php _e( 'None', 'ppp-txt' ); ?></label>
 						</p>
 						<br />
 						<p>
 							<input id="ppp_unique_links"
-								   name="ppp_share_settings[analytics]"
-								   type="radio"
-								   value="unique_links"
-								   <?php checked( 'unique_links', $analytics_option, true ); ?>
-							/>&nbsp<label for="ppp_unique_links"><?php _e( 'Simple Tracking', 'ppp-txt' ); ?></label><br />
+							       name="ppp_share_settings[analytics]"
+							       type="radio"
+							       value="unique_links"
+							       <?php checked( 'unique_links', $analytics_option, true ); ?>
+							/>&nbsp;<label for="ppp_unique_links"><?php _e( 'Simple Tracking', 'ppp-txt' ); ?></label><br />
 							<small><?php _e( 'Appends a query string to shared links for analytics.', 'ppp-txt' ); ?></small>
 						</p>
 						<br />
 						<p>
 							<input id="ppp_ga_tags"
-								   name="ppp_share_settings[analytics]"
-								   type="radio"
-								   value="google_analytics"
-								   <?php checked( 'google_analytics', $analytics_option, true ); ?>
-							/>&nbsp<label for="ppp_ga_tags"><?php _e( 'Google Analytics Tags', 'ppp-txt' ); ?></label><br />
+							       name="ppp_share_settings[analytics]"
+							       type="radio"
+							       value="google_analytics"
+							       <?php checked( 'google_analytics', $analytics_option, true ); ?>
+							/>&nbsp;<label for="ppp_ga_tags"><?php _e( 'Google Analytics Tags', 'ppp-txt' ); ?></label><br />
 							<small><?php _e( 'Results can be seen in the Acquisition Menu under "Campaigns"', 'ppp-txt' ); ?></small>
 						</p>
 						<?php do_action( 'ppp-settings-analytics-radio' ); ?>
@@ -191,7 +191,7 @@ function ppp_display_social() {
 				<tr valign="top">
 					<th scope="row" valign="top">
 						<?php _e( 'Share on Publish Defaults', 'ppp-txt' ); ?></span><br />
-						<small><em><?php _e( 'Enabled sharing on pubish by default', 'ppp-txt' ); ?></em></small>
+						<small><em><?php _e( 'Enabled sharing on publish by default', 'ppp-txt' ); ?></em></small>
 					</th>
 					<td id="ppp-share-on-publish-wrapper">
 						<?php if ( ppp_twitter_enabled() ) : ?>
@@ -225,11 +225,19 @@ function ppp_display_social() {
 					<td id="ppp-twitter-cards-wrapper">
 						<p>
 							<input id="ppp-twitter-cards"
+<<<<<<< HEAD
 								   name="ppp_share_settings[twitter][cards_enabled]"
 								   type="checkbox"
 								   value="1"
 								   <?php checked( true, $twitter_cards_enabled, true ); ?>
 							/>&nbsp<label for="ppp-twitter-cards"><?php _e( 'Enable Twitter Cards', 'ppp-txt' ); ?></label>
+=======
+							       name="ppp_share_settings[twitter][cards_enabled]"
+							       type="checkbox"
+							       value="1"
+							       <?php checked( true, $twitter_cards_enabled, true ); ?>
+							/>&nbsp;<label for="ppp-twitter-cards"><?php _e( 'Enable Twitter Cards', 'ppp-txt' ); ?></label>
+>>>>>>> release/2.3
 						</p>
 					</td>
 				</tr>
@@ -342,8 +350,7 @@ function ppp_display_schedule() {
  * @return void
  */
 function ppp_display_sysinfo() {
-	global $wpdb;
-	global $ppp_options;
+	global $wpdb, $ppp_options;
 	?>
 	<div class="wrap">
 		<div id="icon-options-general" class="icon32"></div><h1><?php _e( 'Post Promoter Pro - System Info', 'ppp-txt' ); ?></h1>
@@ -365,7 +372,7 @@ function ppp_display_sysinfo() {
 		$value = 'true';
 	}
 
-	echo $name . ': ' . maybe_serialize( $value ) . "\n";
+	echo $name . ': ' . maybe_serialize( $value ) . "\n\t";
 	}
 	?>
 
@@ -380,7 +387,7 @@ function ppp_display_sysinfo() {
 			continue;
 		}
 
-	echo $plugin['Name']; ?>: <?php echo $plugin['Version'] ."\n";
+		echo $plugin['Name']; ?>: <?php echo $plugin['Version'] ."\n\t";
 
 	}
 	?>
@@ -401,7 +408,7 @@ function ppp_display_sysinfo() {
 
 	ADVANCED INFO:
 	PHP Version:              <?php echo PHP_VERSION . "\n"; ?>
-	MySQL Version:            <?php echo mysql_get_server_info() . "\n"; ?>
+	MySQL Version:            <?php echo $wpdb->db_version() . "\n"; ?>
 	Web Server Info:          <?php echo $_SERVER['SERVER_SOFTWARE'] . "\n"; ?>
 
 	PHP Memory Limit:         <?php echo ini_get( 'memory_limit' ) . "\n"; ?>
@@ -409,6 +416,7 @@ function ppp_display_sysinfo() {
 	PHP Time Limit:           <?php echo ini_get( 'max_execution_time' ) . "\n"; ?>
 
 	WP_DEBUG:                 <?php echo defined( 'WP_DEBUG' ) ? WP_DEBUG ? 'Enabled' . "\n" : 'Disabled' . "\n" : 'Not set' . "\n" ?>
+	SCRIPT_DEBUG:             <?php echo defined( 'SCRIPT_DEBUG' ) ? SCRIPT_DEBUG ? 'Enabled' . "\n" : 'Disabled' . "\n" : 'Not set' . "\n" ?>
 
 	WP Table Prefix:          <?php echo "Length: ". strlen( $wpdb->prefix ); echo " Status:"; if ( strlen( $wpdb->prefix )>16 ) {echo " ERROR: Too Long";} else {echo " Acceptable";} echo "\n"; ?>
 
