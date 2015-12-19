@@ -147,7 +147,7 @@ function ppp_display_social() {
 							       type="radio"
 							       value="none"
 							       <?php checked( 'none', $analytics_option, true ); ?>
-							/>&nbsp<label for="ppp_no_tracking"><?php _e( 'None', 'ppp-txt' ); ?></label>
+							/>&nbsp;<label for="ppp_no_tracking"><?php _e( 'None', 'ppp-txt' ); ?></label>
 						</p>
 						<br />
 						<p>
@@ -156,7 +156,7 @@ function ppp_display_social() {
 							       type="radio"
 							       value="unique_links"
 							       <?php checked( 'unique_links', $analytics_option, true ); ?>
-							/>&nbsp<label for="ppp_unique_links"><?php _e( 'Simple Tracking', 'ppp-txt' ); ?></label><br />
+							/>&nbsp;<label for="ppp_unique_links"><?php _e( 'Simple Tracking', 'ppp-txt' ); ?></label><br />
 							<small><?php _e( 'Appends a query string to shared links for analytics.', 'ppp-txt' ); ?></small>
 						</p>
 						<br />
@@ -166,7 +166,7 @@ function ppp_display_social() {
 							       type="radio"
 							       value="google_analytics"
 							       <?php checked( 'google_analytics', $analytics_option, true ); ?>
-							/>&nbsp<label for="ppp_ga_tags"><?php _e( 'Google Analytics Tags', 'ppp-txt' ); ?></label><br />
+							/>&nbsp;<label for="ppp_ga_tags"><?php _e( 'Google Analytics Tags', 'ppp-txt' ); ?></label><br />
 							<small><?php _e( 'Results can be seen in the Acquisition Menu under "Campaigns"', 'ppp-txt' ); ?></small>
 						</p>
 						<?php do_action( 'ppp-settings-analytics-radio' ); ?>
@@ -229,7 +229,7 @@ function ppp_display_social() {
 							       type="checkbox"
 							       value="1"
 							       <?php checked( true, $twitter_cards_enabled, true ); ?>
-							/>&nbsp<label for="ppp-twitter-cards"><?php _e( 'Enable Twitter Cards', 'ppp-txt' ); ?></label>
+							/>&nbsp;<label for="ppp-twitter-cards"><?php _e( 'Enable Twitter Cards', 'ppp-txt' ); ?></label>
 						</p>
 					</td>
 				</tr>
