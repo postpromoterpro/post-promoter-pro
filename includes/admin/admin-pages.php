@@ -191,7 +191,7 @@ function ppp_display_social() {
 				<tr valign="top">
 					<th scope="row" valign="top">
 						<?php _e( 'Share on Publish Defaults', 'ppp-txt' ); ?></span><br />
-						<small><em><?php _e( 'Enabled sharing on pubish by default', 'ppp-txt' ); ?></em></small>
+						<small><em><?php _e( 'Enabled sharing on publish by default', 'ppp-txt' ); ?></em></small>
 					</th>
 					<td id="ppp-share-on-publish-wrapper">
 						<?php if ( ppp_twitter_enabled() ) : ?>
