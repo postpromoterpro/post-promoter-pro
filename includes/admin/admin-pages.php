@@ -54,7 +54,7 @@ function ppp_admin_page() {
 					</th>
 					<td>
 						<?php $default_text = isset( $ppp_options['default_text'] ) ? $ppp_options['default_text'] : ''; ?>
-						<input name="ppp_options[default_text]" value="<?php echo $default_text; ?>" placeholder="Post Title will be used if empty" size="50" />
+						<input type="text" class="regular-text" name="ppp_options[default_text]" value="<?php echo $default_text; ?>" placeholder="Post Title will be used if empty" size="50" />
 						<p id="ppp-text-helper" style="display: none">
 							<small>
 							<?php _e( 'The typical length of a link shortened on Twitter is 23 characters, so keep that in mind when writing your default text.', 'ppp-txt' ); ?>
