@@ -46,8 +46,10 @@ function ppp_get_celendar_events() {
 	$start = $_POST['start'];
 	$end   = $_POST['end'];
 
-	$post_types  = apply_filters( 'ppp_schedule_post_types', array( 'post', 'ppp_share' ) );
+	// Get blog posts
+	$post_types  = apply_filters( 'ppp_schedule_post_types', array( 'post' ) );
 	$post_status = apply_filters( 'ppp_schedule_post_status', array( 'publish', 'future' ) );
+
 	$args  = array(
 		'post_type'      => $post_types,
 		'post_status'    => $post_status,
@@ -66,23 +68,65 @@ function ppp_get_celendar_events() {
 		while ( $posts->have_posts() ) {
 			$posts->the_post();
 			$post_type = get_post_type();
-			$class     = $post_type != 'ppp_share' ? 'ppp-calendar-item-wp' : 'ppp-calendar-item-' . get_post_meta( get_the_ID(), '_wp_log_network', true );
-			$post_id   = $post_type != 'ppp_share' ? get_the_ID() : get_post_field( 'post_parent', get_the_ID() );
 
 			$events[] = array(
 				'id'        => get_the_ID(),
 				'title'     => get_the_title(),
 				'start'     => date_i18n( 'Y-m-d/TH:i:s', strtotime( get_the_date() . ' ' . get_the_time() ) ),
-				'className' => $class . ' cal-post-' . $post_id,
-				'belongsTo' => $post_id,
+				'className' => 'ppp-calendar-item-wp cal-post-' . get_the_ID(),
+				'belongsTo' => get_the_ID(),
 			);
 
+			// ...and share on publish items
 			$events = apply_filters( 'ppp_calendar_on_publish_event', $events, get_the_ID() );
 
 		}
 	}
 	wp_reset_postdata();
 
+	// Get previously shared items
+	$args  = array(
+		'post_type'      => 'wp_log',
+		'post_status'    => 'publish',
+		'posts_per_page' => -1,
+		'date_query'     => array(
+			'inclusive' => true,
+			'after'     => $start,
+			'before'    => $end,
+		),
+		'tax_query'      => array(
+			array(
+				'taxonomy' => 'wp_log_type',
+				'field'    => 'slug',
+				'terms'    => 'ppp_share',
+			),
+		),
+	);
+
+	$shared  = new WP_Query( $args );
+
+	if ( $shared->have_posts() ) {
+		while ( $shared->have_posts() ) {
+			$shared->the_post();
+			$network     = get_post_meta( get_the_ID(), '_wp_log_network', true );
+			$post_parent = get_post_field( 'post_parent', get_the_ID() );
+
+			$events[]    = array(
+				'id'        => get_the_ID(),
+				'title'     => get_the_title(),
+				'start'     => date_i18n( 'Y-m-d/TH:i:s', strtotime( get_the_date() . ' ' . get_the_time() ) ),
+				'className' => 'ppp-calendar-item-' . $network . ' cal-post-' . $post_parent,
+				'belongsTo' => $post_parent,
+			);
+
+			// ...and share on publish items
+			$events = apply_filters( 'ppp_calendar_on_publish_event', $events, get_the_ID() );
+
+		}
+	}
+	wp_reset_postdata();
+
+	// Get items already scheduled but not sent
 	$crons      = ppp_get_shceduled_crons();
 	$start_ts   = strtotime( $start );
 	$end_ts     = strtotime( $end );
