@@ -303,8 +303,7 @@ function ppp_display_schedule() {
  * @return void
  */
 function ppp_display_sysinfo() {
-	global $wpdb;
-	global $ppp_options;
+	global $wpdb, $ppp_options;
 	?>
 	<div class="wrap">
 		<div id="icon-options-general" class="icon32"></div><h1><?php _e( 'Post Promoter Pro - System Info', 'ppp-txt' ); ?></h1>
@@ -326,7 +325,7 @@ function ppp_display_sysinfo() {
 		$value = 'true';
 	}
 
-	echo $name . ': ' . maybe_serialize( $value ) . "\n";
+	echo $name . ': ' . maybe_serialize( $value ) . "\n\t";
 	}
 	?>
 
@@ -341,7 +340,7 @@ function ppp_display_sysinfo() {
 			continue;
 		}
 
-	echo $plugin['Name']; ?>: <?php echo $plugin['Version'] ."\n";
+		echo $plugin['Name']; ?>: <?php echo $plugin['Version'] ."\n\t";
 
 	}
 	?>
@@ -362,7 +361,7 @@ function ppp_display_sysinfo() {
 
 	ADVANCED INFO:
 	PHP Version:              <?php echo PHP_VERSION . "\n"; ?>
-	MySQL Version:            <?php echo mysql_get_server_info() . "\n"; ?>
+	MySQL Version:            <?php echo $wpdb->db_version() . "\n"; ?>
 	Web Server Info:          <?php echo $_SERVER['SERVER_SOFTWARE'] . "\n"; ?>
 
 	PHP Memory Limit:         <?php echo ini_get( 'memory_limit' ) . "\n"; ?>
@@ -370,6 +369,7 @@ function ppp_display_sysinfo() {
 	PHP Time Limit:           <?php echo ini_get( 'max_execution_time' ) . "\n"; ?>
 
 	WP_DEBUG:                 <?php echo defined( 'WP_DEBUG' ) ? WP_DEBUG ? 'Enabled' . "\n" : 'Disabled' . "\n" : 'Not set' . "\n" ?>
+	SCRIPT_DEBUG:             <?php echo defined( 'SCRIPT_DEBUG' ) ? SCRIPT_DEBUG ? 'Enabled' . "\n" : 'Disabled' . "\n" : 'Not set' . "\n" ?>
 
 	WP Table Prefix:          <?php echo "Length: ". strlen( $wpdb->prefix ); echo " Status:"; if ( strlen( $wpdb->prefix )>16 ) {echo " ERROR: Too Long";} else {echo " Acceptable";} echo "\n"; ?>
 
