@@ -225,19 +225,11 @@ function ppp_display_social() {
 					<td id="ppp-twitter-cards-wrapper">
 						<p>
 							<input id="ppp-twitter-cards"
-<<<<<<< HEAD
-								   name="ppp_share_settings[twitter][cards_enabled]"
-								   type="checkbox"
-								   value="1"
-								   <?php checked( true, $twitter_cards_enabled, true ); ?>
-							/>&nbsp<label for="ppp-twitter-cards"><?php _e( 'Enable Twitter Cards', 'ppp-txt' ); ?></label>
-=======
 							       name="ppp_share_settings[twitter][cards_enabled]"
 							       type="checkbox"
 							       value="1"
 							       <?php checked( true, $twitter_cards_enabled, true ); ?>
 							/>&nbsp;<label for="ppp-twitter-cards"><?php _e( 'Enable Twitter Cards', 'ppp-txt' ); ?></label>
->>>>>>> release/2.3
 						</p>
 					</td>
 				</tr>

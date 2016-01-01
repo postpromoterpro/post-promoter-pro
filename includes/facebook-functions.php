@@ -415,6 +415,7 @@ function ppp_fb_add_metabox_content( $post ) {
 				<?php $disabled = ( $post->post_status === 'publish' && time() > strtotime( $post->post_date ) ) ? true : false; ?>
 				<label for="ppp_fb_share_on_publish"><?php _e( 'Share this post on Facebook&hellip;', 'ppp-txt' ); ?></label>
 				<select name="_ppp_fb_share_on_publish" id="ppp_fb_share_on_publish" class="ppp-toggle-share-on-publish">
+					<option value="-1" <?php selected( true, $show_share_on_publish, true ); ?><?php if ( $disabled ): ?>disabled<?php endif; ?>><?php _e( 'Do not share this post', 'ppp-txt' ); ?></option>
 					<option value="1" <?php selected( true, $show_share_on_publish, true ); ?><?php if ( $disabled ): ?>disabled<?php endif; ?>><?php _e( 'When this post is published', 'ppp-txt' ); ?></option>
 					<option value="0" <?php selected( false, $show_share_on_publish, true ); ?>><?php _e( 'After this post is published', 'ppp-txt' ); ?></option>
 				</select>
@@ -583,9 +584,9 @@ function ppp_fb_save_post_meta_boxes( $post_id, $post ) {
 		return;
 	}
 
-	$ppp_fb_share_on_publish            = ( isset( $_REQUEST['_ppp_fb_share_on_publish'] ) ) ? $_REQUEST['_ppp_fb_share_on_publish'] : '0';
-	$ppp_share_on_publish_title         = ( isset( $_REQUEST['_ppp_fb_share_on_publish_title'] ) ) ? $_REQUEST['_ppp_fb_share_on_publish_title'] : '';
-	$ppp_share_on_publish_image_url     = ( isset( $_REQUEST['_ppp_fb_share_on_publish_image_url'] ) ) ? $_REQUEST['_ppp_fb_share_on_publish_image_url'] : '';
+	$ppp_fb_share_on_publish            = ( isset( $_REQUEST['_ppp_fb_share_on_publish'] ) )               ? $_REQUEST['_ppp_fb_share_on_publish']               : '-1';
+	$ppp_share_on_publish_title         = ( isset( $_REQUEST['_ppp_fb_share_on_publish_title'] ) )         ? $_REQUEST['_ppp_fb_share_on_publish_title']         : '';
+	$ppp_share_on_publish_image_url     = ( isset( $_REQUEST['_ppp_fb_share_on_publish_image_url'] ) )     ? $_REQUEST['_ppp_fb_share_on_publish_image_url']     : '';
 	$ppp_share_on_publish_attachment_id = ( isset( $_REQUEST['_ppp_fb_share_on_publish_attachment_id'] ) ) ? $_REQUEST['_ppp_fb_share_on_publish_attachment_id'] : '';
 
 	update_post_meta( $post_id, '_ppp_fb_share_on_publish',               $ppp_fb_share_on_publish );

@@ -156,6 +156,52 @@ function ppp_get_default_conflict_window() {
 }
 
 /**
+ * When a post is trashed, trash it's logs as well
+ *
+ * @since  2.3
+ * @param  int $post_id Post ID
+ * @return void
+ */
+function ppp_trash_logs( $post_id ) {
+	global $wpdb;
+
+	$sql = $wpdb->prepare( "UPDATE $wpdb->posts SET post_status = 'trash' WHERE post_parent = $post_id && post_type = 'wp_log'" );
+	$wpdb->query( $sql );
+}
+add_action( 'wp_trash_post', 'ppp_trash_logs', 10, 1 );
+
+/**
+ * When a post is deleted, delete it's logs as well
+ *
+ * @since  2.3
+ * @param  int $post_id Post ID
+ * @return void
+ */
+function ppp_delete_logs( $post_id ) {
+	global $wpdb;
+
+	$sql = $wpdb->prepare( "DELETE FROM $wpdb->posts WHERE post_parent = $post_id && post_type = 'wp_log'" );
+	$wpdb->query( $sql );
+}
+add_action( 'delete_post', 'ppp_delete_logs', 10, 1 );
+
+/**
+ * When a post is untrashed, untrash it's logs as well
+ *
+ * @since  2.3
+ * @param  int $post_id Post ID
+ * @return void
+ */
+function ppp_untrash_logs( $post_id ) {
+	global $wpdb;
+	$post_status = get_post_status( $post_id );
+
+	$sql = $wpdb->prepare( "UPDATE $wpdb->posts SET post_status = '$post_status' WHERE post_parent = $post_id && post_type = 'wp_log'" );
+	$wpdb->query( $sql );
+}
+add_action( 'untrashed_post', 'ppp_untrash_logs', 10, 1 );
+
+/**
  * Unschedule any tweets when the post is unscheduled
  *
  * @since  2.1.2

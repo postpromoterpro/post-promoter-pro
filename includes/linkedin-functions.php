@@ -380,6 +380,7 @@ function ppp_li_add_metabox_content( $post ) {
 				<?php $disabled = ( $post->post_status === 'publish' && time() > strtotime( $post->post_date ) ) ? true : false; ?>
 				<label for="ppp_li_share_on_publish"><?php _e( 'Share this post on LinkedIn&hellip;', 'ppp-txt' ); ?></label>
 				<select name="_ppp_li_share_on_publish" id="ppp_li_share_on_publish" class="ppp-toggle-share-on-publish">
+					<option value="-1" <?php selected( true, $show_share_on_publish, true ); ?><?php if ( $disabled ): ?>disabled<?php endif; ?>><?php _e( 'Do not share this post', 'ppp-txt' ); ?></option>
 					<option value="1" <?php selected( true, $show_share_on_publish, true ); ?><?php if ( $disabled ): ?>disabled<?php endif; ?>><?php _e( 'When this post is published', 'ppp-txt' ); ?></option>
 					<option value="0" <?php selected( false, $show_share_on_publish, true ); ?>><?php _e( 'After this post is published', 'ppp-txt' ); ?></option>
 				</select>
@@ -560,7 +561,7 @@ function ppp_li_save_post_meta_boxes( $post_id, $post ) {
 		return;
 	}
 
-	$ppp_li_share_on_publish            = ( isset( $_REQUEST['_ppp_li_share_on_publish'] ) )               ? $_REQUEST['_ppp_li_share_on_publish']               : '0';
+	$ppp_li_share_on_publish            = ( isset( $_REQUEST['_ppp_li_share_on_publish'] ) )               ? $_REQUEST['_ppp_li_share_on_publish']               : '-1';
 	$ppp_share_on_publish_title         = ( isset( $_REQUEST['_ppp_li_share_on_publish_title'] ) )         ? $_REQUEST['_ppp_li_share_on_publish_title']         : '';
 	$ppp_share_on_publish_desc          = ( isset( $_REQUEST['_ppp_li_share_on_publish_desc'] ) )          ? $_REQUEST['_ppp_li_share_on_publish_desc']          : '';
 	$ppp_share_on_publish_image_url     = ( isset( $_REQUEST['_ppp_li_share_on_publish_image_url'] ) )     ? $_REQUEST['_ppp_li_share_on_publish_image_url']     : '';
@@ -634,17 +635,15 @@ function ppp_li_share_on_publish( $new_status, $old_status, $post ) {
 		$title = get_the_title( $post->ID );
 	}
 
-	$link = ppp_generate_link( $post->ID, $name, true );
-
-	$status = ppp_li_share( $title, $desc, $link, $thumbnail );
-
+	$link      = ppp_generate_link( $post->ID, $name, true );
+	$status    = ppp_li_share( $title, $desc, $link, $thumbnail );
 	$log_title = ppp_li_build_share_message( $post->ID, $name );
 
 	$log_data = array(
 		'post_title'    => $log_title,
 		'post_content'  =>  json_encode( $status ),
 		'post_parent'   => $post->ID,
-		'log_type'      => 'ppp_share'
+		'log_type'      => 'ppp_share',
 	);
 
 	$log_meta = array(
@@ -682,10 +681,8 @@ function ppp_li_scheduled_share(  $post_id = 0, $index = 1, $name = ''  ) {
 		$media     = ppp_post_has_media( $post_id, 'li', $use_media, $attachment_id );
 	}
 
-	$desc = ppp_li_get_share_description( $post_id, $index );
-
-	$status = ppp_li_share( $share_message, $desc, $link, $media );
-
+	$desc      = ppp_li_get_share_description( $post_id, $index );
+	$status    = ppp_li_share( $share_message, $desc, $link, $media );
 	$log_title = ppp_li_build_share_message( $post_id, $name );
 
 	$log_data = array(
@@ -698,6 +695,8 @@ function ppp_li_scheduled_share(  $post_id = 0, $index = 1, $name = ''  ) {
 	$log_meta = array(
 		'network'   => 'li',
 	);
+
+	$log_entry = WP_Logging::insert_log( $log_data, $log_meta );
 
 }
 add_action( 'ppp_share_scheduled_li', 'ppp_li_scheduled_share', 10, 3 );
@@ -830,14 +829,22 @@ function ppp_li_generate_timestamps( $times, $post_id ) {
 }
 add_filter( 'ppp_get_timestamps', 'ppp_li_generate_timestamps', 10, 2 );
 
+/**
+ * Builds a list of events for the Schedule calendar
+ *
+ * @since  2.3
+ * @param  array $events  The currently found events
+ * @param  int   $post_id Post ID to find items for
+ * @return array          Array of events with any LinkedIn items
+ */
 function ppp_li_calendar_on_publish_event( $events, $post_id ) {
 	$share_on_publish = get_post_meta( $post_id, '_ppp_li_share_on_publish', true );
 
 	if ( ! empty( $share_on_publish ) ) {
 		$share_text = get_post_meta( $post_id, '_ppp_li_share_on_publish_title', true );
 		$events[] = array(
-			'id' => $post_id . '-share-on-publish',
-			'title' => ( ! empty( $share_text ) ) ? $share_text : ppp_li_generate_share_content( $post_id, null, false ),
+			'id'        => $post_id . '-share-on-publish',
+			'title'     => ( ! empty( $share_text ) ) ? $share_text : ppp_li_generate_share_content( $post_id, null, false ),
 			'start'     => date_i18n( 'Y-m-d/TH:i:s', strtotime( get_the_date( null, $post_id ) . ' ' . get_the_time( null, $post_id ) ) + 1 ),
 			'end'       => date_i18n( 'Y-m-d/TH:i:s', strtotime( get_the_date( null, $post_id ) . ' ' . get_the_time( null, $post_id ) ) + 1 ),
 			'className' => 'ppp-calendar-item-li cal-post-' . $post_id,
