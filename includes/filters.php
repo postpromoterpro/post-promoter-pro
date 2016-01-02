@@ -91,6 +91,10 @@ add_filter( 'ppp_analytics-unique_links', 'ppp_generate_unique_link', 10, 3 );
 function ppp_generate_google_utm_link( $share_link, $post_id, $name ) {
 	$name_parts = explode( '_', $name );
 
+	if ( empty( $name_parts[3] ) ) {
+		$name_parts[3] = '';
+	}
+
 	switch( $name_parts[3] ) {
 		case 'li':
 			$network = 'LinkedIn';
