@@ -69,7 +69,7 @@ class PostPromoterPro {
 			}
 
 			add_action( 'init', array( $this, 'get_actions' ) );
-			add_action( 'save_post', 'ppp_schedule_share', 99, 2);
+			add_action( 'save_post', 'ppp_schedule_share', 11, 2);
 			add_action( 'transition_post_status', 'ppp_share_on_publish', 99, 3);
 			add_action( 'init', 'ppp_add_image_sizes' );
 		}
