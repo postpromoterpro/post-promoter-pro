@@ -2,7 +2,7 @@
 Contributors: cklosows
 Tags: post promoter pro, twitter, linkedin, facebook, bitly
 Requires at least: 3.9.2
-Tested up to: 4.4
+Tested up to: 4.4.2
 Stable tag: 2.2.10
 Donate link: https://postpromoterpro.com
 License: GPLv2
