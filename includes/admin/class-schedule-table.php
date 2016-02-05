@@ -148,8 +148,8 @@ class PPP_Schedule_Table extends WP_List_Table {
 				'service'      => $service,
 				'index'        => $index,
 				'date'         => $timestamp + ( get_option( 'gmt_offset' ) * 3600 ),
-				'content'      => $builder( $ppp_data['args'][0], $ppp_data['args'][1], false ),
-				'name'         => 'sharedate_' . $index . '_' . $ppp_data['args'][0] . '_' . $service,
+				'content'      => function_exists( $builder ) ? $builder( $ppp_data['args'][0], $ppp_data['args'][1], false ) : '',
+				'name'         => 'sharedate_' . $index . '_' . $ppp_data['args'][0],
 				'conflict'     => $conflict,
 			);
 
