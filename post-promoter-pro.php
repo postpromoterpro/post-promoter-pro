@@ -160,6 +160,9 @@ class PostPromoterPro {
 			wp_register_script( 'fullcalendar', PPP_URL . 'includes/scripts/libs/fullcalendar/fullcalendar.min.js', array( 'jquery', 'momentjs' ), PPP_VERSION, false );
 
 			wp_enqueue_script( 'fullcalendar' );
+
+			wp_register_script( 'simplemodal', PPP_URL . 'includes/scripts/libs/simplemodal.js', array( 'jquery' ), PPP_VERSION, false );
+			wp_enqueue_script( 'simplemodal' );
 		}
 	}
 

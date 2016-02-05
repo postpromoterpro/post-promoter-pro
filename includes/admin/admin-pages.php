@@ -310,29 +310,24 @@ function ppp_display_schedule() {
 					var postClass = '.cal-post-' + calEvent.belongsTo;
 					$('.fc-event').not(postClass).css('opacity', '.6');
 					$('.ppp-calendar-item-wp' + postClass).addClass('active-group');
-
-					var tooltip = '<div class="tooltipevent">' + calEvent.title + '</div>';
-					$("body").append(tooltip);
-					$(this).mouseover(function(e) {
-						$(this).css('z-index', 10000);
-						$('.tooltipevent').fadeIn('500');
-						$('.tooltipevent').fadeTo('10', 1.9);
-					}).mousemove(function(e) {
-						$('.tooltipevent').css('top', e.pageY + 10);
-						$('.tooltipevent').css('left', e.pageX + 20);
-					});
 				},
 				eventMouseout: function(calEvent, jsEvent, view) {
 					$('.fc-event').css('opacity', '1');
 					$('.ppp-calendar-item-wp').removeClass('active-group');
-					$(this).css('z-index', 8);
-					$('.tooltipevent').remove();
-				}
+				},
+				eventClick: function(calEvent, jsEvent, view) {
+					console.log(calEvent);
+					$('#schedule-modal .title').html( '<span class="' + calEvent.className[0] + '" ></span>' + calEvent.title);
+					$('#schedule-modal').modal();
+				},
 			});
 		});
 		</script>
 		<div id="icon-options-general" class="icon32"></div><h1><?php _e( 'Post Promoter Pro - Publishing Schedule', 'ppp-txt' ); ?></h1>
 		<div id="ppp-schedule-calendar"></div>
+		<div id="schedule-modal">
+			<h3 class="title"></h3>
+		</div>
 	</div>
 	<?php
 }
