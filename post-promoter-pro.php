@@ -3,14 +3,14 @@
 Plugin Name: Post Promoter Pro
 Plugin URI: https://postpromoterpro.com
 Description: Maximize your social media presence on Twitter, Facebook, and LinkedIn.
-Version: 2.2.8
+Version: 2.2.10
 Author: Post Promoter Pro
 Author URI: https://postpromoterpro.com
 License: GPLv2
 */
 
 define( 'PPP_PATH', plugin_dir_path( __FILE__ ) );
-define( 'PPP_VERSION', '2.2.8' );
+define( 'PPP_VERSION', '2.2.10' );
 define( 'PPP_FILE', plugin_basename( __FILE__ ) );
 define( 'PPP_URL', plugins_url( '/', PPP_FILE ) );
 
@@ -208,44 +208,52 @@ class PostPromoterPro {
 	 * @access public
 	 */
 	public function ppp_setup_admin_menu() {
-		add_menu_page( __( 'Post Promoter', 'ppp-txt' ),
-					   __( 'Post Promoter', 'ppp-txt' ),
-					   apply_filters( 'ppp_manage_role', 'administrator' ),
-					   'ppp-options',
-					   'ppp_admin_page'
-					 );
 
-		add_submenu_page( 'ppp-options',
-						  __( 'Social Settings', 'ppp-txt' ),
-						  __( 'Social Settings', 'ppp-txt' ),
-						  'manage_options',
-						  'ppp-social-settings',
-						  'ppp_display_social'
-						);
+		$role = apply_filters( 'ppp_manage_role', 'administator' );
 
-		add_submenu_page( 'ppp-options',
-						  __( 'Schedule', 'ppp-txt' ),
-						  __( 'Schedule', 'ppp-txt' ),
-						  'manage_options',
-						  'ppp-schedule-info',
-						  'ppp_display_schedule'
-						);
+		add_menu_page(
+			__( 'Post Promoter', 'ppp-txt' ),
+			__( 'Post Promoter', 'ppp-txt' ),
+			$role,
+			'ppp-options',
+			'ppp_admin_page'
+		);
 
-		add_submenu_page( 'ppp-options',
-						  __( 'System Info', 'ppp-txt' ),
-						  __( 'System Info', 'ppp-txt' ),
-						  'manage_options',
-						  'ppp-system-info',
-						  'ppp_display_sysinfo'
-						);
+		add_submenu_page(
+			'ppp-options',
+			__( 'Social Settings', 'ppp-txt' ),
+			__( 'Social Settings', 'ppp-txt' ),
+			$role,
+			'ppp-social-settings',
+			'ppp_display_social'
+		);
 
-		add_submenu_page( null,
-						  __( 'PPP Upgrades', 'ppp-txt' ),
-						  __( 'PPP Upgrades', 'ppp-txt' ),
-						  'manage_options',
-						  'ppp-upgrades',
-						  'ppp_upgrades_screen'
-						);
+		add_submenu_page(
+			'ppp-options',
+			__( 'Schedule', 'ppp-txt' ),
+			__( 'Schedule', 'ppp-txt' ),
+			$role,
+			'ppp-schedule-info',
+			'ppp_display_schedule'
+		);
+
+		add_submenu_page(
+			'ppp-options',
+			__( 'System Info', 'ppp-txt' ),
+			__( 'System Info', 'ppp-txt' ),
+			$role,
+			'ppp-system-info',
+			'ppp_display_sysinfo'
+		);
+
+		add_submenu_page(
+			null,
+			__( 'PPP Upgrades', 'ppp-txt' ),
+			__( 'PPP Upgrades', 'ppp-txt' ),
+			$role,
+			'ppp-upgrades',
+			'ppp_upgrades_screen'
+		);
 
 	}
 
