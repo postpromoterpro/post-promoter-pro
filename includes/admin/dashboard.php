@@ -55,7 +55,10 @@ class PPP_Dashboard_Tweets {
 
 					$post_id    = $ppp_data['args'][0];
 					$date       = $timestamp + ( get_option( 'gmt_offset' ) * 3600 );
-					$content    = $builder( $ppp_data['args'][0], $ppp_data['args'][1], false );
+					$content    = '';
+					if ( function_exists( $builder ) ) {
+						$content    = $builder( $ppp_data['args'][0], $ppp_data['args'][1], false );
+					}
 
 					$regex   = "@(https?://([-\w\.]+[-\w])+(:\d+)?(/([\w/_\.#-]*(\?\S+)?[^\.\s])?)?)@";
 					$content = preg_replace( $regex, '', $content );
