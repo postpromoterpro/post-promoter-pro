@@ -641,7 +641,7 @@ function ppp_li_share_on_publish( $new_status, $old_status, $post ) {
 
 	$log_data = array(
 		'post_title'    => $log_title,
-		'post_content'  =>  json_encode( $status ),
+		'post_content'  => '',
 		'post_parent'   => $post->ID,
 		'log_type'      => 'ppp_share',
 	);
@@ -651,6 +651,8 @@ function ppp_li_share_on_publish( $new_status, $old_status, $post ) {
 	);
 
 	$log_entry = WP_Logging::insert_log( $log_data, $log_meta );
+
+	update_post_meta( $log_entry, '_ppp_share_status', $status );
 }
 add_action( 'ppp_share_on_publish', 'ppp_li_share_on_publish', 10, 3 );
 
@@ -687,7 +689,7 @@ function ppp_li_scheduled_share(  $post_id = 0, $index = 1, $name = ''  ) {
 
 	$log_data = array(
 		'post_title'    => $log_title,
-		'post_content'  =>  json_encode( $status ),
+		'post_content'  => '',
 		'post_parent'   => $post_id,
 		'log_type'      => 'ppp_share'
 	);
@@ -697,6 +699,8 @@ function ppp_li_scheduled_share(  $post_id = 0, $index = 1, $name = ''  ) {
 	);
 
 	$log_entry = WP_Logging::insert_log( $log_data, $log_meta );
+
+	update_post_meta( $log_entry, '_ppp_share_status', $status );
 
 }
 add_action( 'ppp_share_scheduled_li', 'ppp_li_scheduled_share', 10, 3 );

@@ -165,7 +165,7 @@ function ppp_send_tweet( $message, $post_id, $use_media = false, $name = '' ) {
  * @return void
  */
 function ppp_tw_scheduled_share( $post_id = 0, $index = 1, $name = '' ) {
-	global $ppp_options, $wp_logs;
+	global $ppp_options, $wp_logs, $wp_filter;
 
 	$post_meta     = get_post_meta( $post_id, '_ppp_tweets', true );
 	$this_share    = $post_meta[ $index ];
@@ -186,7 +186,7 @@ function ppp_tw_scheduled_share( $post_id = 0, $index = 1, $name = '' ) {
 
 	$log_data = array(
 		'post_title'    => $log_title,
-		'post_content'  =>  json_encode( $status ),
+		'post_content'  => '',
 		'post_parent'   => $post_id,
 		'log_type'      => 'ppp_share'
 	);
@@ -196,6 +196,8 @@ function ppp_tw_scheduled_share( $post_id = 0, $index = 1, $name = '' ) {
 	);
 
 	$log_entry = WP_Logging::insert_log( $log_data, $log_meta );
+
+	update_post_meta( $log_entry, '_ppp_share_status', $status );
 
 	if ( ! empty( $status->id_str ) ) {
 		$post      = get_post( $post_id );

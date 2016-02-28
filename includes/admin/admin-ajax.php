@@ -110,13 +110,31 @@ function ppp_get_celendar_events() {
 			$shared->the_post();
 			$network     = get_post_meta( get_the_ID(), '_wp_log_network', true );
 			$post_parent = get_post_field( 'post_parent', get_the_ID() );
+			$embed_html  = '';
+
+			switch( $network ) {
+				case 'tw':
+					$status  = get_post_meta( get_the_ID(), '_ppp_share_status', true );
+					$id      = ! empty( $status->id_str ) ? $status->id_str : false;
+
+					if ( false !== $id ) {
+						$embed_response = json_decode( wp_remote_retrieve_body( wp_remote_get( 'https://api.twitter.com/1/statuses/oembed.json?id=' . $id ) ) );
+						$embed_html     = $embed_response->html;
+					}
+					break;
+
+				default:
+					$status = '';
+					break;
+			}
 
 			$events[]    = array(
 				'id'        => get_the_ID(),
 				'title'     => get_the_title(),
-				'start'     => date_i18n( 'Y-m-d/TH:i:s', strtotime( get_the_date() . ' ' . get_the_time() ) ),
+				'start'     => date_i18n( 'Y-m-d H:i:s', strtotime( get_the_date() . ' ' . get_the_time() ) ),
 				'className' => 'ppp-calendar-item-' . $network . ' cal-post-' . $post_parent,
 				'belongsTo' => $post_parent,
+				'embed'     => $embed_html,
 			);
 
 			// ...and share on publish items
@@ -145,8 +163,8 @@ function ppp_get_celendar_events() {
 		$events[] = array(
 			'id'        => $key,
 			'title'     => $builder( $ppp_data['args'][0], $ppp_data['args'][1], false, false ),
-			'start'     => date_i18n( 'Y-m-d/TH:i:s', $timestamp + ( get_option( 'gmt_offset' ) * 3600 ) ),
-			'end'       => date_i18n( 'Y-m-d/TH:i:s', $timestamp + ( get_option( 'gmt_offset' ) * 3600 ) ),
+			'start'     => date_i18n( 'Y-m-d H:i:s', $timestamp + ( get_option( 'gmt_offset' ) * 3600 ) ),
+			'end'       => date_i18n( 'Y-m-d H:i:s', $timestamp + ( get_option( 'gmt_offset' ) * 3600 ) ),
 			'className' => 'ppp-calendar-item-' . $service . ' cal-post-' . $name_parts[2],
 			'belongsTo' => $name_parts[2],
 		);

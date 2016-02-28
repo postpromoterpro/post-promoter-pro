@@ -317,7 +317,8 @@ function ppp_display_schedule() {
 				},
 				eventClick: function(calEvent, jsEvent, view) {
 					console.log(calEvent);
-					$('#schedule-modal .title').html( '<span class="' + calEvent.className[0] + '" ></span>' + calEvent.title);
+					$('#schedule-modal .title').html( '<span class="ppp-modal-title ' + calEvent.className[0] + '" ></span>' + calEvent.title);
+					$('#schedule-modal .embed-body').html( calEvent.embed );
 					$('#schedule-modal').modal();
 				},
 			});
@@ -327,6 +328,9 @@ function ppp_display_schedule() {
 		<div id="ppp-schedule-calendar"></div>
 		<div id="schedule-modal">
 			<h3 class="title"></h3>
+			<p>
+				<div class="embed-body"></div>
+			</p>
 		</div>
 	</div>
 	<?php

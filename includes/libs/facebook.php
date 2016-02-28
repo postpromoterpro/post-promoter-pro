@@ -293,7 +293,7 @@ if( !class_exists( 'PPP_Facebook' ) ) {
 			if ( !empty( $image ) ) {
 				$args['picture'] = $image;
 			}
-			$results = wp_remote_post( $url, array( 'body' => $args ) );
+			$results = json_decode( wp_remote_retrieve_body( wp_remote_post( $url, array( 'body' => $args ) ) ) );
 
 			return $results;
 		}
