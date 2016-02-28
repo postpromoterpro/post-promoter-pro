@@ -180,7 +180,7 @@ class PostPromoterPro {
 	 * @access public
 	 */
 	public function ppp_setup_admin_menu() {
-		$role = apply_filters( 'ppp_manage_role', 'administator' );
+		$role = apply_filters( 'ppp_manage_role', 'administrator' );
 
 		add_menu_page(
 			__( 'Post Promoter', 'ppp-txt' ),
