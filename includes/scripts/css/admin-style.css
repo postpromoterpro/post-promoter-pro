@@ -195,86 +195,6 @@ textarea#ppp-payment-note { width: 100%; height: 4em; margin: 0; }
 	text-align: center;
 }
 
-/* Schedule Calendar */
-.fc-content-skeleton .fc-event-container a.fc-day-grid-event {
-	line-height: 25px;
-	vertical-align: middle;
-	height: 25px;
-}
-a[class*="ppp-calendar-item-"] .fc-time:before,
-#schedule-modal .title span:before {
-	display: inline;
-	font-family: ppp-dashicon;
-	text-decoration: inherit;
-	font-weight: 100;
-	text-align: center;
-	vertical-align: middle;
-	margin-right: 2px;
-}
-
-#schedule-modal .title span:before {
-	font-size: 1.1em;
-}
-
-
-.fc-event.ppp-calendar-item-fb {
-	background-color: #3b5998;
-}
-
-.ppp-calendar-item-fb .fc-time:before,
-.ppp-calendar-item-fb.ppp-modal-title:before {
-	content: "c";
-}
-
-
-.fc-event.ppp-calendar-item-tw {
-	background-color: #00aced;
-}
-
-.ppp-calendar-item-tw .fc-time:before,
-.ppp-calendar-item-tw.ppp-modal-title:before {
-	content: "b";
-}
-
-.fc-event.ppp-calendar-item-li {
-	background-color: #007bb6;
-}
-
-.ppp-calendar-item-li .fc-time:before,
-.ppp-calendar-item-li.ppp-modal-title:before {
-	content: "d";
-}
-
-.fc-event.ppp-calendar-item-wp {
-	background-color: #21759b;
-}
-
-.ppp-calendar-item-wp .fc-time:before,
-.ppp-calendar-item-wp.ppp-modal-title:before {
-	font-family: dashicons !important;
-	content: "\f120";
-}
-
-.fc-event.active-group {
-	background-color: #d54e21;
-}
-
-.fc-day-number.fc-today {
-	font-weight: 800;
-	color: #CC6666;
-}
-
-.tooltipevent {
-	max-width: 300px;
-	width: auto;
-	height: auto;
-	background: #ccc;
-	position: absolute;
-	z-index:10001;
-	padding: 5px;
-	word-wrap: break-word;
-}
-
 [class^="icon-ppp-"]:before,
 [class*="icon-ppp-"]:before {
 	font-family: "ppp-dashicon" !important;
@@ -308,8 +228,6 @@ a[class*="ppp-calendar-item-"] .fc-time:before,
 .icon-ppp-pt:before {
 	content: "f";
 }
-
-
 /* End Dashicons */
 
 
@@ -381,17 +299,3 @@ li.ui-timepicker-selected .ui-timepicker-duration,
 .ui-timepicker-list li.ui-timepicker-selected.ui-timepicker-disabled {
 	background: #f2f2f2;
 }
-
-#schedule-modal {display:none;}
-
-/* Overlay */
-#simplemodal-overlay {background-color:#000;}
-
-/* Container */
-#simplemodal-container {height:360px; width:600px; color:#333; background-color:#fff; border:4px solid #9c9c9c; padding:12px;}
-#simplemodal-container .simplemodal-data {padding:8px;}
-#simplemodal-container a {color:#666;}
-#simplemodal-container a.modalCloseImg {background:url(../../images/x.png) no-repeat; width:25px; height:29px; display:inline; z-index:3200; position:absolute; top:-15px; right:-16px; cursor:pointer;}
-#simplemodal-container h3 { font-size: 2em; color:#333; font-weight: 600; }
-#simplemodal-container .embed-body { text-align: center; }
-
