@@ -275,64 +275,26 @@ function ppp_display_social() {
 */
 function ppp_display_schedule() {
 	?>
+	<style type="text/css">
+		.wp-list-table .column-day { width: 5%; }
+		.wp-list-table .column-date { width: 20%; }
+		.wp-list-table .column-post_title { width: 25%; }
+		.wp-list-table .column-content { width: 50%; }
+	</style>
+	<?php
+	require_once PPP_PATH . 'includes/admin/class-schedule-table.php';
+	$schedule_table = new PPP_Schedule_Table();
+	$schedule_table->prepare_items();
+	?>
 	<div class="wrap">
-		<script>
-		jQuery( document ).ready( function($) {
-			$('#ppp-schedule-calendar').fullCalendar({
-				theme: true,
-				header: {
-					left: '',
-					center: 'prev title next',
-					right: 'today',
-				},
-				eventLimit: 5,
-				eventStartEditable: false,
-				eventDurationEditable: false,
-				viewRender: function ( view, element ) {
-					$('.fc-left').html('<span id="loading_data" class="spinner"></span>');
-					$('#loading_data').css('visibility', 'visible');
-					var data = {
-						'action': 'ppp_get_calendar_events',
-						'start' : view.start._d,
-						'end'   :view.end._d,
-					};
-
-					$.post(ajaxurl, data, function(response) {
-						if ( response.length > 0 ) {
-							$.each( response, function(key, value ) {
-								$('#ppp-schedule-calendar').fullCalendar('renderEvent', value);
-							});
-						}
-						$('#loading_data').css('visibility', 'hidden');
-					}, 'json');
-				},
-				eventMouseover: function(calEvent, jsEvent, view) {
-					var postClass = '.cal-post-' + calEvent.belongsTo;
-					$('.fc-event').not(postClass).css('opacity', '.6');
-					$('.ppp-calendar-item-wp' + postClass).addClass('active-group');
-				},
-				eventMouseout: function(calEvent, jsEvent, view) {
-					$('.fc-event').css('opacity', '1');
-					$('.ppp-calendar-item-wp').removeClass('active-group');
-				},
-				eventClick: function(calEvent, jsEvent, view) {
-					console.log(calEvent);
-					$('#schedule-modal .title').html( '<span class="ppp-modal-title ' + calEvent.className[0] + '" ></span>' + calEvent.title);
-					$('#schedule-modal .embed-body').html( calEvent.embed );
-					$('#schedule-modal').modal();
-				},
-			});
-		});
-		</script>
-		<div id="icon-options-general" class="icon32"></div><h1><?php _e( 'Post Promoter Pro - Publishing Schedule', 'ppp-txt' ); ?></h1>
-		<div id="ppp-schedule-calendar"></div>
-		<div id="schedule-modal">
-			<h3 class="title"></h3>
-			<p>
-				<div class="embed-body"></div>
-			</p>
-		</div>
+		<div id="icon-options-general" class="icon32"></div><h1><?php _e( 'Post Promoter Pro - Scheduled Shares', 'ppp-txt' ); ?></h1>
+		<?php $schedule_table->display() ?>
 	</div>
+	<?php if ( ppp_is_shortener_enabled() ): ?>
+	<p>
+		<small><?php _e( 'NOTICE: Schedule view does not show shortened links, they will be shortened at the time of sharing', 'ppp-txt' ); ?></small>
+	</p>
+	<?php endif; ?>
 	<?php
 }
 
