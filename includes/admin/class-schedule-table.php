@@ -128,14 +128,15 @@ class PPP_Schedule_Table extends WP_List_Table {
 			$cron_tally[$timestamp] = isset( $cron_tally[$timestamp] ) ? $cron_tally[$timestamp] + 1 : 1;
 
 			$name_parts = explode( '_', $ppp_data['args'][1] );
+			$post_id    = $ppp_data['args'][0];
 			$index      = $name_parts[1];
 			$service    = isset( $name_parts[3] ) ? $name_parts[3] : 'tw';
 			$builder    = 'ppp_' . $service . '_build_share_message';
-			$post_meta  = apply_filters( 'ppp_get_scheduled_items_' . $service, array(), $ppp_data['args'][0] );
+			$post_meta  = apply_filters( 'ppp_get_scheduled_items_' . $service, array(), $post_id );
 			$image_url  = '';
 
 			if ( ! empty( $post_meta[$index]['attachment_id'] ) ) {
-				$image_url = ppp_post_has_media( $ppp_data['args'][0], $service, true, $post_meta[ $index ]['attachment_id'] );
+				$image_url = ppp_post_has_media( $post_id, $service, true, $post_meta[ $index ]['attachment_id'] );
 			} elseif ( ! empty( $post_meta[ $index ]['image'] ) ) {
 				$image_url = $post_meta[ $index ]['image'];
 			}
@@ -143,18 +144,26 @@ class PPP_Schedule_Table extends WP_List_Table {
 			$conflict   = $cron_tally[ $timestamp ] > 1 ? true : false;
 
 			$data[ $key ] = array(
-				'post_id'      => $ppp_data['args'][0],
-				'post_title'   => get_the_title( $ppp_data['args'][0] ),
+				'post_id'      => $post_id,
+				'post_title'   => get_the_title( $post_id ),
 				'service'      => $service,
 				'index'        => $index,
 				'date'         => $timestamp + ( get_option( 'gmt_offset' ) * 3600 ),
-				'content'      => function_exists( $builder ) ? $builder( $ppp_data['args'][0], $ppp_data['args'][1], false ) : '',
-				'name'         => 'sharedate_' . $index . '_' . $ppp_data['args'][0],
+				'content'      => function_exists( $builder ) ? $builder( $post_id, $ppp_data['args'][1], false ) : '',
+				'name'         => 'sharedate_' . $index . '_' . $post_id,
 				'conflict'     => $conflict,
 			);
 
 			if ( ! empty( $image_url ) ) {
 				$data[ $key ]['image_url'] = $image_url;
+			}
+
+			$description_function = 'ppp_' . $service . '_get_share_description';
+			if ( function_exists( $description_function ) ) {
+				$description = $description_function( $post_id, $index );
+				if ( ! empty( $description ) ) {
+					$data[ $key ]['content'] .= '<br />' . $description;
+				}
 			}
 
 		}
