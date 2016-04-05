@@ -119,24 +119,41 @@ class PPP_Schedule_Table extends WP_List_Table {
 	 * Retrieve the bulk actions
 	 *
 	 * @access public
-	 * @since x.x
+	 * @since 2.3
 	 * @return array $actions Array of the bulk actions
 	 */
-	public function get_bulk_actions() {
+	public function bulk_actions( $which = '' ) {
 		$actions = array(
 			'share'        => __( 'Share Now', 'ppp-txt' ),
 			'delete'       => __( 'Delete', 'ppp-txt' ),
 			'share_delete' => __( 'Share Now & Delete', 'ppp-txt' )
 		);
 
-		return $actions;
+		// These aren't really bulk actions but this outputs the markup in the right place
+		static $ppp_schedule_is_bottom;
+
+		if( $ppp_schedule_is_bottom ) {
+			return;
+		}
+		?>
+		<form id="ppp-bulk-share-form" method="post" action="<?php echo admin_url( 'admin.php?page=ppp-schedule-info' ); ?>">
+			<?php wp_nonce_field( 'bulk-shares' ); ?>
+			<select name="action">
+				<?php foreach ( $actions as $value => $title ) : ?>
+					<option value="<?php echo $value; ?>"><?php echo $title; ?></option>
+				<?php endforeach; ?>
+			</select>
+			<?php submit_button( __( 'Update', 'ppp-txt' ), 'secondary', 'submit', false ); ?>
+		</form>
+		<?php
+		$ppp_schedule_is_bottom = true;
 	}
 
 	/**
 	 * Process the bulk actions
 	 *
 	 * @access public
-	 * @since x.x
+	 * @since 2.3
 	 * @return void
 	 */
 	public function process_bulk_action() {
@@ -157,7 +174,7 @@ class PPP_Schedule_Table extends WP_List_Table {
 
 		foreach ( $shares as $share ) {
 
-			switch( $this->current_action() ) {
+			switch( $_REQUEST['action'] ) {
 
 				case 'share' :
 
