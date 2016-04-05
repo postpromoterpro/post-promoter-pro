@@ -375,7 +375,8 @@ add_action( 'ppp_add_image_sizes', 'ppp_tw_register_thumbnail_size' );
  * @return void         Displays the metabox content
  */
 function ppp_tw_add_metabox_content( $post ) {
-	global $ppp_options, $ppp_share_settings;
+	global $ppp_options, $ppp_share_settings, $has_past_shares;
+	$has_past_shares = false;
 	?>
 		<p>
 			<div class="ppp-post-override-wrap">
@@ -420,7 +421,8 @@ function ppp_tw_add_metabox_content( $post ) {
 
 								<tr>
 									<td class="submit" colspan="4" style="float: none; clear:both; background:#fff;">
-										<a class="button-secondary ppp-add-repeatable" style="margin: 6px 0;"><?php _e( 'Add New Tweet', 'ppp-txt' ); ?></a>
+										<a class="button-primary ppp-add-repeatable" style="margin: 6px 0;"><?php _e( 'Add New Tweet', 'ppp-txt' ); ?></a>
+										<a class="button-secondary ppp-view-all" style="margin: 6px 0;"><?php _e( 'Toggle Past Tweets', 'ppp-txt' ); ?></a>
 									</td>
 								</tr>
 							</tbody>
@@ -469,7 +471,7 @@ function ppp_render_tweet_share_on_publish_row() {
 		</td>
 
 		<td>
-			<input <?php if ( $disabled ): ?>readonly<?php endif; ?> class="ppp-tweet-text-repeatable" type="text" name="_ppp_share_on_publish_text" value="<?php echo esc_attr( $ppp_share_on_publish_text ); ?>" />
+			<input <?php if ( $disabled ): ?>readonly<?php endif; ?> class="`ppp-tweet-text-repeatable" type="text" name="_ppp_share_on_publish_text" value="<?php echo esc_attr( $ppp_share_on_publish_text ); ?>" />
 			<?php $length = ! empty( $args['text'] ) ? strlen( $args['text'] ) : 0; ?>
 			&nbsp;<span class="ppp-text-length"><?php echo $length; ?></span>
 		</td>
@@ -492,14 +494,19 @@ function ppp_render_tweet_share_on_publish_row() {
  * @return void
  */
 function ppp_render_tweet_row( $key, $args = array(), $post_id ) {
-	global $post;
+	global $post, $has_past_shares;
 
 	$share_time     = strtotime( $args['date'] . ' ' . $args['time'] );
 	$readonly       = current_time( 'timestamp' ) > $share_time ? 'readonly="readonly" ' : false;
 	$no_date        = ! empty( $readonly ) ? ' hasDatepicker' : '';
 	$hide           = ! empty( $readonly ) ? 'display: none;' : '';
+	$shared         = ! empty( $readonly ) ? 'past-share' : '';
+
+	if ( ! empty( $readonly ) ) {
+		$has_past_shares = true;
+	}
 	?>
-	<tr class="ppp-tweet-wrapper ppp-repeatable-row ppp-repeatable-twitter scheduled-row" data-key="<?php echo esc_attr( $key ); ?>">
+	<tr class="ppp-tweet-wrapper ppp-repeatable-row ppp-repeatable-twitter scheduled-row <?php echo $shared; ?>" data-key="<?php echo esc_attr( $key ); ?>">
 		<td>
 			<input <?php echo $readonly; ?>type="text" class="share-date-selector<?php echo $no_date; ?>" name="_ppp_tweets[<?php echo $key; ?>][date]" placeholder="mm/dd/yyyy" value="<?php echo $args['date']; ?>" />
 		</td>

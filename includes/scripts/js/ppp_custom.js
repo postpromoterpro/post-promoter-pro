@@ -171,6 +171,7 @@ var tweetLengthImageRed    = 94;
 		init: function() {
 			this.add();
 			this.remove();
+			this.view_all();
 			this.share_on_publish();
 			this.count_length();
 			this.check_timestamps();
@@ -219,7 +220,7 @@ var tweetLengthImageRed    = 94;
 			$( 'body' ).on( 'click', '.submit .ppp-add-repeatable', function(e) {
 				e.preventDefault();
 				var button = $( this ),
-				row = button.parent().parent().prev( 'tr' ),
+				row = button.parent().parent().prevAll('tr').not('.past-share').first(),
 				clone = PPP_Twitter_Configuration.clone_repeatable(row);
 				clone.insertAfter( row );
 
@@ -256,6 +257,12 @@ var tweetLengthImageRed    = 94;
 						$( this ).attr( 'name', name ).attr( 'id', name );
 					});
 				});
+			});
+		},
+		view_all: function() {
+			$('.ppp-view-all').click( function (e) {
+				e.preventDefault();
+				$('.ppp-tweet-fields table .past-share').slideToggle();
 			});
 		},
 		share_on_publish: function() {
