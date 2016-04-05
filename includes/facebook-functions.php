@@ -311,12 +311,24 @@ function ppp_fb_scheduled_share(  $post_id = 0, $index = 1, $name = ''  ) {
 		$media     = ppp_post_has_media( $post_id, 'fb', $use_media, $attachment_id );
 	}
 
-	$status['facebook'] = ppp_fb_share( $link, $share_message, $media );
+	$status = ppp_fb_share( $link, $share_message, $media );
 
-	if ( isset( $ppp_options['enable_debug'] ) && $ppp_options['enable_debug'] == '1' ) {
-		update_post_meta( $post_id, '_ppp-' . $name . '-status', $status );
-	}
+	$log_title = ppp_fb_build_share_message( $post_id, $name );
 
+	$log_data = array(
+		'post_title'    => $log_title,
+		'post_content'  =>  '',
+		'post_parent'   => $post_id,
+		'log_type'      => 'ppp_share'
+	);
+
+	$log_meta = array(
+		'network'   => 'fb',
+	);
+
+	$log_entry = WP_Logging::insert_log( $log_data, $log_meta );
+
+	update_post_meta( $log_entry, '_ppp_share_status', $status );
 }
 add_action( 'ppp_share_scheduled_fb', 'ppp_fb_scheduled_share', 10, 3 );
 
@@ -405,6 +417,7 @@ function ppp_fb_add_metabox_content( $post ) {
 				<?php $disabled = ( $post->post_status === 'publish' && time() > strtotime( $post->post_date ) ) ? true : false; ?>
 				<label for="ppp_fb_share_on_publish"><?php _e( 'Share this post on Facebook&hellip;', 'ppp-txt' ); ?></label>
 				<select name="_ppp_fb_share_on_publish" id="ppp_fb_share_on_publish" class="ppp-toggle-share-on-publish">
+					<option value="-1" <?php selected( true, $show_share_on_publish, true ); ?><?php if ( $disabled ): ?>disabled<?php endif; ?>><?php _e( 'Do not share this post', 'ppp-txt' ); ?></option>
 					<option value="1" <?php selected( true, $show_share_on_publish, true ); ?><?php if ( $disabled ): ?>disabled<?php endif; ?>><?php _e( 'When this post is published', 'ppp-txt' ); ?></option>
 					<option value="0" <?php selected( false, $show_share_on_publish, true ); ?>><?php _e( 'After this post is published', 'ppp-txt' ); ?></option>
 				</select>
@@ -573,9 +586,9 @@ function ppp_fb_save_post_meta_boxes( $post_id, $post ) {
 		return;
 	}
 
-	$ppp_fb_share_on_publish            = ( isset( $_REQUEST['_ppp_fb_share_on_publish'] ) ) ? $_REQUEST['_ppp_fb_share_on_publish'] : '0';
-	$ppp_share_on_publish_title         = ( isset( $_REQUEST['_ppp_fb_share_on_publish_title'] ) ) ? $_REQUEST['_ppp_fb_share_on_publish_title'] : '';
-	$ppp_share_on_publish_image_url     = ( isset( $_REQUEST['_ppp_fb_share_on_publish_image_url'] ) ) ? $_REQUEST['_ppp_fb_share_on_publish_image_url'] : '';
+	$ppp_fb_share_on_publish            = ( isset( $_REQUEST['_ppp_fb_share_on_publish'] ) )               ? $_REQUEST['_ppp_fb_share_on_publish']               : '-1';
+	$ppp_share_on_publish_title         = ( isset( $_REQUEST['_ppp_fb_share_on_publish_title'] ) )         ? $_REQUEST['_ppp_fb_share_on_publish_title']         : '';
+	$ppp_share_on_publish_image_url     = ( isset( $_REQUEST['_ppp_fb_share_on_publish_image_url'] ) )     ? $_REQUEST['_ppp_fb_share_on_publish_image_url']     : '';
 	$ppp_share_on_publish_attachment_id = ( isset( $_REQUEST['_ppp_fb_share_on_publish_attachment_id'] ) ) ? $_REQUEST['_ppp_fb_share_on_publish_attachment_id'] : '';
 
 	update_post_meta( $post_id, '_ppp_fb_share_on_publish',               $ppp_fb_share_on_publish );
@@ -583,7 +596,7 @@ function ppp_fb_save_post_meta_boxes( $post_id, $post ) {
 	update_post_meta( $post_id, '_ppp_fb_share_on_publish_image_url',     $ppp_share_on_publish_image_url );
 	update_post_meta( $post_id, '_ppp_fb_share_on_publish_attachment_id', $ppp_share_on_publish_attachment_id );
 
-	$fb_data = ( isset( $_REQUEST['_ppp_fb_shares'] ) ) ? $_REQUEST['_ppp_fb_shares'] : array();
+	$fb_data = ( isset( $_REQUEST['_ppp_fb_shares'] ) && empty( $ppp_fb_share_on_publish ) ) ? $_REQUEST['_ppp_fb_shares'] : array();
 	foreach ( $fb_data as $index => $share ) {
 		$fb_data[ $index ]['text'] = sanitize_text_field( $share['text'] );
 	}
@@ -645,11 +658,24 @@ function ppp_fb_share_on_publish( $new_status, $old_status, $post ) {
 	$title = apply_filters( 'ppp_share_content', $title, array( 'post_id' => $post->ID ) );
 	$link  = ppp_generate_link( $post->ID, $name, true );
 
-	$status['facebook'] = ppp_fb_share( $link, $title, $thumbnail );
+	$status = ppp_fb_share( $link, $title, $thumbnail );
 
-	if ( isset( $ppp_options['enable_debug'] ) && $ppp_options['enable_debug'] == '1' ) {
-		update_post_meta( $post->ID, '_ppp-' . $name . '-status', $status );
-	}
+	$log_title = ppp_fb_build_share_message( $post->ID, $name );
+
+	$log_data = array(
+		'post_title'    => $log_title,
+		'post_content'  => '',
+		'post_parent'   => $post->ID,
+		'log_type'      => 'ppp_share'
+	);
+
+	$log_meta = array(
+		'network'   => 'fb',
+	);
+
+	$log_entry = WP_Logging::insert_log( $log_data, $log_meta );
+
+	update_post_meta( $log_entry, '_ppp_share_status', $status );
 }
 add_action( 'ppp_share_on_publish', 'ppp_fb_share_on_publish', 10, 3 );
 
@@ -800,3 +826,33 @@ function ppp_fb_update_page() {
 	die(); // this is required to return a proper result
 }
 add_action( 'wp_ajax_fb_set_page', 'ppp_fb_update_page' );
+
+function ppp_fb_calendar_on_publish_event( $events, $post_id ) {
+	$share_on_publish = get_post_meta( $post_id, '_ppp_fb_share_on_publish', true );
+
+	if ( ! empty( $share_on_publish ) ) {
+		$share_text = get_post_meta( $post_id, '_ppp_fb_share_on_publish_title', true );
+		$events[] = array(
+			'id' => $post_id . '-share-on-publish',
+			'title' => ( ! empty( $share_text ) ) ? $share_text : ppp_fb_generate_share_content( $post_id, null, false ),
+			'start'     => date_i18n( 'Y-m-d/TH:i:s', strtotime( get_the_date( null, $post_id ) . ' ' . get_the_time( null, $post_id ) ) + 1 ),
+			'end'       => date_i18n( 'Y-m-d/TH:i:s', strtotime( get_the_date( null, $post_id ) . ' ' . get_the_time( null, $post_id ) ) + 1 ),
+			'className' => 'ppp-calendar-item-fb cal-post-' . $post_id,
+			'belongsTo' => $post_id,
+		);
+	}
+
+	return $events;
+}
+add_filter( 'ppp_calendar_on_publish_event', 'ppp_fb_calendar_on_publish_event', 10, 2 );
+
+function ppp_fb_get_post_shares( $items, $post_id ) {
+	$shares = get_post_meta( $post_id, '_ppp_fb_shares', true );
+	if ( empty( $shares ) ) { return $items; }
+
+	foreach ( $shares as $key => $share ) {
+		$items[] = array( 'id' => $key, 'service' => 'fb' );
+	}
+	return $items;
+}
+add_filter( 'ppp_get_post_scheduled_shares', 'ppp_fb_get_post_shares', 10, 2 );

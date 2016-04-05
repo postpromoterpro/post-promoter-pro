@@ -165,7 +165,7 @@ function ppp_send_tweet( $message, $post_id, $use_media = false, $name = '' ) {
  * @return void
  */
 function ppp_tw_scheduled_share( $post_id = 0, $index = 1, $name = '' ) {
-	global $ppp_options;
+	global $ppp_options, $wp_logs, $wp_filter;
 
 	$post_meta     = get_post_meta( $post_id, '_ppp_tweets', true );
 	$this_share    = $post_meta[ $index ];
@@ -180,20 +180,33 @@ function ppp_tw_scheduled_share( $post_id = 0, $index = 1, $name = '' ) {
 		$media     = ppp_post_has_media( $post_id, 'tw', $use_media, $attachment_id );
 	}
 
-	$status['twitter'] = ppp_send_tweet( $share_message, $post_id, $media );
+	$status = ppp_send_tweet( $share_message, $post_id, $media );
 
-	if ( isset( $ppp_options['enable_debug'] ) && $ppp_options['enable_debug'] == '1' ) {
-		update_post_meta( $post_id, '_ppp-' . $name . '-status', $status );
-	}
+	$log_title = ppp_tw_build_share_message( $post_id, $name, false, false );
 
-	if ( ! empty( $status['twitter']->id_str ) ) {
+	$log_data = array(
+		'post_title'    => $log_title,
+		'post_content'  => '',
+		'post_parent'   => $post_id,
+		'log_type'      => 'ppp_share'
+	);
+
+	$log_meta = array(
+		'network'   => 'tw',
+	);
+
+	$log_entry = WP_Logging::insert_log( $log_data, $log_meta );
+
+	update_post_meta( $log_entry, '_ppp_share_status', $status );
+
+	if ( ! empty( $status->id_str ) ) {
 		$post      = get_post( $post_id );
 		$author_id = $post->post_author;
 		$author_rt = get_user_meta( $author_id, '_ppp_share_scheduled', true );
 
 		if ( $author_rt ) {
 			$twitter_user = new PPP_Twitter_User( $author_id );
-			$twitter_user->retweet( $status['twitter']->id_str );
+			$twitter_user->retweet( $status->id_str );
 		}
 
 	}
@@ -204,13 +217,19 @@ add_action( 'ppp_share_scheduled_tw', 'ppp_tw_scheduled_share', 10, 3 );
  * Combines the results from ppp_generate_share_content and ppp_generate_link into a single string
  * @param  int $post_id The Post ID
  * @param  string $name    The 'name' element from the Cron
+ * @param  boolean $scheduled If the item is being requsted by a scheduled post
+ * @param  bool $include_link If a link should be included in the text
  * @return string          The Full text for the social share
  */
-function ppp_tw_build_share_message( $post_id, $name, $scheduled = true ) {
+function ppp_tw_build_share_message( $post_id, $name, $scheduled = true, $include_link = true ) {
 	$share_content = ppp_tw_generate_share_content( $post_id, $name );
-	$share_link    = ppp_generate_link( $post_id, $name, $scheduled );
 
-	return apply_filters( 'ppp_tw_build_share_message', $share_content . ' ' . $share_link );
+	if ( $include_link ) {
+		$share_link    = ppp_generate_link( $post_id, $name, $scheduled );
+		$share_content = $share_content . ' ' . $share_link;
+	}
+
+	return apply_filters( 'ppp_tw_build_share_message', $share_content );
 }
 
 /**
@@ -581,22 +600,32 @@ function ppp_tw_share_on_publish( $new_status, $old_status, $post ) {
 	$media = ppp_post_has_media( $post->ID, 'tw', $use_media );
 	$share_link = ppp_generate_link( $post->ID, $name, true );
 
-	$status['twitter'] = ppp_send_tweet( $share_content . ' ' . $share_link, $post->ID, $media );
+	$status = ppp_send_tweet( $share_content . ' ' . $share_link, $post->ID, $media );
 
-	if ( ! empty( $status['twitter']->id_str ) ) {
+	$log_title = ppp_tw_build_share_message( $post->ID, $name, false, false );
+
+	$log_data = array(
+		'post_title'    => $log_title,
+		'post_content'  =>  json_encode( $status ),
+		'post_parent'   => $post->ID,
+		'log_type'      => 'ppp_share'
+	);
+
+	$log_meta = array(
+		'network'   => 'tw',
+	);
+
+	$log_entry = WP_Logging::insert_log( $log_data, $log_meta );
+
+	if ( ! empty( $status->id_str ) ) {
 		$author_id = $post->post_author;
 		$author_rt = get_user_meta( $author_id, '_ppp_share_on_publish', true );
 
 		if ( $author_rt ) {
 			$twitter_user = new PPP_Twitter_User( $author_id );
-			$twitter_user->retweet( $status['twitter']->id_str );
+			$twitter_user->retweet( $status->id_str );
 		}
 
-	}
-
-
-	if ( isset( $ppp_options['enable_debug'] ) && $ppp_options['enable_debug'] == '1' ) {
-		update_post_meta( $post->ID, '_ppp-' . $name . '-status', $status );
 	}
 }
 add_action( 'ppp_share_on_publish', 'ppp_tw_share_on_publish', 10, 3 );
@@ -651,24 +680,6 @@ function ppp_tw_generate_timestamps( $times, $post_id ) {
 	return $times;
 }
 add_filter( 'ppp_get_timestamps', 'ppp_tw_generate_timestamps', 10, 2 );
-
-/**
- * Unschedule any tweets when the post is unscheduled
- *
- * @since  2.1.2
- * @param  string $old_status The old status of the post
- * @param  string $new_status The new status of the post
- * @param  object $post       The Post Object
- * @return void
- */
-function ppp_tw_unschedule_shares( $new_status, $old_status, $post ) {
-
-	if ( ( $old_status == 'publish' || $old_status == 'future' ) && ( $new_status != 'publish' && $new_status != 'future' ) ) {
-		ppp_remove_scheduled_shares( $post->ID );
-	}
-
-}
-add_action( 'transition_post_status', 'ppp_tw_unschedule_shares', 10, 3 );
 
 /**
  * Returns if the Twitter Cards are enabled
@@ -911,3 +922,33 @@ function ppp_tw_save_profile( $user_id ) {
 }
 add_action( 'personal_options_update', 'ppp_tw_save_profile' );
 add_action( 'edit_user_profile_update', 'ppp_tw_save_profile' );
+
+function ppp_tw_calendar_on_publish_event( $events, $post_id ) {
+	$share_on_publish = get_post_meta( $post_id, '_ppp_share_on_publish', true );
+
+	if ( ! empty( $share_on_publish ) ) {
+		$share_text = get_post_meta( $post_id, '_ppp_share_on_publish_text', true );
+		$events[] = array(
+			'id' => $post_id . '-share-on-publish',
+			'title' => ( ! empty( $share_text ) ) ? $share_text : ppp_tw_generate_share_content( $post_id, null, false ),
+			'start'     => date_i18n( 'Y-m-d/TH:i:s', strtotime( get_the_date( null, $post_id ) . ' ' . get_the_time( null, $post_id ) ) + 1 ),
+			'end'       => date_i18n( 'Y-m-d/TH:i:s', strtotime( get_the_date( null, $post_id ) . ' ' . get_the_time( null, $post_id ) ) + 1 ),
+			'className' => 'ppp-calendar-item-tw cal-post-' . $post_id,
+			'belongsTo' => $post_id,
+		);
+	}
+
+	return $events;
+}
+add_filter( 'ppp_calendar_on_publish_event', 'ppp_tw_calendar_on_publish_event', 10, 2 );
+
+function ppp_tw_get_post_shares( $items, $post_id ) {
+	$tweets = get_post_meta( $post_id, '_ppp_tweets', true );
+	if ( empty( $tweets ) ) { return $items; }
+
+	foreach ( $tweets as $key => $tweet ) {
+		$items[] = array( 'id' => $key, 'service' => 'tw' );
+	}
+	return $items;
+}
+add_filter( 'ppp_get_post_scheduled_shares', 'ppp_tw_get_post_shares', 10, 2 );

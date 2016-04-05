@@ -37,6 +37,7 @@ class PostPromoterPro {
 			include PPP_PATH . '/includes/cron-functions.php';
 			include PPP_PATH . '/includes/filters.php';
 			include PPP_PATH . '/includes/libs/social-loader.php';
+			include PPP_PATH . '/includes/libs/class-wp-logging.php';
 
 			if ( is_admin() ) {
 				include PPP_PATH . '/includes/admin/upgrades.php';
@@ -129,6 +130,7 @@ class PostPromoterPro {
 		add_action( 'save_post', 'ppp_schedule_share', 99, 2);
 		add_action( 'transition_post_status', 'ppp_share_on_publish', 99, 3);
 		add_action( 'init', 'ppp_add_image_sizes' );
+		add_filter( 'wp_log_types', array( $this, 'register_log_type' ), 10, 1 );
 	}
 
 	/**
@@ -141,7 +143,8 @@ class PostPromoterPro {
 		if ( 'toplevel_page_ppp-options' != $hook
 			  && 'post-promoter_page_ppp-social-settings' != $hook
 			  && 'post-new.php' != $hook
-			  && 'post.php' != $hook ) {
+			  && 'post.php' != $hook
+			  && 'post-promoter_page_ppp-schedule-info' != $hook ) {
 					return;
 		}
 
@@ -151,17 +154,33 @@ class PostPromoterPro {
 		$jquery_ui_timepicker_path = PPP_URL . 'includes/scripts/libs/jquery-ui-timepicker-addon.js';
 		wp_enqueue_script( 'ppp_timepicker_js', $jquery_ui_timepicker_path , array( 'jquery', 'jquery-ui-core' ), PPP_VERSION, true );
 		wp_enqueue_script( 'ppp_core_custom_js', PPP_URL.'includes/scripts/js/ppp_custom.js', 'jquery', PPP_VERSION, true );
+
+		if ( 'post-promoter_page_ppp-schedule-info' === $hook ) {
+			wp_register_script( 'momentjs', PPP_URL . 'includes/scripts/libs/moment.min.js', array( 'jquery' ), PPP_VERSION, false );
+			wp_register_script( 'fullcalendar', PPP_URL . 'includes/scripts/libs/fullcalendar/fullcalendar.min.js', array( 'jquery', 'momentjs' ), PPP_VERSION, false );
+
+			wp_enqueue_script( 'fullcalendar' );
+
+			wp_register_script( 'simplemodal', PPP_URL . 'includes/scripts/libs/simplemodal.js', array( 'jquery' ), PPP_VERSION, false );
+			wp_enqueue_script( 'simplemodal' );
+		}
 	}
 
 	public function load_styles( $hook ) {
-		wp_register_style( 'ppp_admin_css', PPP_URL . 'includes/scripts/css/admin-style.css', false, PPP_VERSION );
-		wp_enqueue_style( 'ppp_admin_css' );
+		if ( 'post-promoter_page_ppp-schedule-info' === $hook ) {
+			wp_register_style( 'fullcalendar', PPP_URL . 'includes/scripts/libs/fullcalendar/fullcalendar.min.css', false, PPP_VERSION );
+			wp_enqueue_style( 'fullcalendar' );
+		}
 
 		// List of people who make it impossible to override their jQuery UI as it's in their core CSS...so only
 		// load ours if they don't exist
 		if ( ! wp_style_is( 'ot-admin-css' ) && ! wp_style_is( 'jquery-ui-css' ) ) {
 			wp_enqueue_style( 'jquery-ui-css', '//ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/flick/jquery-ui.css' );
 		}
+
+		wp_register_style( 'ppp_admin_css', PPP_URL . 'includes/scripts/css/admin-style.css', false, PPP_VERSION );
+		wp_enqueue_style( 'ppp_admin_css' );
+
 	}
 
 	/**
@@ -296,10 +315,10 @@ class PostPromoterPro {
 		<div class="updated">
 			<p>
 				<?php printf(
-			         __( 'Post Promoter Pro requires your license key to work, please <a href="%s">enter it now</a>.', 'ppp-txt' ),
-			              admin_url( 'admin.php?page=ppp-options' )
-			         );
-			    ?>
+					 __( 'Post Promoter Pro requires your license key to work, please <a href="%s">enter it now</a>.', 'ppp-txt' ),
+						  admin_url( 'admin.php?page=ppp-options' )
+					 );
+				?>
 			</p>
 		</div>
 		<?php
@@ -358,10 +377,10 @@ class PostPromoterPro {
 		if( isset( $_POST['ppp_license_activate'] ) ) {
 
 			// run a quick security check
-		 	if( ! check_admin_referer( 'ppp_activate_nonce', 'ppp_activate_nonce' ) ) {
-		 		return;
-		 	}
-		 	// get out if we didn't click the Activate button
+			if( ! check_admin_referer( 'ppp_activate_nonce', 'ppp_activate_nonce' ) ) {
+				return;
+			}
+			// get out if we didn't click the Activate button
 
 			// retrieve the license from the database
 			$license = trim( get_option( '_ppp_license_key' ) );
@@ -410,6 +429,12 @@ class PostPromoterPro {
 			do_action( 'ppp_' . $_GET['ppp_action'], $_GET );
 		}
 	}
+
+	public function register_log_type( $log_types ) {
+		$types[] = 'ppp_share';
+		return $types;
+	}
+
 }
 
 function post_promoter_pro() {
