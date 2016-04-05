@@ -68,6 +68,36 @@ function ppp_share_post( $post_id, $name ) {
 	$index      = $name_parts[1];
 	$service    = isset( $name_parts[3] ) ? $name_parts[3] : 'tw';
 
+	// If we're fired on a cron, check for stale cron runs
+	if ( defined( 'DOING_CRON' ) && DOING_CRON ) {
+		switch( $service ) {
+			case 'tw':
+				$post_meta = get_post_meta( $post_id, '_ppp_tweets', true );
+				break;
+
+			case 'fb':
+				$post_meta = get_post_meta( $post_id, '_ppp_fb_shares', true );
+				break;
+
+			case 'li':
+				$post_meta = get_post_meta( $post_id, '_ppp_li_shares', true );
+				break;
+		}
+
+		$share_data = array();
+		if ( isset( $post_meta[ $index ] ) ) {
+			$share_data = $post_meta[ $index ];
+		}
+
+		$timestamp = ppp_generate_timestamp( $share_data['date'], $share_data['time'] );
+
+		// If the current time is more than 60 minutes (filterable) overdue, don't fire the share
+		$share_buffer = apply_filters( 'ppp_share_buffer', HOUR_IN_SECONDS );
+		if ( ( current_time( 'timestamp', 1 ) - $timestamp ) > $share_buffer ) {
+			return;
+		}
+	}
+
 	do_action( 'ppp_share_scheduled_' . $service, $post_id, $index, $name );
 
 }
