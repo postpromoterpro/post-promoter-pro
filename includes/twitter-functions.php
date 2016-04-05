@@ -764,7 +764,7 @@ function ppp_tw_default_meta_elements() {
 
 	$elements['twitter:site']        = '@' . $ppp_social_settings['twitter']['user']->screen_name;
 	$elements['twitter:title']       = esc_attr( strip_tags( $post->post_title ) );
-	$elements['twitter:description'] = esc_attr( strip_tags( ppp_tw_get_card_description() ) );
+	$elements['twitter:description'] = esc_attr( ppp_tw_get_card_description() );
 
 	$author_twitter_handle = get_user_meta( $post->post_author, 'twitter', true );
 	if ( ! empty( $author_twitter_handle ) ) {
@@ -794,15 +794,32 @@ function ppp_tw_get_card_description() {
 	}
 
 	$excerpt = $post->post_excerpt;
-	$max_len = apply_filters( 'ppp_tw_cart_desc_length', 200 );
 
 	if ( empty( $excerpt ) ) {
-		$excerpt_pre = substr( $post->post_content, 0, $max_len );
+		$excerpt = ppp_tw_format_card_description( $post->content );
+	}
+
+	return apply_filters( 'ppp_tw_card_desc', $excerpt );
+}
+
+/**
+ * Format a given string for the excerpt
+ *
+ * @since  2.3
+ * @param  string $excerpt The string to possibly truncate
+ * @return string          The description, truncated if over 200 characters
+ */
+function ppp_tw_format_card_description( $excerpt ) {
+	$max_len = apply_filters( 'ppp_tw_cart_desc_length', 200 );
+	$excerpt = strip_tags( $excerpt );
+
+	if ( strlen( $excerpt ) > $max_len ) {
+		$excerpt_pre = substr( $excerpt, 0, $max_len );
 		$last_space  = strrpos( $excerpt_pre, ' ' );
 		$excerpt     = substr( $excerpt_pre, 0, $last_space ) . '...';
 	}
 
-	return apply_filters( 'ppp_tw_card_desc', $excerpt );
+	return $excerpt;
 }
 
 /**
