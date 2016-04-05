@@ -180,7 +180,7 @@ add_action( 'wp_trash_post', 'ppp_trash_logs', 10, 1 );
 function ppp_delete_logs( $post_id ) {
 	global $wpdb;
 
-	$sql = $wpdb->prepare( "DELETE FROM $wpdb->posts WHERE post_parent = $post_id && post_type = 'wp_log'" );
+	$sql = $wpdb->prepare( "DELETE FROM $wpdb->posts WHERE post_parent = %d && post_type = 'wp_log'", $post_id );
 	$wpdb->query( $sql );
 }
 add_action( 'delete_post', 'ppp_delete_logs', 10, 1 );
@@ -218,4 +218,34 @@ function ppp_unschedule_shares( $new_status, $old_status, $post ) {
 
 }
 add_action( 'transition_post_status', 'ppp_unschedule_shares', 10, 3 );
+
+/**
+ * Given a date and time string (from our post meta), return an offset timestamp
+ *
+ * @since  2.3
+ * @param  string $date The Date
+ * @param  string $time The time
+ * @return long         A timestamp
+ */
+function ppp_generate_timestamp( $date, $time ) {
+	$share_time = explode( ':', $time );
+	$hours      = (int) $share_time[0];
+	$minutes    = (int) substr( $share_time[1], 0, 2 );
+	$ampm       = strtolower( substr( $share_time[1], -2 ) );
+
+	if ( $ampm == 'pm' && $hours != 12 ) {
+		$hours = $hours + 12;
+	}
+
+	if ( $ampm == 'am' && $hours == 12 ) {
+		$hours = 00;
+	}
+
+	$offset    = (int) -( get_option( 'gmt_offset' ) );
+	$hours     = $hours + $offset;
+	$date      = explode( '/', $date );
+	$timestamp = mktime( $hours, $minutes, 0, $date[0], $date[1], $date[2] );
+
+	return $timestamp;
+}
 

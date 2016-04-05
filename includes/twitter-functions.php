@@ -639,9 +639,6 @@ add_action( 'ppp_share_on_publish', 'ppp_tw_share_on_publish', 10, 3 );
  * @return array          Array of timestamps and cron names
  */
 function ppp_tw_generate_timestamps( $times, $post_id ) {
-	// Make the timestamp in the users' timezone, b/c that makes more sense
-	$offset = (int) -( get_option( 'gmt_offset' ) );
-
 	$ppp_tweets = get_post_meta( $post_id, '_ppp_tweets', true );
 
 	if ( empty( $ppp_tweets ) ) {
@@ -653,22 +650,7 @@ function ppp_tw_generate_timestamps( $times, $post_id ) {
 			continue;
 		}
 
-		$share_time = explode( ':', $data['time'] );
-		$hours = (int) $share_time[0];
-		$minutes = (int) substr( $share_time[1], 0, 2 );
-		$ampm = strtolower( substr( $share_time[1], -2 ) );
-
-		if ( $ampm == 'pm' && $hours != 12 ) {
-			$hours = $hours + 12;
-		}
-
-		if ( $ampm == 'am' && $hours == 12 ) {
-			$hours = 00;
-		}
-
-		$hours     = $hours + $offset;
-		$date      = explode( '/', $data['date'] );
-		$timestamp = mktime( $hours, $minutes, 0, $date[0], $date[1], $date[2] );
+		$timestamp = ppp_generate_timestamp( $data['date'], $data['time'] );
 
 		if ( $timestamp > current_time( 'timestamp', 1 ) ) { // Make sure the timestamp we're getting is in the future
 			$time_key           = strtotime( date_i18n( 'd-m-Y H:i:s', $timestamp , true ) ) . '_tw';
