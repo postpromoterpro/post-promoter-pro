@@ -390,8 +390,6 @@ var tweetLengthImageRed    = 94;
 
 		$.post(ajaxurl, data, function(response) {});
 
-
-
 	});
 
 })(jQuery);
