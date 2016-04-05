@@ -87,6 +87,30 @@ function ppp_add_image_sizes() {
 }
 
 /**
+ * Return the array of supported post types
+ *
+ * @since  2.3
+ * @return array Array of post types in a key/value store
+ */
+function ppp_supported_post_types() {
+	$post_type_args = apply_filters( 'ppp_supported_post_type_args', array(
+		'public'             => true,
+		'publicly_queryable' => true,
+		'show_ui'            => true,
+	) );
+	$post_types = get_post_types( $post_type_args, NULL, 'and' );
+
+	$unsupported_post_types = array( 'wp_log', 'attachment' );
+	foreach ( $unsupported_post_types as $unsupported_post_type ) {
+		if ( array_key_exists( $unsupported_post_type, $post_types ) ) {
+			unset( $post_types[ $unsupported_post_type ] );
+		}
+	}
+
+	return apply_filters( 'ppp_supported_post_types', $post_types );
+}
+
+/**
  * Returns an array of the allowed post types
  *
  * @since  2.2.3
