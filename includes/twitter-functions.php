@@ -376,7 +376,7 @@ add_action( 'ppp_add_image_sizes', 'ppp_tw_register_thumbnail_size' );
  */
 function ppp_tw_add_metabox_content( $post ) {
 	global $ppp_options, $ppp_share_settings, $has_past_shares;
-	$has_past_shares = false;
+	$has_past_shares = 0;
 	?>
 		<p>
 			<div class="ppp-post-override-wrap">
@@ -413,6 +413,21 @@ function ppp_tw_add_metabox_content( $post ) {
 
 									<?php endforeach; ?>
 
+									<?php
+									if ( ! empty( $has_past_shares ) && count ( $tweets ) == $has_past_shares ) {
+										$args = array(
+											'date'          => '',
+											'time'          => '',
+											'text'          => '',
+											'image'         => '',
+											'attachment_id' => '',
+										);
+
+
+										ppp_render_tweet_row( $key + 1, $args, $post->ID );
+									}
+									?>
+
 								<?php else: ?>
 
 									<?php ppp_render_tweet_row( 1, array( 'date' => '', 'time' => '', 'text' => '', 'image' => '', 'attachment_id' => '' ), $post->ID, 1 ); ?>
@@ -422,7 +437,7 @@ function ppp_tw_add_metabox_content( $post ) {
 								<tr>
 									<td class="submit" colspan="4" style="float: none; clear:both; background:#fff;">
 										<a class="button-secondary ppp-add-repeatable" style="margin: 6px 0;"><?php _e( 'Add New Tweet', 'ppp-txt' ); ?></a>
-										<?php if ( true === $has_past_shares ) : ?>
+										<?php if ( ! empty( $has_past_shares ) ) : ?>
 											<a class="button-secondary ppp-view-all" style="margin: 6px 0;"><?php _e( 'Toggle Past Tweets', 'ppp-txt' ); ?></a>
 										<?php endif; ?>
 									</td>
@@ -505,7 +520,7 @@ function ppp_render_tweet_row( $key, $args = array(), $post_id ) {
 	$shared         = ! empty( $readonly ) ? 'past-share' : '';
 
 	if ( ! empty( $readonly ) ) {
-		$has_past_shares = true;
+		$has_past_shares++;
 	}
 	?>
 	<tr class="ppp-tweet-wrapper ppp-repeatable-row ppp-repeatable-twitter scheduled-row <?php echo $shared; ?>" data-key="<?php echo esc_attr( $key ); ?>">
