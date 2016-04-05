@@ -284,7 +284,7 @@ var tweetLengthImageRed    = 94;
 				var lengthError = tweetLengthRed;
 
 				if ( input.attr('name') == '_ppp_share_on_publish_text' ) {
-					var imagetarget = input.parent().find('#ppp-share-on-publish-image');
+					var imagetarget = $('#ppp-share-on-publish-image');
 					var lengthField = input.next('.ppp-text-length');
 					var length      = input.val().length;
 
@@ -319,7 +319,7 @@ var tweetLengthImageRed    = 94;
 
 				if ( length < lengthWarn ) {
 					lengthField.css('background-color', '#339933');
-				} else if ( length >= lengthWarn && length < lengthError ) {
+				} else if ( length >= lengthWarn && length <= lengthError ) {
 					lengthField.css('background-color', '#CC9933');
 				} else if ( length > lengthError ) {
 					lengthField.css('background-color', '#FF3333');
