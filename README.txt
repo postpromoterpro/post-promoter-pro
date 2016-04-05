@@ -16,6 +16,9 @@ You write great content, but it can get lost in the fast-moving world of social 
 Engage followers who may have missed the original post; Post Promoter Pro allows you to customize the text that sits before the link to your content. Experiment with hashtags, a call to action, or interesting text that starts a conversation and compels your followers to view your post.
 
 == Changelog ==
+= 2.2.11 February 27, 2016 =
+* FIX: Fix misspelling in ppp_manage_options filter
+
 = 2.2.10 February 5, 2016 =
 * FIX: Check that builder function exists before calling it
 * FIX: Allow the ppp_manage_options filter to apply to all settings screens
