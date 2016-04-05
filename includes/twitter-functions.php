@@ -421,8 +421,10 @@ function ppp_tw_add_metabox_content( $post ) {
 
 								<tr>
 									<td class="submit" colspan="4" style="float: none; clear:both; background:#fff;">
-										<a class="button-primary ppp-add-repeatable" style="margin: 6px 0;"><?php _e( 'Add New Tweet', 'ppp-txt' ); ?></a>
-										<a class="button-secondary ppp-view-all" style="margin: 6px 0;"><?php _e( 'Toggle Past Tweets', 'ppp-txt' ); ?></a>
+										<a class="button-secondary ppp-add-repeatable" style="margin: 6px 0;"><?php _e( 'Add New Tweet', 'ppp-txt' ); ?></a>
+										<?php if ( true === $has_past_shares ) : ?>
+											<a class="button-secondary ppp-view-all" style="margin: 6px 0;"><?php _e( 'Toggle Past Tweets', 'ppp-txt' ); ?></a>
+										<?php endif; ?>
 									</td>
 								</tr>
 							</tbody>
