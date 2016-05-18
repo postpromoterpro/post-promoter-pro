@@ -208,7 +208,7 @@ function ppp_linkedin_refresh_notice() {
 	$url = $ppp_linkedin_oauth->ppp_get_linkedin_auth_url( admin_url( 'admin.php?page=ppp-social-settings' ) );
 	$url = str_replace( '?ppp-social-auth', '?ppp-social-auth&ppp-refresh=true&access_token=' . $token, $url );
 
-	$days_left = absint( round( ( $ppp_social_settings['linkedin']->expires_on - current_time( 'timestamp' ) ) / DAY_IN_SECONDS ) );
+	$days_left = (int) round( ( $ppp_social_settings['linkedin']->expires_on - current_time( 'timestamp' ) ) / DAY_IN_SECONDS );
 	?>
 	<div class="notice notice-warning is-dismissible" data-service="li">
 		<?php if ( $days_left > 0 ): ?>
