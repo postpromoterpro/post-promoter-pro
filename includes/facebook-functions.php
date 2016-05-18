@@ -242,7 +242,7 @@ function ppp_facebook_refresh_notice() {
 	$url = $ppp_facebook_oauth->ppp_get_facebook_auth_url( admin_url( 'admin.php?page=ppp-social-settings' ) );
 	$url = str_replace( '?ppp-social-auth', '?ppp-social-auth&ppp-refresh=true&access_token=' . $token, $url );
 
-	$days_left = absint( round( ( $ppp_social_settings['facebook']->expires_on - current_time( 'timestamp' ) ) / DAY_IN_SECONDS ) );
+	$days_left = (int) round( ( $ppp_social_settings['facebook']->expires_on - current_time( 'timestamp' ) ) / DAY_IN_SECONDS );
 	?>
 	<div class="notice notice-warning is-dismissible" data-service="fb">
 		<?php if ( $days_left > 0 ): ?>
