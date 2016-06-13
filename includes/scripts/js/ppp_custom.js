@@ -84,9 +84,21 @@ var tweetLengthImageRed    = 94;
 		},
 		share_on_publish: function() {
 			$('.ppp-toggle-share-on-publish').change( function() {
+				var status = $(this).val();
 				var target_wrapper = $(this).parent().next('.ppp-fields');
-				target_wrapper.find('.ppp-share-on-publish').toggle();
-				target_wrapper.find('.ppp-schedule-share').toggle();
+
+				if ( status == -1 ) {
+					target_wrapper.hide();
+				} else if( status == 0 ) {
+					target_wrapper.show();
+					target_wrapper.find('.ppp-share-on-publish').hide();
+					target_wrapper.find('.ppp-schedule-share').show();
+				} else {
+					target_wrapper.show();
+					target_wrapper.find('.ppp-share-on-publish').show();
+					target_wrapper.find('.ppp-schedule-share').hide();
+				}
+
 			});
 		},
 		featured_image: function() {
