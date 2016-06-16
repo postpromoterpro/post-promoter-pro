@@ -34,7 +34,7 @@
 }
 
 #ppp-tabs .category-tabs {
-	margin-bottom: 3px;
+	margin-bottom: 2px;
 }
 
 #ppp-days-table {
@@ -176,7 +176,7 @@
 .ppp-meta-table-wrap .ppp-tweet-text-repeatable{ width: 89%; }
 .ppp-meta-table-wrap table .submit input { width: auto; }
 .ppp-repeatable-upload-wrapper .ppp-repeatable-upload-field-container { position: relative; }
-.ppp-upload-file { position: absolute; top: 6px; right: 1px; padding: 2px 8px 2px; display: block; background: #fff; }
+.ppp-upload-file { position: absolute; top: 6px; right: 1px; padding: 1px 1px 1px; display: block; background: #fff; }
 .ppp-upload-field { padding-right: 8em; }
 .ppp-remove-repeatable { margin: 8px 0 0 0; cursor: pointer; width: 10px; height: 10px; display: inline-block; text-indent: -9999px; overflow: hidden; }
 .ppp-remove-repeatable:active, .ppp-remove-repeatable:hover { background-position: -10px 0!important }

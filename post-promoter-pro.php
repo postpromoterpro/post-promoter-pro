@@ -3,14 +3,14 @@
 Plugin Name: Post Promoter Pro
 Plugin URI: https://postpromoterpro.com
 Description: Maximize your social media presence on Twitter, Facebook, and LinkedIn.
-Version: 2.2.11
+Version: 2.3-beta2
 Author: Post Promoter Pro
 Author URI: https://postpromoterpro.com
 License: GPLv2
 */
 
 define( 'PPP_PATH', plugin_dir_path( __FILE__ ) );
-define( 'PPP_VERSION', '2.2.11' );
+define( 'PPP_VERSION', '2.3-beta2' );
 define( 'PPP_FILE', plugin_basename( __FILE__ ) );
 define( 'PPP_URL', plugins_url( '/', PPP_FILE ) );
 
@@ -140,12 +140,19 @@ class PostPromoterPro {
 	 * @access public
 	 */
 	public function load_custom_scripts( $hook ) {
-		if ( 'toplevel_page_ppp-options' != $hook
-			  && 'post-promoter_page_ppp-social-settings' != $hook
-			  && 'post-new.php' != $hook
-			  && 'post.php' != $hook
-			  && 'post-promoter_page_ppp-schedule-info' != $hook ) {
-					return;
+
+		$allowed_pages = array(
+			'toplevel_page_ppp-options',
+			'post-promoter_page_ppp-social-settings',
+			'post-new.php',
+			'post.php',
+			'post-promoter_page_ppp-schedule-info',
+		);
+
+		$allowed_pages = apply_filters( 'ppp_admin_scripts_pages', $allowed_pages, $hook );
+
+		if ( ! in_array( $hook, $allowed_pages ) ) {
+			return;
 		}
 
 		wp_enqueue_script( 'jquery-ui-core' );
@@ -155,22 +162,9 @@ class PostPromoterPro {
 		wp_enqueue_script( 'ppp_timepicker_js', $jquery_ui_timepicker_path , array( 'jquery', 'jquery-ui-core' ), PPP_VERSION, true );
 		wp_enqueue_script( 'ppp_core_custom_js', PPP_URL.'includes/scripts/js/ppp_custom.js', 'jquery', PPP_VERSION, true );
 
-		if ( 'post-promoter_page_ppp-schedule-info' === $hook ) {
-			wp_register_script( 'momentjs', PPP_URL . 'includes/scripts/libs/moment.min.js', array( 'jquery' ), PPP_VERSION, false );
-			wp_register_script( 'fullcalendar', PPP_URL . 'includes/scripts/libs/fullcalendar/fullcalendar.min.js', array( 'jquery', 'momentjs' ), PPP_VERSION, false );
-
-			wp_enqueue_script( 'fullcalendar' );
-
-			wp_register_script( 'simplemodal', PPP_URL . 'includes/scripts/libs/simplemodal.js', array( 'jquery' ), PPP_VERSION, false );
-			wp_enqueue_script( 'simplemodal' );
-		}
 	}
 
 	public function load_styles( $hook ) {
-		if ( 'post-promoter_page_ppp-schedule-info' === $hook ) {
-			wp_register_style( 'fullcalendar', PPP_URL . 'includes/scripts/libs/fullcalendar/fullcalendar.min.css', false, PPP_VERSION );
-			wp_enqueue_style( 'fullcalendar' );
-		}
 
 		// List of people who make it impossible to override their jQuery UI as it's in their core CSS...so only
 		// load ours if they don't exist
@@ -388,9 +382,9 @@ class PostPromoterPro {
 
 			// data to send in our API request
 			$api_params = array(
-				'edd_action'=> 'activate_license',
-				'license' 	=> $license,
-				'item_name' => urlencode( PPP_PLUGIN_NAME ) // the name of our product in EDD
+				'edd_action' => 'activate_license',
+				'license'    => $license,
+				'item_name'  => urlencode( PPP_PLUGIN_NAME ),
 			);
 
 			// Call the custom API.
@@ -424,12 +418,24 @@ class PostPromoterPro {
 		return $new;
 	}
 
+	/**
+	 * Hook to listen for our actions
+	 *
+	 * @return void
+	 */
 	public function get_actions() {
 		if ( isset( $_GET['ppp_action'] ) ) {
 			do_action( 'ppp_' . $_GET['ppp_action'], $_GET );
 		}
 	}
 
+	/**
+	 * Register our log type for when items are shared
+	 *
+	 * @since  2.3
+	 * @param  array $log_types Array of log types
+	 * @return array
+	 */
 	public function register_log_type( $log_types ) {
 		$types[] = 'ppp_share';
 		return $types;
@@ -437,6 +443,11 @@ class PostPromoterPro {
 
 }
 
+/**
+ * Load and access the one true instance of Post Promoter Pro
+ *
+ * @return object The Post_Promoter_Pro instance
+ */
 function post_promoter_pro() {
 	global $ppp_loaded;
 
