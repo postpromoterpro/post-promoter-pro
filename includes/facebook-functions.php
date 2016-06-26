@@ -350,7 +350,7 @@ add_filter( 'ppp_get_scheduled_items_fb', 'ppp_fb_get_post_meta', 10, 2 );
  * @return void
  */
 function ppp_fb_register_thumbnail_size() {
-	add_image_size( 'ppp-fb-share-image', 1200, 627, true );
+	add_image_size( 'ppp-fb-share-image', 1200, 628, true );
 }
 add_action( 'ppp_add_image_sizes', 'ppp_fb_register_thumbnail_size' );
 
