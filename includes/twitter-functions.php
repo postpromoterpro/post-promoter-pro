@@ -365,7 +365,7 @@ add_filter( 'ppp_get_scheduled_items_tw', 'ppp_tw_get_post_meta', 10, 2 );
  * @return void
  */
 function ppp_tw_register_thumbnail_size() {
-	add_image_size( 'ppp-tw-share-image', 440, 220, true );
+	add_image_size( 'ppp-tw-share-image', 1024, 512, true );
 }
 add_action( 'ppp_add_image_sizes', 'ppp_tw_register_thumbnail_size' );
 
