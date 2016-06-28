@@ -3,14 +3,14 @@
 Plugin Name: Post Promoter Pro
 Plugin URI: https://postpromoterpro.com
 Description: Maximize your social media presence on Twitter, Facebook, and LinkedIn.
-Version: 2.2.11
+Version: 2.3-beta2
 Author: Post Promoter Pro
 Author URI: https://postpromoterpro.com
 License: GPLv2
 */
 
 define( 'PPP_PATH', plugin_dir_path( __FILE__ ) );
-define( 'PPP_VERSION', '2.2.11' );
+define( 'PPP_VERSION', '2.3-beta2' );
 define( 'PPP_FILE', plugin_basename( __FILE__ ) );
 define( 'PPP_URL', plugins_url( '/', PPP_FILE ) );
 
@@ -30,18 +30,14 @@ class PostPromoterPro {
 		if ( ! is_callable( 'curl_init' ) ) {
 			add_action( 'admin_notices', array( $this, 'no_curl' ) );
 		} else {
-			register_activation_hook( PPP_FILE, array( $this, 'activation_setup' ) );
-
 			global $ppp_options, $ppp_social_settings, $ppp_share_settings;
-			$ppp_options         = get_option( 'ppp_options' );
-			$ppp_social_settings = get_option( 'ppp_social_settings' );
-			$ppp_share_settings  = get_option( 'ppp_share_settings' );
 
 			include PPP_PATH . '/includes/general-functions.php';
 			include PPP_PATH . '/includes/share-functions.php';
 			include PPP_PATH . '/includes/cron-functions.php';
 			include PPP_PATH . '/includes/filters.php';
 			include PPP_PATH . '/includes/libs/social-loader.php';
+			include PPP_PATH . '/includes/libs/class-wp-logging.php';
 
 			if ( is_admin() ) {
 				include PPP_PATH . '/includes/admin/upgrades.php';
@@ -52,26 +48,15 @@ class PostPromoterPro {
 				include PPP_PATH . '/includes/admin/meta-boxes.php';
 				include PPP_PATH . '/includes/admin/welcome.php';
 				include PPP_PATH . '/includes/admin/dashboard.php';
-
-				add_action( 'admin_init', array( $this, 'ppp_register_settings' ) );
-				add_action( 'admin_init', 'ppp_upgrade_plugin', 1 );
-
-				// Handle licenses
-				add_action( 'admin_init', array( $this, 'plugin_updater' ) );
-				add_action( 'admin_init', array( $this, 'activate_license' ) );
-				add_action( 'admin_init', array( $this, 'deactivate_license' ) );
-
-				add_action( 'admin_menu', array( $this, 'ppp_setup_admin_menu' ), 1000, 0 );
-				add_filter( 'plugin_action_links', array( $this, 'plugin_settings_links' ), 10, 2 );
-				add_action( 'admin_enqueue_scripts', array( $this, 'load_custom_scripts' ), 99 );
-				add_action( 'admin_enqueue_scripts', array( $this, 'load_styles' ), PHP_INT_MAX );
-				add_action( 'wp_trash_post', 'ppp_remove_scheduled_shares', 10, 1 );
 			}
 
-			add_action( 'init', array( $this, 'get_actions' ) );
-			add_action( 'save_post', 'ppp_schedule_share', 11, 2);
-			add_action( 'transition_post_status', 'ppp_share_on_publish', 99, 3);
-			add_action( 'init', 'ppp_add_image_sizes' );
+			register_activation_hook( PPP_FILE, array( $this, 'activation_setup' ) );
+
+			$ppp_options         = get_option( 'ppp_options' );
+			$ppp_social_settings = get_option( 'ppp_social_settings' );
+			$ppp_share_settings  = get_option( 'ppp_share_settings' );
+
+			$this->hooks();
 		}
 
 	}
@@ -120,6 +105,32 @@ class PostPromoterPro {
 		update_option( 'ppp_share_settings', $default_share_settings );
 
 		set_transient( '_ppp_activation_redirect', 'true', 30 );
+
+		ppp_set_upgrade_complete( 'upgrade_post_meta' );
+	}
+
+	private function hooks() {
+		if ( is_admin() ) {
+			add_action( 'admin_init', array( $this, 'ppp_register_settings' ) );
+			add_action( 'admin_init', 'ppp_upgrade_plugin', 1 );
+
+			// Handle licenses
+			add_action( 'admin_init', array( $this, 'plugin_updater' ) );
+			add_action( 'admin_init', array( $this, 'activate_license' ) );
+			add_action( 'admin_init', array( $this, 'deactivate_license' ) );
+
+			add_action( 'admin_menu', array( $this, 'ppp_setup_admin_menu' ), 1000, 0 );
+			add_filter( 'plugin_action_links', array( $this, 'plugin_settings_links' ), 10, 2 );
+			add_action( 'admin_enqueue_scripts', array( $this, 'load_custom_scripts' ), 99 );
+			add_action( 'admin_enqueue_scripts', array( $this, 'load_styles' ), PHP_INT_MAX );
+			add_action( 'wp_trash_post', 'ppp_remove_scheduled_shares', 10, 1 );
+		}
+
+		add_action( 'init', array( $this, 'get_actions' ) );
+		add_action( 'save_post', 'ppp_schedule_share', 99, 2);
+		add_action( 'transition_post_status', 'ppp_share_on_publish', 99, 3);
+		add_action( 'init', 'ppp_add_image_sizes' );
+		add_filter( 'wp_log_types', array( $this, 'register_log_type' ), 10, 1 );
 	}
 
 	/**
@@ -129,11 +140,19 @@ class PostPromoterPro {
 	 * @access public
 	 */
 	public function load_custom_scripts( $hook ) {
-		if ( 'toplevel_page_ppp-options' != $hook
-			  && 'post-promoter_page_ppp-social-settings' != $hook
-			  && 'post-new.php' != $hook
-			  && 'post.php' != $hook ) {
-					return;
+
+		$allowed_pages = array(
+			'toplevel_page_ppp-options',
+			'post-promoter_page_ppp-social-settings',
+			'post-new.php',
+			'post.php',
+			'post-promoter_page_ppp-schedule-info',
+		);
+
+		$allowed_pages = apply_filters( 'ppp_admin_scripts_pages', $allowed_pages, $hook );
+
+		if ( ! in_array( $hook, $allowed_pages ) ) {
+			return;
 		}
 
 		wp_enqueue_script( 'jquery-ui-core' );
@@ -142,17 +161,20 @@ class PostPromoterPro {
 		$jquery_ui_timepicker_path = PPP_URL . 'includes/scripts/libs/jquery-ui-timepicker-addon.js';
 		wp_enqueue_script( 'ppp_timepicker_js', $jquery_ui_timepicker_path , array( 'jquery', 'jquery-ui-core' ), PPP_VERSION, true );
 		wp_enqueue_script( 'ppp_core_custom_js', PPP_URL.'includes/scripts/js/ppp_custom.js', 'jquery', PPP_VERSION, true );
+
 	}
 
 	public function load_styles( $hook ) {
-		wp_register_style( 'ppp_admin_css', PPP_URL . 'includes/scripts/css/admin-style.css', false, PPP_VERSION );
-		wp_enqueue_style( 'ppp_admin_css' );
 
 		// List of people who make it impossible to override their jQuery UI as it's in their core CSS...so only
 		// load ours if they don't exist
 		if ( ! wp_style_is( 'ot-admin-css' ) && ! wp_style_is( 'jquery-ui-css' ) ) {
 			wp_enqueue_style( 'jquery-ui-css', '//ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/flick/jquery-ui.css' );
 		}
+
+		wp_register_style( 'ppp_admin_css', PPP_URL . 'includes/scripts/css/admin-style.css', false, PPP_VERSION );
+		wp_enqueue_style( 'ppp_admin_css' );
+
 	}
 
 	/**
@@ -287,10 +309,10 @@ class PostPromoterPro {
 		<div class="updated">
 			<p>
 				<?php printf(
-			         __( 'Post Promoter Pro requires your license key to work, please <a href="%s">enter it now</a>.', 'ppp-txt' ),
-			              admin_url( 'admin.php?page=ppp-options' )
-			         );
-			    ?>
+					 __( 'Post Promoter Pro requires your license key to work, please <a href="%s">enter it now</a>.', 'ppp-txt' ),
+						  admin_url( 'admin.php?page=ppp-options' )
+					 );
+				?>
 			</p>
 		</div>
 		<?php
@@ -349,10 +371,10 @@ class PostPromoterPro {
 		if( isset( $_POST['ppp_license_activate'] ) ) {
 
 			// run a quick security check
-		 	if( ! check_admin_referer( 'ppp_activate_nonce', 'ppp_activate_nonce' ) ) {
-		 		return;
-		 	}
-		 	// get out if we didn't click the Activate button
+			if( ! check_admin_referer( 'ppp_activate_nonce', 'ppp_activate_nonce' ) ) {
+				return;
+			}
+			// get out if we didn't click the Activate button
 
 			// retrieve the license from the database
 			$license = trim( get_option( '_ppp_license_key' ) );
@@ -360,9 +382,9 @@ class PostPromoterPro {
 
 			// data to send in our API request
 			$api_params = array(
-				'edd_action'=> 'activate_license',
-				'license' 	=> $license,
-				'item_name' => urlencode( PPP_PLUGIN_NAME ) // the name of our product in EDD
+				'edd_action' => 'activate_license',
+				'license'    => $license,
+				'item_name'  => urlencode( PPP_PLUGIN_NAME ),
 			);
 
 			// Call the custom API.
@@ -396,13 +418,36 @@ class PostPromoterPro {
 		return $new;
 	}
 
+	/**
+	 * Hook to listen for our actions
+	 *
+	 * @return void
+	 */
 	public function get_actions() {
 		if ( isset( $_GET['ppp_action'] ) ) {
 			do_action( 'ppp_' . $_GET['ppp_action'], $_GET );
 		}
 	}
+
+	/**
+	 * Register our log type for when items are shared
+	 *
+	 * @since  2.3
+	 * @param  array $log_types Array of log types
+	 * @return array
+	 */
+	public function register_log_type( $log_types ) {
+		$types[] = 'ppp_share';
+		return $types;
+	}
+
 }
 
+/**
+ * Load and access the one true instance of Post Promoter Pro
+ *
+ * @return object The Post_Promoter_Pro instance
+ */
 function post_promoter_pro() {
 	global $ppp_loaded;
 

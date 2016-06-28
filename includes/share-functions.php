@@ -42,49 +42,12 @@ function ppp_share_on_publish( $new_status, $old_status, $post ) {
  * @return array
  */
 function ppp_get_timestamps( $post_id ) {
-	// Make the timestamp in the users' timezone, b/c that makes more sense
-	$offset = (int) -( get_option( 'gmt_offset' ) );
-
-	$ppp_tweets = get_post_meta( $post_id, '_ppp_tweets', true );
-
-	if ( empty( $ppp_tweets ) ) {
-		$ppp_tweets = array();
-	}
-
 	$times = array();
-	foreach ( $ppp_tweets as $key => $data ) {
-		if ( ! array_filter( $data ) ) {
-			continue;
-		}
-
-		$share_time = explode( ':', $data['time'] );
-		$hours = (int) $share_time[0];
-		$minutes = (int) substr( $share_time[1], 0, 2 );
-		$ampm = strtolower( substr( $share_time[1], -2 ) );
-
-		if ( $ampm == 'pm' && $hours != 12 ) {
-			$hours = $hours + 12;
-		}
-
-		if ( $ampm == 'am' && $hours == 12 ) {
-			$hours = 00;
-		}
-
-		$hours     = $hours + $offset;
-		$date      = explode( '/', $data['date'] );
-		$timestamp = mktime( $hours, $minutes, 0, $date[0], $date[1], $date[2] );
-
-		if ( $timestamp > current_time( 'timestamp', 1 ) ) { // Make sure the timestamp we're getting is in the future
-			$times[strtotime( date_i18n( 'd-m-Y H:i:s', $timestamp , true ) )] = 'sharedate_' . $key . '_' . $post_id;
-		}
-
-	}
-
-	return apply_filters( 'ppp_get_timestamps', $times );
+	return apply_filters( 'ppp_get_timestamps', $times, $post_id );
 }
 
 /**
- * Hook for the crons to fire and send tweets
+ * Hook for the crons to fire and send shares
  * @param  id $post_id
  * @param  string $name
  * @return void
@@ -98,41 +61,45 @@ function ppp_share_post( $post_id, $name ) {
 		return;
 	}
 
-	// For 60 seconds, don't allow another share to go for this post
-	set_transient( 'ppp_sharing' . $name, 'true', 60 );
+	// For 10 seconds, don't allow another share to go for this post
+	set_transient( 'ppp_sharing' . $name, 'true', 10 );
 
-	$share_message = ppp_tw_build_share_message( $post_id, $name );
+	$name_parts = explode( '_', $name );
+	$index      = $name_parts[1];
+	$service    = isset( $name_parts[3] ) ? $name_parts[3] : 'tw';
 
-	$name_parts    = explode( '_', $name );
-	$post_meta     = get_post_meta( $post_id, '_ppp_tweets', true );
-	$this_share    = $post_meta[$name_parts[1]];
-	$attachment_id = isset( $this_share['attachment_id'] ) ? $this_share['attachment_id'] : false;
+	// If we're fired on a cron, check for stale cron runs
+	if ( defined( 'DOING_CRON' ) && DOING_CRON ) {
+		switch( $service ) {
+			case 'tw':
+				$post_meta = get_post_meta( $post_id, '_ppp_tweets', true );
+				break;
 
-	if ( empty( $attachment_id ) && ! empty( $this_share['image'] ) ) {
-		$media = $this_share['image'];
-	} else {
-		$media = ppp_post_has_media( $post_id, 'tw', ppp_tw_use_media( $post_id, $name_parts[1] ), $attachment_id );
-	}
+			case 'fb':
+				$post_meta = get_post_meta( $post_id, '_ppp_fb_shares', true );
+				break;
 
-
-
-	$status['twitter'] = ppp_send_tweet( $share_message, $post_id, $media );
-
-	if ( ! empty( $status['twitter']->id_str ) ) {
-		$post      = get_post( $post_id );
-		$author_id = $post->post_author;
-		$author_rt = get_user_meta( $author_id, '_ppp_share_scheduled', true );
-
-		if ( $author_rt ) {
-			$twitter_user = new PPP_Twitter_User( $author_id );
-			$twitter_user->retweet( $status['twitter']->id_str );
+			case 'li':
+				$post_meta = get_post_meta( $post_id, '_ppp_li_shares', true );
+				break;
 		}
 
+		$share_data = array();
+		if ( isset( $post_meta[ $index ] ) ) {
+			$share_data = $post_meta[ $index ];
+		}
+
+		$timestamp = ppp_generate_timestamp( $share_data['date'], $share_data['time'] );
+
+		// If the current time is more than 60 minutes (filterable) overdue, don't fire the share
+		$share_buffer = apply_filters( 'ppp_share_buffer', HOUR_IN_SECONDS );
+		if ( ( current_time( 'timestamp', 1 ) - $timestamp ) > $share_buffer ) {
+			return;
+		}
 	}
 
-	if ( isset( $ppp_options['enable_debug'] ) && $ppp_options['enable_debug'] == '1' ) {
-		update_post_meta( $post_id, '_ppp-' . $name . '-status', $status );
-	}
+	do_action( 'ppp_share_scheduled_' . $service, $post_id, $index, $name );
+
 }
 
 /**

@@ -35,10 +35,10 @@ class Tests_Share extends WP_UnitTestCase {
 		$timestamps = ppp_get_timestamps( $this->_post_id );
 		$this->assertNotEmpty( $timestamps );
 
-		$found_timestamp = strtotime( $tweet_data[1]['date'] . ' ' . $tweet_data[1]['time'] );
+		$found_timestamp = strtotime( $tweet_data[1]['date'] . ' ' . $tweet_data[1]['time'] ) . '_tw';
 		$timestamp = key( $timestamps );
 		$this->assertEquals( $timestamp, $found_timestamp );
-		$this->assertEquals( 'sharedate_1_'. $this->_post_id, $timestamps[ $found_timestamp ] );
+		$this->assertEquals( 'sharedate_1_'. $this->_post_id . '_tw', $timestamps[ $found_timestamp ] );
 
 
 		$tweet_data[1] = array(
@@ -67,8 +67,8 @@ class Tests_Share extends WP_UnitTestCase {
 		update_post_meta( $this->_post_id, '_ppp_tweets', $tweet_data );
 		$timestamps = ppp_get_timestamps( $this->_post_id );
 		$this->assertEquals( 2, count( $timestamps ) );
-		$found_timestamp = strtotime( $tweet_data[2]['date'] . ' ' . $tweet_data[2]['time'] );
-		$this->assertEquals( 'sharedate_2_'. $this->_post_id, $timestamps[ $found_timestamp ] );
+		$found_timestamp = strtotime( $tweet_data[2]['date'] . ' ' . $tweet_data[2]['time'] ) . '_tw';
+		$this->assertEquals( 'sharedate_2_'. $this->_post_id . '_tw', $timestamps[ $found_timestamp ] );
 
 	}
 

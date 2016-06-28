@@ -29,4 +29,9 @@ class Tests_Twitter extends WP_UnitTestCase {
 	public function test_twitter_account() {
 	}
 
+	public function test_twitter_meta_description() {
+		$pre_description = '<img src="test.jpg" />This is the excerpt';
+		$this->assertEquals( 'This is the excerpt', ppp_tw_format_card_description( $pre_description ) );
+	}
+
 }

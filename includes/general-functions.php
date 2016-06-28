@@ -87,6 +87,30 @@ function ppp_add_image_sizes() {
 }
 
 /**
+ * Return the array of supported post types
+ *
+ * @since  2.3
+ * @return array Array of post types in a key/value store
+ */
+function ppp_supported_post_types() {
+	$post_type_args = apply_filters( 'ppp_supported_post_type_args', array(
+		'public'             => true,
+		'publicly_queryable' => true,
+		'show_ui'            => true,
+	) );
+	$post_types = get_post_types( $post_type_args, NULL, 'and' );
+
+	$unsupported_post_types = array( 'wp_log', 'attachment' );
+	foreach ( $unsupported_post_types as $unsupported_post_type ) {
+		if ( array_key_exists( $unsupported_post_type, $post_types ) ) {
+			unset( $post_types[ $unsupported_post_type ] );
+		}
+	}
+
+	return apply_filters( 'ppp_supported_post_types', $post_types );
+}
+
+/**
  * Returns an array of the allowed post types
  *
  * @since  2.2.3
@@ -174,4 +198,63 @@ add_action( 'admin_init', 'ppp_set_uploads_dir' );
 function ppp_get_upload_path() {
 	$wp_upload_dir = wp_upload_dir();
 	return $wp_upload_dir['basedir'] . '/ppp';
+}
+
+/**
+ * Get's the array of completed upgrade actions
+ *
+ * @since  2.3
+ * @return array The array of completed upgrades
+ */
+function ppp_get_completed_upgrades() {
+
+	$completed_upgrades = get_option( 'ppp_completed_upgrades' );
+
+	if ( false === $completed_upgrades ) {
+		$completed_upgrades = array();
+	}
+
+	return $completed_upgrades;
+
+}
+
+/**
+ * Check if the upgrade routine has been run for a specific action
+ *
+ * @since  2.3
+ * @param  string $upgrade_action The upgrade action to check completion for
+ * @return bool                   If the action has been added to the copmleted actions array
+ */
+function ppp_has_upgrade_completed( $upgrade_action = '' ) {
+
+	if ( empty( $upgrade_action ) ) {
+		return false;
+	}
+
+	$completed_upgrades = ppp_get_completed_upgrades();
+
+	return in_array( $upgrade_action, $completed_upgrades );
+
+}
+
+/**
+ * Adds an upgrade action to the completed upgrades array
+ *
+ * @since  2.3
+ * @param  string $upgrade_action The action to add to the copmleted upgrades array
+ * @return bool                   If the function was successfully added
+ */
+function ppp_set_upgrade_complete( $upgrade_action = '' ) {
+
+	if ( empty( $upgrade_action ) ) {
+		return false;
+	}
+
+	$completed_upgrades   = ppp_get_completed_upgrades();
+	$completed_upgrades[] = $upgrade_action;
+
+	// Remove any blanks, and only show uniques
+	$completed_upgrades = array_unique( array_values( $completed_upgrades ) );
+
+	return update_option( 'ppp_completed_upgrades', $completed_upgrades );
 }

@@ -11,10 +11,6 @@ var tweetLengthImageRed    = 94;
 		minDate: 0
 	});
 
-	$('input[id*="_share_on_publish"]').click( function() {
-		$(this).parent().siblings('.ppp_share_on_publish_text').toggle();
-	});
-
 	$('#bitly-login').click( function() {
 		var data = {};
 		var button = $('#bitly-login');
@@ -81,105 +77,28 @@ var tweetLengthImageRed    = 94;
 		return false;
 	});
 
-	var PPP_Twitter_Configuration = {
+	var PPP_General_Configuration = {
 		init: function() {
-			this.add();
-			this.remove();
+			this.share_on_publish();
 			this.featured_image();
-			this.count_length();
-			this.check_timestamps();
-			this.show_hide_conflict_warning();
 		},
-		clone_repeatable: function(row) {
+		share_on_publish: function() {
+			$('.ppp-toggle-share-on-publish').change( function() {
+				var status = $(this).val();
+				var target_wrapper = $(this).parent().next('.ppp-fields');
 
-			// Retrieve the highest current key
-			var key = highest = 1;
-			row.parent().find( '.ppp-repeatable-row' ).each(function() {
-				var current = $(this).data( 'key' );
-				if( parseInt( current ) > highest ) {
-					highest = current;
-				}
-			});
-			key = highest += 1;
-
-			clone = row.clone();
-
-			/** manually update any select box values */
-			clone.find( 'select' ).each(function() {
-				$( this ).val( row.find( 'select[name="' + $( this ).attr( 'name' ) + '"]' ).val() );
-			});
-
-			clone.removeClass( 'ppp-add-blank' );
-			clone.removeClass( 'ppp-row-warning' );
-			clone.attr( 'data-key', key );
-			clone.find( 'td input, td select, textarea' ).val( '' );
-			clone.find( 'input, select, textarea' ).each(function() {
-				var name = $( this ).attr( 'name' );
-
-				name = name.replace( /\[(\d+)\]/, '[' + parseInt( key ) + ']');
-
-				$( this ).attr( 'name', name ).attr( 'id', name );
-				$( this ).removeClass('hasDatepicker');
-				$( this ).prop('readonly', false);
-			});
-
-			clone.find( '.ppp-text-length' ).text('0').css('background-color', '#339933');
-			clone.find( '.ppp-remove-repeatable' ).css('display', 'inline-block');
-			clone.find( '.ppp-upload-file' ).show();
-
-			return clone;
-		},
-		add: function() {
-			$( 'body' ).on( 'click', '.submit .ppp-add-repeatable', function(e) {
-				e.preventDefault();
-				var button = $( this ),
-				row = button.parent().parent().prev( 'tr' ),
-				clone = PPP_Twitter_Configuration.clone_repeatable(row);
-				clone.insertAfter( row );
-
-				$('.share-time-selector').timepicker({ 'step': 15 });
-				$('.share-date-selector').datepicker({ dateFormat : 'mm/dd/yy', minDate: 0});
-			});
-		},
-		remove: function() {
-			$( 'body' ).on( 'click', '.ppp-remove-repeatable', function(e) {
-				e.preventDefault();
-
-				var row   = $(this).parent().parent( 'tr' ),
-					count = row.parent().find( 'tr' ).length - 1,
-					type  = $(this).data('type'),
-					repeatable = 'tr.edd_repeatable_' + type + 's';
-
-				/** remove from price condition */
-				$( '.edd_repeatable_condition_field option[value=' + row.index() + ']' ).remove();
-
-				if( count > 1 ) {
-					$( 'input, select', row ).val( '' );
-					row.fadeOut( 'fast' ).remove();
+				if ( status == -1 ) {
+					target_wrapper.hide();
+				} else if( status == 0 ) {
+					target_wrapper.show();
+					target_wrapper.find('.ppp-share-on-publish').hide();
+					target_wrapper.find('.ppp-schedule-share').show();
 				} else {
-					switch( type ) {
-						case 'price' :
-							alert( edd_vars.one_price_min );
-							break;
-						case 'file' :
-							$( 'input, select', row ).val( '' );
-							break;
-						default:
-							alert( edd_vars.one_field_min );
-							break;
-					}
+					target_wrapper.show();
+					target_wrapper.find('.ppp-share-on-publish').show();
+					target_wrapper.find('.ppp-schedule-share').hide();
 				}
 
-				PPP_Twitter_Configuration.show_hide_conflict_warning();
-
-				/* re-index after deleting */
-				$(repeatable).each( function( rowIndex ) {
-					$(this).find( 'input, select' ).each(function() {
-						var name = $( this ).attr( 'name' );
-						name = name.replace( /\[(\d+)\]/, '[' + rowIndex+ ']');
-						$( this ).attr( 'name', name ).attr( 'id', name );
-					});
-				});
 			});
 		},
 		featured_image: function() {
@@ -257,6 +176,112 @@ var tweetLengthImageRed    = 94;
 			});
 
 		},
+	}
+	PPP_General_Configuration.init();
+
+	var PPP_Twitter_Configuration = {
+		init: function() {
+			this.add();
+			this.remove();
+			this.view_all();
+			this.share_on_publish();
+			this.count_length();
+			this.check_timestamps();
+			this.show_hide_conflict_warning();
+		},
+		clone_repeatable: function(row) {
+
+			// Retrieve the highest current key
+			var key = highest = 1;
+			row.parent().find( '.ppp-repeatable-row' ).each(function() {
+				var current = $(this).data( 'key' );
+				if( parseInt( current ) > highest ) {
+					highest = current;
+				}
+			});
+			key = highest += 1;
+
+			clone = row.clone();
+
+			/** manually update any select box values */
+			clone.find( 'select' ).each(function() {
+				$( this ).val( row.find( 'select[name="' + $( this ).attr( 'name' ) + '"]' ).val() );
+			});
+
+			clone.removeClass( 'ppp-add-blank' );
+			clone.removeClass( 'ppp-row-warning' );
+			clone.attr( 'data-key', key );
+			clone.find( 'td input, td select, textarea' ).val( '' );
+			clone.find( 'input, select, textarea' ).each(function() {
+				var name = $( this ).attr( 'name' );
+
+				name = name.replace( /\[(\d+)\]/, '[' + parseInt( key ) + ']');
+
+				$( this ).attr( 'name', name ).attr( 'id', name );
+				$( this ).removeClass('hasDatepicker');
+				$( this ).prop('readonly', false);
+			});
+
+			clone.find( '.ppp-text-length' ).text('0').css('background-color', '#339933');
+			clone.find( '.ppp-remove-repeatable' ).css('display', 'inline-block');
+			clone.find( '.ppp-upload-file' ).show();
+
+			return clone;
+		},
+		add: function() {
+			$( 'body' ).on( 'click', '.submit .ppp-add-repeatable', function(e) {
+				e.preventDefault();
+				var button = $( this ),
+				row = button.parent().parent().prevAll('tr').not('.past-share').first(),
+				clone = PPP_Twitter_Configuration.clone_repeatable(row);
+				clone.insertAfter( row );
+
+				$('.share-time-selector').timepicker({ 'step': 15 });
+				$('.share-date-selector').datepicker({ dateFormat : 'mm/dd/yy', minDate: 0});
+			});
+		},
+		remove: function() {
+			$( 'body' ).on( 'click', '.ppp-remove-repeatable', function(e) {
+				e.preventDefault();
+
+				var row        = $(this).parent().parent( 'tr' ),
+					count      = row.parent().find( 'tr.scheduled-row' ).length - 1,
+					type       = $(this).data('type'),
+					repeatable = 'tr.ppp_repeatable_' + type;
+
+				if( count > 1 ) {
+					$( 'input, select', row ).val( '' );
+					row.fadeOut( 'fast' ).remove();
+				} else {
+					row.find('input').val('').trigger('change');
+					if ( type == 'linkedin' ) {
+						$('.ppp-repeatable-textarea').val('');
+					}
+				}
+
+				PPP_Twitter_Configuration.show_hide_conflict_warning();
+
+				/* re-index after deleting */
+				$(repeatable).each( function( rowIndex ) {
+					$(this).find( 'input, select' ).each(function() {
+						var name = $( this ).attr( 'name' );
+						name = name.replace( /\[(\d+)\]/, '[' + rowIndex+ ']');
+						$( this ).attr( 'name', name ).attr( 'id', name );
+					});
+				});
+			});
+		},
+		view_all: function() {
+			$('.ppp-view-all').click( function (e) {
+				e.preventDefault();
+				$('.ppp-tweet-fields table .past-share').slideToggle();
+			});
+		},
+		share_on_publish: function() {
+			$('#tw #ppp_share_on_publish').click( function() {
+				$(this).parent().siblings('.ppp_share_on_publish_text').toggle();
+			});
+		},
 		count_length: function() {
 			$( 'body' ).on( 'keyup change focusout', '#tw .ppp-tweet-text-repeatable, #tw .ppp-share-text, #tw .ppp-upload-field, #tw .ppp-tw-featured-image-input', function(e) {
 
@@ -271,15 +296,17 @@ var tweetLengthImageRed    = 94;
 				var lengthError = tweetLengthRed;
 
 				if ( input.attr('name') == '_ppp_share_on_publish_text' ) {
-					var imagetarget = input.parent().find('#ppp-share-on-publish-image');
+					var imagetarget = $('#ppp-share-on-publish-image');
 					var lengthField = input.next('.ppp-text-length');
 					var length      = input.val().length;
 
 					hasImage        = imagetarget.is(':checked');
 				} else if ( input.hasClass('ppp-tw-featured-image-input' ) ) {
 					var imagetarget = input;
-					var lengthField = input.parent().parent().find('.ppp-text-length');
-					var length      = input.parent().parent().find('.ppp-share-text').val().length;
+					var textWrapper = input.parent().prev();
+					var lengthField = textWrapper.find('.ppp-text-length');
+					var length      = textWrapper.find('.ppp-tweet-text-repeatable').val().length;
+
 
 					hasImage        = imagetarget.is(':checked');
 				} else if ( input.hasClass('ppp-upload-field') ) {
@@ -304,7 +331,7 @@ var tweetLengthImageRed    = 94;
 
 				if ( length < lengthWarn ) {
 					lengthField.css('background-color', '#339933');
-				} else if ( length >= lengthWarn && length < lengthError ) {
+				} else if ( length >= lengthWarn && length <= lengthError ) {
 					lengthField.css('background-color', '#CC9933');
 				} else if ( length > lengthError ) {
 					lengthField.css('background-color', '#FF3333');
@@ -350,7 +377,6 @@ var tweetLengthImageRed    = 94;
 		}
 
 	}
-
 	PPP_Twitter_Configuration.init();
 
 	$( 'body' ).on( 'focusin', '.ppp-tweet-text-repeatable', function() {
@@ -363,6 +389,26 @@ var tweetLengthImageRed    = 94;
 		$('.ppp-repeatable-upload-wrapper').animate({
 			width: '200px'
 		}, 200, function() {});
+	});
+
+	// Save dismiss state
+	$( '.notice.is-dismissible' ).on('click', '.notice-dismiss', function ( event ) {
+		event.preventDefault();
+		var $this   = $(this);
+		var service = $this.parent().data( 'service' );
+
+		if( ! service ){
+			return;
+		}
+
+		var data = {
+			action: 'ppp_dismiss_notice-' + service,
+			url: ajaxurl,
+			nag: 'ppp-dismiss-refresh-' + service,
+		}
+
+		$.post(ajaxurl, data, function(response) {});
+
 	});
 
 })(jQuery);

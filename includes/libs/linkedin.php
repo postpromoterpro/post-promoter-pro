@@ -170,7 +170,7 @@ if( !class_exists( 'PPP_Linkedin' ) ) {
 			$headers = array( 'x-li-format' => 'json', 'Content-Type' => 'application/json' );
 			$body = json_encode( $share );
 
-			return wp_remote_retrieve_body( wp_remote_post( $url, array( 'headers' => $headers, 'body' => $body ) ) );
+			return json_decode( wp_remote_retrieve_body( wp_remote_post( $url, array( 'headers' => $headers, 'body' => $body ) ) ) );
 		}
 
 		public function ppp_linkedin_profile() {

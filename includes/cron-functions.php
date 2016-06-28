@@ -16,18 +16,11 @@ function ppp_schedule_share( $post_id, $post ) {
 	$allowed_post_types = isset( $ppp_options['post_types'] ) ? $ppp_options['post_types'] : array();
 	$allowed_post_types = apply_filters( 'ppp_schedule_share_post_types', $allowed_post_types );
 
-	if ( !isset( $_POST['post_status'] ) || !array_key_exists( $post->post_type, $allowed_post_types ) ) {
+	if ( ! isset( $_POST['post_status'] ) || ! array_key_exists( $post->post_type, $allowed_post_types ) ) {
 		return;
 	}
 
 	ppp_remove_scheduled_shares( $post_id );
-
-	if ( ( $_POST['post_status'] == 'publish' && $_POST['original_post_status'] == 'publish' ) ||
-		 ( $_POST['post_status'] == 'future' && $_POST['original_post_status'] == 'future' ) ) {
-		// Be sure to clear any currently scheduled tweets so we aren't creating multiple instances
-		// This will stop something from moving between draft and post and continuing to schedule tweets
-		ppp_remove_scheduled_shares( $post_id );
-	}
 
 	if( ( $_POST['post_status'] == 'publish' && $_POST['original_post_status'] != 'publish' ) || // From anything to published
 		( $_POST['post_status'] == 'future' && $_POST['original_post_status'] == 'future' ) || // Updating a future post
@@ -37,6 +30,7 @@ function ppp_schedule_share( $post_id, $post ) {
 		$timestamps = ppp_get_timestamps( $post_id );
 
 		foreach ( $timestamps as $timestamp => $name ) {
+			$timestamp = substr( $timestamp, 0, strlen( $timestamp ) - 3 );
 			wp_schedule_single_event( $timestamp, 'ppp_share_post_event', array( $post_id, $name ) );
 		}
 	}
@@ -52,12 +46,10 @@ add_action( 'ppp_share_post_event', 'ppp_share_post', 10, 2 );
 function ppp_remove_scheduled_shares( $post_id ) {
 	do_action( 'ppp_pre_remove_scheduled_shares', $post_id );
 
-	$current_shares = get_post_meta( $post_id, '_ppp_tweets', true );
+	$current_item_shares = ppp_get_shceduled_crons( $post_id );
 
-	foreach ( $current_shares as $key => $share ) {
-			$name = 'sharedate_' . $key . '_' . $post_id;
-			wp_clear_scheduled_hook( 'ppp_share_post_event', array( $post_id, $name ) );
-
+	foreach ( $current_item_shares as $share ) {
+		wp_clear_scheduled_hook( 'ppp_share_post_event', array( $post_id, $share['args'][1] ) );
 	}
 
 	do_action( 'ppp_post_remove_scheduled_shares', $post_id );
@@ -77,7 +69,7 @@ function ppp_remove_scheduled_share( $args ) {
  * Get all the crons hooked into 'ppp_share_post_event'
  * @return array All crons scheduled for Post Promoter Pro
  */
-function ppp_get_shceduled_crons() {
+function ppp_get_shceduled_crons( $post_id = false ) {
 	$all_crons = get_option( 'cron' );
 	$ppp_crons = array();
 
@@ -87,8 +79,13 @@ function ppp_get_shceduled_crons() {
 		}
 
 		foreach ( $cron['ppp_share_post_event'] as $key => $single_event ) {
+			$name_parts = explode( '_', $single_event['args'][1] );
+			if ( false !== $post_id && $post_id != $name_parts[2] ) {
+				continue;
+			}
+
 			$single_event['timestamp'] = $timestamp;
-			$ppp_crons[$key] = $single_event;
+			$ppp_crons[ $key ]         = $single_event;
 		}
 
 	}
@@ -157,3 +154,98 @@ function ppp_is_time_within( $time = 0, $target_time = 0, $within = 0 ) {
 function ppp_get_default_conflict_window() {
 	return apply_filters( 'ppp_default_conflict_window', HOUR_IN_SECONDS / 2 );
 }
+
+/**
+ * When a post is trashed, trash it's logs as well
+ *
+ * @since  2.3
+ * @param  int $post_id Post ID
+ * @return void
+ */
+function ppp_trash_logs( $post_id ) {
+	global $wpdb;
+
+	$sql = $wpdb->prepare( "UPDATE $wpdb->posts SET post_status = 'trash' WHERE post_parent = $post_id && post_type = 'wp_log'" );
+	$wpdb->query( $sql );
+}
+add_action( 'wp_trash_post', 'ppp_trash_logs', 10, 1 );
+
+/**
+ * When a post is deleted, delete it's logs as well
+ *
+ * @since  2.3
+ * @param  int $post_id Post ID
+ * @return void
+ */
+function ppp_delete_logs( $post_id ) {
+	global $wpdb;
+
+	$sql = $wpdb->prepare( "DELETE FROM $wpdb->posts WHERE post_parent = %d && post_type = 'wp_log'", $post_id );
+	$wpdb->query( $sql );
+}
+add_action( 'delete_post', 'ppp_delete_logs', 10, 1 );
+
+/**
+ * When a post is untrashed, untrash it's logs as well
+ *
+ * @since  2.3
+ * @param  int $post_id Post ID
+ * @return void
+ */
+function ppp_untrash_logs( $post_id ) {
+	global $wpdb;
+	$post_status = get_post_status( $post_id );
+
+	$sql = $wpdb->prepare( "UPDATE $wpdb->posts SET post_status = '$post_status' WHERE post_parent = $post_id && post_type = 'wp_log'" );
+	$wpdb->query( $sql );
+}
+add_action( 'untrashed_post', 'ppp_untrash_logs', 10, 1 );
+
+/**
+ * Unschedule any tweets when the post is unscheduled
+ *
+ * @since  2.1.2
+ * @param  string $old_status The old status of the post
+ * @param  string $new_status The new status of the post
+ * @param  object $post       The Post Object
+ * @return void
+ */
+function ppp_unschedule_shares( $new_status, $old_status, $post ) {
+
+	if ( ( $old_status == 'publish' || $old_status == 'future' ) && ( $new_status != 'publish' && $new_status != 'future' ) ) {
+		ppp_remove_scheduled_shares( $post->ID );
+	}
+
+}
+add_action( 'transition_post_status', 'ppp_unschedule_shares', 10, 3 );
+
+/**
+ * Given a date and time string (from our post meta), return an offset timestamp
+ *
+ * @since  2.3
+ * @param  string $date The Date
+ * @param  string $time The time
+ * @return long         A timestamp
+ */
+function ppp_generate_timestamp( $date, $time ) {
+	$share_time = explode( ':', $time );
+	$hours      = (int) $share_time[0];
+	$minutes    = (int) substr( $share_time[1], 0, 2 );
+	$ampm       = strtolower( substr( $share_time[1], -2 ) );
+
+	if ( $ampm == 'pm' && $hours != 12 ) {
+		$hours = $hours + 12;
+	}
+
+	if ( $ampm == 'am' && $hours == 12 ) {
+		$hours = 00;
+	}
+
+	$offset    = (int) -( get_option( 'gmt_offset' ) );
+	$hours     = $hours + $offset;
+	$date      = explode( '/', $date );
+	$timestamp = mktime( $hours, $minutes, 0, $date[0], $date[1], $date[2] );
+
+	return $timestamp;
+}
+
