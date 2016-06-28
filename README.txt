@@ -1,13 +1,13 @@
 === Post Promoter Pro ===
 Contributors: cklosows
-Tags: post promoter pro, twitter, linkedin, facebook, bitly
-Requires at least: 3.9.2
-Tested up to: 4.4.2
-Stable tag: 2.2.10
+Tags: post promoter pro, twitter, linkedin, facebook, bitly, social media
+Requires at least: 4.0
+Tested up to: 4.6
+Stable tag: 2.3
 Donate link: https://postpromoterpro.com
 License: GPLv2
 
-The most effective way to promote your WordPress content.
+Content promotion for WordPress, made easy
 
 == Description ==
 
@@ -16,6 +16,21 @@ You write great content, but it can get lost in the fast-moving world of social 
 Engage followers who may have missed the original post; Post Promoter Pro allows you to customize the text that sits before the link to your content. Experiment with hashtags, a call to action, or interesting text that starts a conversation and compels your followers to view your post.
 
 == Changelog ==
+
+= 2.3 June 28, 2016 =
+* NEW: You can now set your Facebook and LinkedIn shares to be on a schedule instead of just at publishing.
+* NEW: Notices for Facebook and LinkedIn authorization expiration are now dismissable.
+* NEW: Your past Tweets are now 'hidden' when editing a post, and can be toggled to show or hide, saving space in the editor screen.
+* TWEAK: Updated image thumbnail sizes for Twitter, LinkedIn, and Facebook to meet the new standards.
+* TWEAK: Improved the plugin self-updater to be more efficient.
+* TWEAK: All API calls are now stored using the WP_Log class, allowing for easier debugging.
+* FIX: Sometimes presented with an 'invalid argument' when no Tweets are configured for a post.
+* FIX: Re-authentication dates keep increasing as time goes for Facebook and LinkedIn.
+* FIX: If WP_Cron is missed, there is a potential for many missed Tweets to go out at once. Only send if it's within an hour.
+* FIX: Twitter descritpion meta tag was depdant on the post_excerpt.
+* FIX: Twitter character count colors were inconsistantly changing.
+* FIX: Scheduled shares were being recreated upon update if they were previously deleted.
+
 = 2.2.11 February 27, 2016 =
 * FIX: Fix misspelling in ppp_manage_options filter
 
