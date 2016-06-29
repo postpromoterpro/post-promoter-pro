@@ -37,7 +37,10 @@ class PostPromoterPro {
 			include PPP_PATH . '/includes/cron-functions.php';
 			include PPP_PATH . '/includes/filters.php';
 			include PPP_PATH . '/includes/libs/social-loader.php';
-			include PPP_PATH . '/includes/libs/class-wp-logging.php';
+			
+			if( ! class_exists( 'WP_Logging' ) ) {
+				include PPP_PATH . '/includes/libs/class-wp-logging.php';
+			}
 
 			if ( is_admin() ) {
 				include PPP_PATH . '/includes/admin/upgrades.php';
