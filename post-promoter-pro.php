@@ -3,14 +3,14 @@
 Plugin Name: Post Promoter Pro
 Plugin URI: https://postpromoterpro.com
 Description: Maximize your social media presence on Twitter, Facebook, and LinkedIn.
-Version: 2.3
+Version: 2.3.1
 Author: Post Promoter Pro
 Author URI: https://postpromoterpro.com
 License: GPLv2
 */
 
 define( 'PPP_PATH', plugin_dir_path( __FILE__ ) );
-define( 'PPP_VERSION', '2.3' );
+define( 'PPP_VERSION', '2.3.1' );
 define( 'PPP_FILE', plugin_basename( __FILE__ ) );
 define( 'PPP_URL', plugins_url( '/', PPP_FILE ) );
 
@@ -37,7 +37,7 @@ class PostPromoterPro {
 			include PPP_PATH . '/includes/cron-functions.php';
 			include PPP_PATH . '/includes/filters.php';
 			include PPP_PATH . '/includes/libs/social-loader.php';
-			
+
 			if( ! class_exists( 'WP_Logging' ) ) {
 				include PPP_PATH . '/includes/libs/class-wp-logging.php';
 			}
