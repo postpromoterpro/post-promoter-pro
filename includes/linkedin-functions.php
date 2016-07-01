@@ -212,7 +212,7 @@ function ppp_linkedin_refresh_notice() {
 	?>
 	<div class="notice notice-warning is-dismissible" data-service="li">
 		<?php if ( $days_left > 0 ): ?>
-			<p><strong>Post Promoter Pro: </strong><?php printf( __( 'Your LinkedIn authentication expires in within %d days. Please <a href="%s">refresh access</a>.', 'ppp-txt' ), $days_left, $url ); ?></p>
+			<p><strong>Post Promoter Pro: </strong><?php printf( __( 'Your LinkedIn authentication expires in %d days. Please <a href="%s">refresh access</a>.', 'ppp-txt' ), $days_left, $url ); ?></p>
 		<?php elseif ( $days_left < 1 ): ?>
 			<p><strong>Post Promoter Pro: </strong><?php printf( __( 'Your LinkedIn authentication has expired. Please <a href="%s">refresh access</a>.', 'ppp-txt' ), $url ); ?></p>
 		<?php endif; ?>
