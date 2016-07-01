@@ -246,7 +246,7 @@ function ppp_facebook_refresh_notice() {
 	?>
 	<div class="notice notice-warning is-dismissible" data-service="fb">
 		<?php if ( $days_left > 0 ): ?>
-			<p><strong>Post Promoter Pro: </strong><?php printf( __( 'Your Facebook authentication expires in within %d days. Please <a href="%s">refresh access</a>.', 'ppp-txt' ), $days_left, $url ); ?></p>
+			<p><strong>Post Promoter Pro: </strong><?php printf( __( 'Your Facebook authentication expires in %d days. Please <a href="%s">refresh access</a>.', 'ppp-txt' ), $days_left, $url ); ?></p>
 		<?php elseif ( $days_left < 1 ): ?>
 			<p><strong>Post Promoter Pro: </strong><?php printf( __( 'Your Facebook authentication has expired. Please <a href="%s">refresh access</a>.', 'ppp-txt' ), $url ); ?></p>
 		<?php endif; ?>
