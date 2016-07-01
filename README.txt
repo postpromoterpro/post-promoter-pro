@@ -3,7 +3,7 @@ Contributors: cklosows
 Tags: post promoter pro, twitter, linkedin, facebook, bitly, social media
 Requires at least: 4.0
 Tested up to: 4.6
-Stable tag: 2.3.1
+Stable tag: 2.3.2
 Donate link: https://postpromoterpro.com
 License: GPLv2
 
@@ -16,6 +16,12 @@ You write great content, but it can get lost in the fast-moving world of social 
 Engage followers who may have missed the original post; Post Promoter Pro allows you to customize the text that sits before the link to your content. Experiment with hashtags, a call to action, or interesting text that starts a conversation and compels your followers to view your post.
 
 == Changelog ==
+
+= 2.3.2 July 1, 2016 =
+* FIX: Twitter - Card description missing when no excerpt provided and fallback is used.
+
+= 2.3.1 June 29, 2016 =
+* FIX: Possible fatal error if WP_Logging class is already declared.
 
 = 2.3 June 29, 2016 =
 * FIX: Possible fatal error if WP_Logging class is already declared.
