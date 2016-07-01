@@ -811,7 +811,7 @@ function ppp_tw_get_card_description() {
 	$excerpt = $post->post_excerpt;
 
 	if ( empty( $excerpt ) ) {
-		$excerpt = ppp_tw_format_card_description( $post->content );
+		$excerpt = ppp_tw_format_card_description( $post->post_content );
 	}
 
 	return apply_filters( 'ppp_tw_card_desc', $excerpt );
