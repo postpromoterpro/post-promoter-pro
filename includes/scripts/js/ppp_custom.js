@@ -245,9 +245,9 @@ var tweetLengthImageRed    = 94;
 				e.preventDefault();
 
 				var row        = $(this).parent().parent( 'tr' ),
-					count      = row.parent().find( 'tr.scheduled-row' ).length - 1,
 					type       = $(this).data('type'),
-					repeatable = 'tr.ppp_repeatable_' + type;
+					repeatable = 'tr.ppp-repeatable-' + type,
+					count      = $(repeatable).length;
 
 				if( count > 1 ) {
 					$( 'input, select', row ).val( '' );
