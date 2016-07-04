@@ -35,6 +35,7 @@ function ppp_schedule_callback() {
 		</ul>
 		<?php do_action( 'ppp_metabox_content_display', $post ); ?>
 	</div>
+	<input type="hidden" name="ppp_post_edit" value="1" />
 	<?php
 }
 
