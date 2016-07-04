@@ -615,7 +615,7 @@ add_action( 'save_post', 'ppp_fb_save_post_meta_boxes', 10, 2 ); // save the cus
 function ppp_fb_share_on_publish( $new_status, $old_status, $post ) {
 	global $ppp_options;
 
-	$from_meta = get_post_meta( $post->ID, '_ppp_fb_share_on_publish', true );
+	$from_meta = ! empty( $_POST['ppp_post_edit'] ) ? false : get_post_meta( $post->ID, '_ppp_fb_share_on_publish', true );
 	$from_post = isset( $_POST['_ppp_fb_share_on_publish'] ) ? $_POST['_ppp_fb_share_on_publish'] : '0';
 
 	if ( '1' != $from_meta && '1' != $from_post ) {
