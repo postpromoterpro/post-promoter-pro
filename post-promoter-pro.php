@@ -53,7 +53,7 @@ class PostPromoterPro {
 				include PPP_PATH . '/includes/admin/dashboard.php';
 			}
 
-			register_activation_hook( PPP_FILE, array( $this, 'activation_setup' ) );
+			include PPP_PATH . '/install.php';
 
 			$ppp_options         = get_option( 'ppp_options' );
 			$ppp_social_settings = get_option( 'ppp_social_settings' );
@@ -87,29 +87,6 @@ class PostPromoterPro {
 			<p><?php _e( 'Post Promoter Pro requires cURL to be enabled. Please enable it to continue using the plugin.', 'ppp-txt' ); ?></p>
 		</div>
 		<?php
-	}
-
-	/**
-	 * On activation, setup the default options
-	 * @return void
-	 */
-	public function activation_setup() {
-		// If the settings already exist, don't do this
-		if ( get_option( 'ppp_options' ) ) {
-			return;
-		}
-
-		$default_settings['post_types']['post'] = '1';
-		update_option( 'ppp_options', $default_settings );
-
-		$default_share_settings['twitter']['share_on_publish']  = '1';
-		$default_share_settings['facebook']['share_on_publish'] = '1';
-		$default_share_settings['linkedin']['share_on_publish'] = '1';
-		update_option( 'ppp_share_settings', $default_share_settings );
-
-		set_transient( '_ppp_activation_redirect', 'true', 30 );
-
-		ppp_set_upgrade_complete( 'upgrade_post_meta' );
 	}
 
 	private function hooks() {
