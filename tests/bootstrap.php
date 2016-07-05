@@ -24,7 +24,7 @@ echo "Installing Post Promoter Pro...\n";
 
 global $current_user, $ppp_loaded;
 
-$ppp_loaded->activation_setup();
+post_promoter_pro_activation_setup();
 
 $ppp_social_settings = get_option( 'ppp_social_settings' );
 $ppp_share_settings  = get_option( 'ppp_share_settings' );
