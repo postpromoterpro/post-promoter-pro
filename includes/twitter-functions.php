@@ -513,8 +513,14 @@ function ppp_render_tweet_share_on_publish_row() {
 function ppp_render_tweet_row( $key, $args = array(), $post_id ) {
 	global $post, $has_past_shares;
 
-	$share_time     = strtotime( $args['date'] . ' ' . $args['time'] );
-	$readonly       = current_time( 'timestamp' ) > $share_time ? 'readonly="readonly" ' : false;
+	if ( ! empty( $args['date'] ) && ! empty( $args['time'] ) ) {
+		$share_time     = strtotime( $args['date'] . ' ' . $args['time'] );
+		$readonly       = current_time( 'timestamp', 1 ) > $share_time ? 'readonly="readonly" ' : false;
+	} else {
+		$share_time = false;
+		$readonly   = false;
+	}
+
 	$no_date        = ! empty( $readonly ) ? ' hasDatepicker' : '';
 	$hide           = ! empty( $readonly ) ? 'display: none;' : '';
 	$shared         = ! empty( $readonly ) ? 'past-share' : '';
