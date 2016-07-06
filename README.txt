@@ -3,7 +3,7 @@ Contributors: cklosows
 Tags: post promoter pro, twitter, linkedin, facebook, bitly, social media
 Requires at least: 4.0
 Tested up to: 4.6
-Stable tag: 2.3.2
+Stable tag: 2.3.3
 Donate link: https://postpromoterpro.com
 License: GPLv2
 
@@ -16,6 +16,12 @@ You write great content, but it can get lost in the fast-moving world of social 
 Engage followers who may have missed the original post; Post Promoter Pro allows you to customize the text that sits before the link to your content. Experiment with hashtags, a call to action, or interesting text that starts a conversation and compels your followers to view your post.
 
 == Changelog ==
+
+= 2.3.3 July 6, 2016 =
+* FIX: On existing posts, removing Share on Publish and changing the post status to Publish in the same action will cause the share to be sent.
+* FIX: Twitter not always allowing deleting rows.
+* FIX: Remove extra word 'within' from LinkedIn and Facebook expiring authentication messages.
+* FIX: First scheduled tweet inputs can be falsely marked with past-share class when using timezones and or greater than GMT.
 
 = 2.3.2 July 1, 2016 =
 * FIX: Twitter - Card description missing when no excerpt provided and fallback is used.
