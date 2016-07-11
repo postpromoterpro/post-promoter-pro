@@ -111,6 +111,8 @@ function ppp_generate_google_utm_link( $share_link, $post_id, $name ) {
 	$utm['content']  = $name_parts[1]; // The day after publishing
 	$utm['campaign'] = 'PostPromoterPro';
 
+	$utm = apply_filters( 'ppp_utm_tags', $utm, $post_id, $name );
+
 	$utm_string  = strpos( $share_link, '?' ) ? '&' : '?' ;
 	$first = true;
 	foreach ( $utm as $key => $value ) {
