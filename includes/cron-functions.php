@@ -227,7 +227,18 @@ add_action( 'transition_post_status', 'ppp_unschedule_shares', 10, 3 );
  * @param  string $time The time
  * @return long         A timestamp
  */
-function ppp_generate_timestamp( $date, $time ) {
+function ppp_generate_timestamp( $date = false, $time = false ) {
+	// Just in case we need this, let's set it once
+	$current_time = current_time( 'timestamp' );
+
+	if ( false === $date ) {
+		$date = date( 'm/d/Y', $current_time );
+	}
+
+	if ( false === $time ) {
+		$time = date( 'h:ia', $current_time );
+	}
+
 	$share_time = explode( ':', $time );
 	$hours      = (int) $share_time[0];
 	$minutes    = (int) substr( $share_time[1], 0, 2 );

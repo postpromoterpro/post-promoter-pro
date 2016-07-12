@@ -514,8 +514,8 @@ function ppp_render_tweet_row( $key, $args = array(), $post_id ) {
 	global $post, $has_past_shares;
 
 	if ( ! empty( $args['date'] ) && ! empty( $args['time'] ) ) {
-		$share_time     = strtotime( $args['date'] . ' ' . $args['time'] );
-		$readonly       = current_time( 'timestamp', 1 ) > $share_time ? 'readonly="readonly" ' : false;
+		$share_time = ppp_generate_timestamp( $args['date'], $args['time'] );
+		$readonly   = ppp_generate_timestamp() > $share_time ? 'readonly="readonly" ' : false;
 	} else {
 		$share_time = false;
 		$readonly   = false;
