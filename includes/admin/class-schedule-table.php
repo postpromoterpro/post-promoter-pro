@@ -82,11 +82,12 @@ class PPP_Schedule_Table extends WP_List_Table {
 	 * @return string       The HTML to display for this column.
 	 */
 	public function column_post_title( $item ) {
-		$actions = array(
+		$item_name = $item['name'] . '_' . $item['service'];
+		$actions   = array(
 			'edit'          => sprintf( __( '<a href="%s">Edit</a>', 'ppp-txt' ), admin_url( 'post.php?post=' . $item['post_id'] . '&action=edit#ppp_schedule_metabox' ) ),
-			'delete'        => sprintf( __( '<a href="%s">Delete</a>', 'ppp-txt' ), admin_url( 'admin.php?page=ppp-schedule-info&action=delete_item&post_id=' . $item['post_id'] . '&name=' . $item['name'] . '&index=' . $item['index'] ) ),
-			'share'         => sprintf( __( '<a href="%s">Share Now</a>', 'ppp-txt' ), admin_url( 'admin.php?page=ppp-schedule-info&action=share_now&post_id=' . $item['post_id'] . '&name=' . $item['name'] ) ),
-			'share_delete'  => sprintf( __( '<a href="%s">Share Now & Delete</a>', 'ppp-txt' ), admin_url( 'admin.php?page=ppp-schedule-info&action=share_now&post_id=' . $item['post_id'] . '&name=' . $item['name'] . '&index=' . $item['index'] . '&delete_too=true' ) ),
+			'delete'        => sprintf( __( '<a href="%s">Delete</a>', 'ppp-txt' ), admin_url( 'admin.php?page=ppp-schedule-info&action=delete_item&post_id=' . $item['post_id'] . '&name=' . $item_name . '&index=' . $item['index'] ) ),
+			'share'         => sprintf( __( '<a href="%s">Share Now</a>', 'ppp-txt' ), admin_url( 'admin.php?page=ppp-schedule-info&action=share_now&post_id=' . $item['post_id'] . '&name=' . $item_name ) ),
+			'share_delete'  => sprintf( __( '<a href="%s">Share Now & Delete</a>', 'ppp-txt' ), admin_url( 'admin.php?page=ppp-schedule-info&action=share_now&post_id=' . $item['post_id'] . '&name=' . $item_name . '&index=' . $item['index'] . '&delete_too=true' ) ),
 		);
 
 		return sprintf( '<span class="dashicons icon-ppp-' . $item['service'] . '"></span>&nbsp;%1$s %2$s', $item['post_title'], $this->row_actions( $actions ) );
@@ -120,6 +121,7 @@ class PPP_Schedule_Table extends WP_List_Table {
 		$per_page = 25;
 
 		$crons = ppp_get_shceduled_crons();
+
 		$cron_tally = array();
 		foreach ( $crons as $key => $cron ) {
 			$ppp_data = $cron;
