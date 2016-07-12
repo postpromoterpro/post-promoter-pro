@@ -17,6 +17,11 @@ Engage followers who may have missed the original post; Post Promoter Pro allows
 
 == Changelog ==
 
+= 2.3.4 July 12, 2016 =
+* NEW: Added a filter for UTM Tag contents to allow customization.
+* FIX: Delete action from schedule removes post meta but not scheduled event.
+* FIX: Scheduled Tweets can sometimes be marked as past-share on Twitter.
+
 = 2.3.3 July 6, 2016 =
 * FIX: On existing posts, removing Share on Publish and changing the post status to Publish in the same action will cause the share to be sent.
 * FIX: Twitter not always allowing deleting rows.
