@@ -231,11 +231,11 @@ function ppp_generate_timestamp( $date = false, $time = false ) {
 	// Just in case we need this, let's set it once
 	$current_time = current_time( 'timestamp' );
 
-	if ( false === $date ) {
+	if ( empty( $date ) ) {
 		$date = date( 'm/d/Y', $current_time );
 	}
 
-	if ( false === $time ) {
+	if ( empty( $time ) ) {
 		$time = date( 'h:ia', $current_time );
 	}
 
@@ -255,7 +255,7 @@ function ppp_generate_timestamp( $date = false, $time = false ) {
 	$offset    = (int) -( get_option( 'gmt_offset' ) );
 	$hours     = $hours + $offset;
 	$date      = explode( '/', $date );
-	$timestamp = mktime( $hours, $minutes, 0, $date[0], $date[1], $date[2] );
+	$timestamp = mktime( (int) $hours, (int) $minutes, 0, (int) $date[0], (int) $date[1], (int) $date[2] );
 
 	return $timestamp;
 }
