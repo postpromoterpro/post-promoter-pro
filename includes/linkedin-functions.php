@@ -503,10 +503,10 @@ function ppp_render_li_share_on_publish_row( $args = array() ) {
 function ppp_render_li_share_row( $key, $args = array() ) {
 	global $post;
 
-	$share_time     = strtotime( $args['date'] . ' ' . $args['time'] );
-	$readonly       = current_time( 'timestamp' ) > $share_time ? 'readonly="readonly" ' : '';
-	$no_date        = ! empty( $readonly ) ? ' hasDatepicker' : '';
-	$hide           = ! empty( $readonly ) ? 'display: none;' : '';
+	$share_time = ppp_generate_timestamp( $args['date'], $args['time'] );
+	$readonly   = ppp_generate_timestamp() > $share_time ? 'readonly="readonly" ' : false;
+	$no_date    = ! empty( $readonly ) ? ' hasDatepicker' : '';
+	$hide       = ! empty( $readonly ) ? 'display: none;' : '';
 	?>
 	<tr class="ppp-li-wrapper ppp-repeatable-row ppp-repeatable-linkedin scheduled-row" data-key="<?php echo esc_attr( $key ); ?>">
 		<td>
