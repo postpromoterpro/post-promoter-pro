@@ -3,7 +3,7 @@ Contributors: cklosows
 Tags: post promoter pro, twitter, linkedin, facebook, bitly, social media
 Requires at least: 4.0
 Tested up to: 4.6
-Stable tag: 2.3.3
+Stable tag: 2.3.5
 Donate link: https://postpromoterpro.com
 License: GPLv2
 
@@ -16,6 +16,9 @@ You write great content, but it can get lost in the fast-moving world of social 
 Engage followers who may have missed the original post; Post Promoter Pro allows you to customize the text that sits before the link to your content. Experiment with hashtags, a call to action, or interesting text that starts a conversation and compels your followers to view your post.
 
 == Changelog ==
+
+= 2.3.5 July 16, 2016 =
+* FIX: Scheduled Tweets can sometimes be marked as past-share on Facebook and LinkedIn.
 
 = 2.3.4 July 12, 2016 =
 * NEW: Added a filter for UTM Tag contents to allow customization.
