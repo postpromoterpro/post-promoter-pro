@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 function ppp_set_default_text_tokens( $tokens ) {
 	$tokens[] = array( 'token' => 'post_title', 'description' => __( 'The title of the post being shared', 'ppp-txt' ) );
-	$tokens[] = array( 'token' => 'site_title', 'description' => __( 'The site title, from Settings > General' ) );
+	$tokens[] = array( 'token' => 'site_title', 'description' => __( 'The site title, from Settings > General', 'ppp-txt' ) );
 
 	return $tokens;
 }
