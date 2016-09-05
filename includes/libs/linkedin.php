@@ -132,7 +132,7 @@ if( !class_exists( 'PPP_Linkedin' ) ) {
 			} else {
 				$url  = 'https://www.linkedin.com/uas/oauth2/authorization?response_type=code';
 				$url .= '&client_id=' . LINKEDIN_KEY;
-				$url .= '&scope=rw_nus%20r_basicprofile';
+				$url .= '&scope=w_share%20r_basicprofile';
 				$url .= '&state=ppp-local-keys-li';
 				$url .= '&redirect_uri=' . $return_url;
 			}
