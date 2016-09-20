@@ -17,6 +17,13 @@ Engage followers who may have missed the original post; Post Promoter Pro allows
 
 == Changelog ==
 
+= 2.3.6 September 19, 2016 =
+* FIX: Remove support for Bit.ly avatar.
+* FIX: Incorrect scope for LinkedIn when using custom API Tokens.
+* FIX: Update Twitter character counts to ignore images when warning of Tweet length.
+* FIX: Translation updates and corrections in some missing textdomains.
+* FIX: Fixed Bit.ly authorization not showing invalid password error.
+
 = 2.3.5 July 16, 2016 =
 * FIX: Scheduled Tweets can sometimes be marked as past-share on Facebook and LinkedIn.
 
