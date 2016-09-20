@@ -155,7 +155,7 @@ class PostPromoterPro {
 		wp_register_style( 'ppp_admin_css', PPP_URL . 'includes/scripts/css/admin-style.css', false, PPP_VERSION );
 		wp_enqueue_style( 'ppp_admin_css' );
 
-		wp_register_style( 'ppp_admin_fa_css', 'https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css', false, PPP_VERSION );
+		wp_register_style( 'ppp_admin_fa_css', '//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css', false, PPP_VERSION );
 		wp_enqueue_style( 'ppp_admin_fa_css' );
 
 	}
