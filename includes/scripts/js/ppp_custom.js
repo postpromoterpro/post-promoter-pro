@@ -1,9 +1,6 @@
 var tweetLengthYellow = 100;
 var tweetLengthRed    = 117;
 
-var tweetLengthImageYellow = 87;
-var tweetLengthImageRed    = 94;
-
 (function ($) {
 	$('.share-time-selector').timepicker({ 'step': 15 });
 	$('.share-date-selector').datepicker({
@@ -291,51 +288,29 @@ var tweetLengthImageRed    = 94;
 					return;
 				}
 
-				var input    = $(this);
-				var hasImage = false;
-
-				var lengthWarn  = tweetLengthYellow;
-				var lengthError = tweetLengthRed;
+				var input = $(this);
 
 				if ( input.attr('name') == '_ppp_share_on_publish_text' ) {
-					var imagetarget = $('#ppp-share-on-publish-image');
 					var lengthField = input.next('.ppp-text-length');
 					var length      = input.val().length;
-
-					hasImage        = imagetarget.is(':checked');
 				} else if ( input.hasClass('ppp-tw-featured-image-input' ) ) {
-					var imagetarget = input;
 					var textWrapper = input.parent().prev();
 					var lengthField = textWrapper.find('.ppp-text-length');
 					var length      = textWrapper.find('.ppp-tweet-text-repeatable').val().length;
-
-
-					hasImage        = imagetarget.is(':checked');
 				} else if ( input.hasClass('ppp-upload-field') ) {
-					var imagetarget = input;
 					var textWrapper = input.parent().parent().prev();
 					var lengthField = textWrapper.find('.ppp-text-length');
 					var length      = textWrapper.find('.ppp-tweet-text-repeatable').val().length;
-
-					hasImage = imagetarget.val().length > 0 ? true : false;
 				} else {
-					var imagetarget = input.parent().next().find('.ppp-upload-field');
 					var lengthField = input.next('.ppp-text-length');
 					var length      = input.val().length;
-
-					hasImage = imagetarget.val().length > 0 ? true : false;
 				}
 
-				if ( hasImage ) {
-					lengthWarn  = tweetLengthImageYellow;
-					lengthError = tweetLengthImageRed;
-				}
-
-				if ( length < lengthWarn ) {
+				if ( length < tweetLengthYellow ) {
 					lengthField.css('background-color', '#339933');
-				} else if ( length >= lengthWarn && length <= lengthError ) {
+				} else if ( length >= tweetLengthYellow && length <= tweetLengthRed ) {
 					lengthField.css('background-color', '#CC9933');
-				} else if ( length > lengthError ) {
+				} else if ( length > tweetLengthRed ) {
 					lengthField.css('background-color', '#FF3333');
 				}
 
