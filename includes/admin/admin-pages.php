@@ -143,31 +143,19 @@ function ppp_display_social() {
 					</th>
 					<td id="ppp-analytics-options">
 						<p>
-							<input id="ppp_no_tracking"
-							       name="ppp_share_settings[analytics]"
-							       type="radio"
-							       value="none"
-									<?php checked( 'none', $analytics_option, true ); ?>
-							/>&nbsp;<label for="ppp_no_tracking"><?php _e( 'None', 'ppp-txt' ); ?></label>
+							<input id="ppp_no_tracking" name="ppp_share_settings[analytics]" type="radio" value="none" <?php checked( 'none', $analytics_option, true ); ?> />&nbsp;
+							<label for="ppp_no_tracking"><?php _e( 'None', 'ppp-txt' ); ?></label>
 						</p>
 						<br />
 						<p>
-							<input id="ppp_unique_links"
-							       name="ppp_share_settings[analytics]"
-							       type="radio"
-							       value="unique_links"
-									<?php checked( 'unique_links', $analytics_option, true ); ?>
-							/>&nbsp;<label for="ppp_unique_links"><?php _e( 'Simple Tracking', 'ppp-txt' ); ?></label><br />
+							<input id="ppp_unique_links" name="ppp_share_settings[analytics]" type="radio" value="unique_links" <?php checked( 'unique_links', $analytics_option, true ); ?> />&nbsp;
+							<label for="ppp_unique_links"><?php _e( 'Simple Tracking', 'ppp-txt' ); ?></label><br />
 							<small><?php _e( 'Appends a query string to shared links for analytics.', 'ppp-txt' ); ?></small>
 						</p>
 						<br />
 						<p>
-							<input id="ppp_ga_tags"
-							       name="ppp_share_settings[analytics]"
-							       type="radio"
-							       value="google_analytics"
-									<?php checked( 'google_analytics', $analytics_option, true ); ?>
-							/>&nbsp;<label for="ppp_ga_tags"><?php _e( 'Google Analytics Tags', 'ppp-txt' ); ?></label><br />
+							<input id="ppp_ga_tags" name="ppp_share_settings[analytics]" type="radio" value="google_analytics" <?php checked( 'google_analytics', $analytics_option, true ); ?> />&nbsp;
+							<label for="ppp_ga_tags"><?php _e( 'Google Analytics Tags', 'ppp-txt' ); ?></label><br />
 							<small><?php _e( 'Results can be seen in the Acquisition Menu under "Campaigns"', 'ppp-txt' ); ?></small>
 						</p>
 						<?php do_action( 'ppp-settings-analytics-radio' ); ?>
@@ -225,12 +213,8 @@ function ppp_display_social() {
 					</th>
 					<td id="ppp-twitter-cards-wrapper">
 						<p>
-							<input id="ppp-twitter-cards"
-							       name="ppp_share_settings[twitter][cards_enabled]"
-							       type="checkbox"
-							       value="1"
-									<?php checked( true, $twitter_cards_enabled, true ); ?>
-							/>&nbsp;<label for="ppp-twitter-cards"><?php _e( 'Enable Twitter Cards', 'ppp-txt' ); ?></label>
+							<input id="ppp-twitter-cards" name="ppp_share_settings[twitter][cards_enabled]" type="checkbox" value="1" <?php checked( true, $twitter_cards_enabled, true ); ?> />&nbsp;
+							<label for="ppp-twitter-cards"><?php _e( 'Enable Twitter Cards', 'ppp-txt' ); ?></label>
 						</p>
 					</td>
 				</tr>
@@ -314,7 +298,7 @@ function ppp_display_sysinfo() {
 	SITE_URL:                 <?php echo site_url() . "\n"; ?>
 	HOME_URL:                 <?php echo home_url() . "\n"; ?>
 
-	PPP Version:             <?php echo PPP_VERSION . "\n"; ?>
+	PPP Version:              <?php echo PPP_VERSION . "\n"; ?>
 	WordPress Version:        <?php echo get_bloginfo( 'version' ) . "\n"; ?>
 
 	PPP SETTINGS:
