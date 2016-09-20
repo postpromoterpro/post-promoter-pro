@@ -50,7 +50,6 @@ function ppp_display_bitly_settings() {
 		<?php endif; ?>
 		<?php if ( ppp_bitly_enabled() ) : ?>
 			<div class="ppp-social-profile ppp-bitly-profile">
-				<img class="ppp-social-icon" src="<?php echo $ppp_social_settings['bitly']['avatar']; ?>" />
 				<div class="ppp-bitly-info">
 					<?php _e( 'Signed in as', 'ppp-txt' ); ?>:<br /><?php echo $ppp_social_settings['bitly']['login']; ?><br />
 					<?php _e( 'Access Token: ', 'ppp-txt' ); ?><code><?php echo $ppp_social_settings['bitly']['access_token']; ?></code>
@@ -129,11 +128,10 @@ function ppp_get_bitly_auth() {
 		$user_data = json_decode( $ppp_bitly_oauth->ppp_bitly_user_info(), true );
 
 		$ppp_social_settings['bitly']['login'] = $user_data['data']['login'];
-		$ppp_social_settings['bitly']['avatar'] = $user_data['data']['profile_image'];
 
 		update_option( 'ppp_social_settings', $ppp_social_settings );
 		echo 1;
-	} elseif ( $body == 'INVALID_LOGIN' ) {
+	} elseif ( $data->status_txt == 'INVALID_LOGIN' ) {
 		echo 'INVALID_LOGIN';
 	} else {
 		echo 0;
