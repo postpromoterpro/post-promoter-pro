@@ -1,12 +1,13 @@
 <?php
 
-// Exit if accessed directly
+// Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
 /**
  * Display the General settings tab
+ *
  * @return void
  */
 function ppp_admin_page() {
@@ -26,18 +27,18 @@ function ppp_admin_page() {
 						<?php _e( 'License Key', 'ppp-txt' ); ?><br /><span style="font-size: x-small;"><?php _e( 'Enter your license key', 'ppp-txt' ); ?></span>
 					</th>
 					<td>
-						<input id="ppp_license_key" name="_ppp_license_key" type="text" class="regular-text" value="<?php esc_attr_e( $license ); ?>" /><?php if( $status !== false && $status == 'valid' ) { ?>
+						<input id="ppp_license_key" name="_ppp_license_key" type="text" class="regular-text" value="<?php esc_attr_e( $license ); ?>" /><?php if ( $status !== false && $status == 'valid' ) { ?>
 						<span style="color:green;">&nbsp;<?php _e( 'active', 'ppp-txt' ); ?></span><?php } ?>
 					</td>
 				</tr>
 
-				<?php if( false !== $license ) { ?>
+				<?php if ( false !== $license ) { ?>
 					<tr valign="top">
 						<th scope="row" valign="top">
 							<?php _e( 'Activate License', 'ppp-txt' ); ?>
 						</th>
 						<td>
-							<?php if( $status !== false && $status == 'valid' ) { ?>
+							<?php if ( $status !== false && $status == 'valid' ) { ?>
 								<?php wp_nonce_field( 'ppp_deactivate_nonce', 'ppp_deactivate_nonce' ); ?>
 								<input type="submit" class="button-secondary" name="ppp_license_deactivate" value="<?php _e( 'Deactivate License', 'ppp-txt' ); ?>"/>
 							<?php } else {
@@ -59,11 +60,11 @@ function ppp_admin_page() {
 							<small>
 							<?php _e( 'The typical length of a link shortened on Twitter is 23 characters, so keep that in mind when writing your default text.', 'ppp-txt' ); ?>
 							<br />
-							<?php _e( 'Status updates over 140 charcters will fail to post.', 'ppp-txt' ); ?>
+							<?php _e( 'Status updates over 140 characters will fail to post.', 'ppp-txt' ); ?>
 							<br />
 							<?php _e( 'Possible Replacements:', 'ppp-txt' ); ?>
 							<br />
-							<?php foreach( ppp_get_text_tokens() as $token ): ?>
+							<?php foreach ( ppp_get_text_tokens() as $token ) :  ?>
 								<code>{<?php echo $token['token']; ?>}</code> - <?php echo $token['description']; ?><br />
 							<?php endforeach; ?>
 							</small>
@@ -75,8 +76,8 @@ function ppp_admin_page() {
 					<th scope="row"><?php _e( 'Post Types', 'ppp-txt' ); ?><br /><span style="font-size: x-small;"><?php _e( 'What post types do you want to schedule for?', 'ppp-txt' ); ?></span></th>
 					<td>
 						<?php $post_types = ppp_supported_post_types(); ?>
-						<?php foreach ( $post_types as $post_type => $type_data ): ?>
-							<?php $value = ( isset( $ppp_options['post_types'] ) && isset( $ppp_options['post_types'][$post_type] ) ) ? true : false; ?>
+						<?php foreach ( $post_types as $post_type => $type_data ) :  ?>
+							<?php $value = ( isset( $ppp_options['post_types'] ) && isset( $ppp_options['post_types'][ $post_type ] ) ) ? true : false; ?>
 							<input type="checkbox" name="ppp_options[post_types][<?php echo $post_type; ?>]" value="1" id="<?php echo $post_type; ?>" <?php checked( true, $value, true ); ?> />&nbsp;
 							<label for="<?php echo $post_type; ?>"><?php echo $type_data->labels->name; ?></label></br />
 						<?php endforeach; ?>
@@ -112,9 +113,10 @@ function ppp_admin_page() {
 
 
 /**
-* Display the Social tab
-* @return void
-*/
+ * Display the Social tab
+ *
+ * @return void
+ */
 function ppp_display_social() {
 	do_action( 'ppp_social_settings_pre_form' );
 
@@ -145,7 +147,7 @@ function ppp_display_social() {
 							       name="ppp_share_settings[analytics]"
 							       type="radio"
 							       value="none"
-							       <?php checked( 'none', $analytics_option, true ); ?>
+									<?php checked( 'none', $analytics_option, true ); ?>
 							/>&nbsp;<label for="ppp_no_tracking"><?php _e( 'None', 'ppp-txt' ); ?></label>
 						</p>
 						<br />
@@ -154,7 +156,7 @@ function ppp_display_social() {
 							       name="ppp_share_settings[analytics]"
 							       type="radio"
 							       value="unique_links"
-							       <?php checked( 'unique_links', $analytics_option, true ); ?>
+									<?php checked( 'unique_links', $analytics_option, true ); ?>
 							/>&nbsp;<label for="ppp_unique_links"><?php _e( 'Simple Tracking', 'ppp-txt' ); ?></label><br />
 							<small><?php _e( 'Appends a query string to shared links for analytics.', 'ppp-txt' ); ?></small>
 						</p>
@@ -164,7 +166,7 @@ function ppp_display_social() {
 							       name="ppp_share_settings[analytics]"
 							       type="radio"
 							       value="google_analytics"
-							       <?php checked( 'google_analytics', $analytics_option, true ); ?>
+									<?php checked( 'google_analytics', $analytics_option, true ); ?>
 							/>&nbsp;<label for="ppp_ga_tags"><?php _e( 'Google Analytics Tags', 'ppp-txt' ); ?></label><br />
 							<small><?php _e( 'Results can be seen in the Acquisition Menu under "Campaigns"', 'ppp-txt' ); ?></small>
 						</p>
@@ -173,9 +175,9 @@ function ppp_display_social() {
 						<hr />
 						<small><?php _e( 'Here is an example of what your link will look like', 'ppp-txt' ); ?>: <br />
 							<?php $post = wp_get_recent_posts( array( 'numberposts' => 1 ) ); ?>
-							<?php if( count( $post ) > 0 ): ?>
+							<?php if ( count( $post ) > 0 ) :  ?>
 								<code><?php echo ppp_generate_link( $post[0]['ID'], 'sharedate_1_' . $post[0]['ID'], false ); ?></code></small>
-							<?php else: ?>
+							<?php else : ?>
 								<em><?php _e( 'No posts available to generate link from.', 'ppp-txt' ); ?></em>
 							<?php endif; ?>
 						</p>
@@ -227,7 +229,7 @@ function ppp_display_social() {
 							       name="ppp_share_settings[twitter][cards_enabled]"
 							       type="checkbox"
 							       value="1"
-							       <?php checked( true, $twitter_cards_enabled, true ); ?>
+									<?php checked( true, $twitter_cards_enabled, true ); ?>
 							/>&nbsp;<label for="ppp-twitter-cards"><?php _e( 'Enable Twitter Cards', 'ppp-txt' ); ?></label>
 						</p>
 					</td>
@@ -269,9 +271,10 @@ function ppp_display_social() {
 }
 
 /**
-* Display the List Table tab
-* @return void
-*/
+ * Display the List Table tab
+ *
+ * @return void
+ */
 function ppp_display_schedule() {
 	?>
 	<style type="text/css">
@@ -289,7 +292,7 @@ function ppp_display_schedule() {
 		<div id="icon-options-general" class="icon32"></div><h1><?php _e( 'Post Promoter Pro - Scheduled Shares', 'ppp-txt' ); ?></h1>
 		<?php $schedule_table->display() ?>
 	</div>
-	<?php if ( ppp_is_shortener_enabled() ): ?>
+	<?php if ( ppp_is_shortener_enabled() ) :  ?>
 	<p>
 		<small><?php _e( 'NOTICE: Schedule view does not show shortened links, they will be shortened at the time of sharing', 'ppp-txt' ); ?></small>
 	</p>
@@ -299,6 +302,7 @@ function ppp_display_schedule() {
 
 /**
  * Display the System Info Tab
+ *
  * @return void
  */
 function ppp_display_sysinfo() {
@@ -316,15 +320,15 @@ function ppp_display_sysinfo() {
 	PPP SETTINGS:
 	<?php
 	foreach ( $ppp_options as $name => $value ) {
-	if ( $value == false ) {
-		$value = 'false';
-	}
+		if ( $value == false ) {
+			$value = 'false';
+		}
 
-	if ( $value == '1' ) {
-		$value = 'true';
-	}
+		if ( $value == '1' ) {
+			$value = 'true';
+		}
 
-	echo $name . ': ' . maybe_serialize( $value ) . "\n\t";
+		echo $name . ': ' . maybe_serialize( $value ) . "\n\t";
 	}
 	?>
 
@@ -370,7 +374,11 @@ function ppp_display_sysinfo() {
 	WP_DEBUG:                 <?php echo defined( 'WP_DEBUG' ) ? WP_DEBUG ? 'Enabled' . "\n" : 'Disabled' . "\n" : 'Not set' . "\n" ?>
 	SCRIPT_DEBUG:             <?php echo defined( 'SCRIPT_DEBUG' ) ? SCRIPT_DEBUG ? 'Enabled' . "\n" : 'Disabled' . "\n" : 'Not set' . "\n" ?>
 
-	WP Table Prefix:          <?php echo "Length: ". strlen( $wpdb->prefix ); echo " Status:"; if ( strlen( $wpdb->prefix )>16 ) {echo " ERROR: Too Long";} else {echo " Acceptable";} echo "\n"; ?>
+	WP Table Prefix:          <?php echo 'Length: '. strlen( $wpdb->prefix );
+	echo ' Status:';
+	if ( strlen( $wpdb->prefix ) > 16 ) {echo ' ERROR: Too Long';
+	} else { echo ' Acceptable';
+	} echo "\n"; ?>
 
 	Show On Front:            <?php echo get_option( 'show_on_front' ) . "\n" ?>
 	Page On Front:            <?php $id = get_option( 'page_on_front' ); echo get_the_title( $id ) . ' #' . $id . "\n" ?>
@@ -383,8 +391,8 @@ function ppp_display_sysinfo() {
 	Use Cookies:              <?php echo ini_get( 'session.use_cookies' ) ? 'On' : 'Off'; ?><?php echo "\n"; ?>
 	Use Only Cookies:         <?php echo ini_get( 'session.use_only_cookies' ) ? 'On' : 'Off'; ?><?php echo "\n"; ?>
 
-	UPLOAD_MAX_FILESIZE:      <?php if ( function_exists( 'phpversion' ) ) echo ini_get( 'upload_max_filesize' ); ?><?php echo "\n"; ?>
-	POST_MAX_SIZE:            <?php if ( function_exists( 'phpversion' ) ) echo ini_get( 'post_max_size' ); ?><?php echo "\n"; ?>
+	UPLOAD_MAX_FILESIZE:      <?php if ( function_exists( 'phpversion' ) ) { echo ini_get( 'upload_max_filesize' ); } ?><?php echo "\n"; ?>
+	POST_MAX_SIZE:            <?php if ( function_exists( 'phpversion' ) ) { echo ini_get( 'post_max_size' ); } ?><?php echo "\n"; ?>
 	WordPress Memory Limit:   <?php echo WP_MEMORY_LIMIT; ?><?php echo "\n"; ?>
 	DISPLAY ERRORS:           <?php echo ( ini_get( 'display_errors' ) ) ? 'On (' . ini_get( 'display_errors' ) . ')' : 'N/A'; ?><?php echo "\n"; ?>
 	FSOCKOPEN:                <?php echo ( function_exists( 'fsockopen' ) ) ? __( 'Your server supports fsockopen.', 'ppp-txt' ) : __( 'Your server does not support fsockopen.', 'ppp-txt' ); ?><?php echo "\n"; ?>
