@@ -131,7 +131,7 @@ function ppp_get_bitly_auth() {
 
 		update_option( 'ppp_social_settings', $ppp_social_settings );
 		echo 1;
-	} elseif ( $body == 'INVALID_LOGIN' ) {
+	} elseif ( $data->status_txt == 'INVALID_LOGIN' ) {
 		echo 'INVALID_LOGIN';
 	} else {
 		echo 0;

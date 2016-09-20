@@ -11,8 +11,10 @@ var tweetLengthImageRed    = 94;
 		minDate: 0
 	});
 
-	$('#bitly-login').click( function() {
-		var data = {};
+	$('#bitly-login').click( function(e) {
+		e.preventDefault();
+
+		var data   = {};
 		var button = $('#bitly-login');
 		button.removeClass('button-primary');
 		button.addClass('button-secondary');
