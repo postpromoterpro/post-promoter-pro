@@ -83,8 +83,8 @@ class Tests_General extends WP_UnitTestCase {
 		$supported_post_types = ppp_supported_post_types();
 
 		$this->assertInternalType( 'array', $supported_post_types );
-		$this->assertTrue( in_array( 'post', $supported_post_types ) );
-		$this->assertTrue( in_array( 'page', $supported_post_types ) );
+		$this->assertTrue( array_key_exists( 'post', $supported_post_types ) );
+		$this->assertTrue( array_key_exists( 'page', $supported_post_types ) );
 	}
 
 	public function test_get_post_types() {
