@@ -181,6 +181,7 @@ var tweetLengthRed    = 117;
 	var PPP_Twitter_Configuration = {
 		init: function() {
 			this.add();
+			this.duplicate();
 			this.remove();
 			this.view_all();
 			this.share_on_publish();
@@ -188,7 +189,10 @@ var tweetLengthRed    = 117;
 			this.check_timestamps();
 			this.show_hide_conflict_warning();
 		},
-		clone_repeatable: function(row) {
+		clone_repeatable: function(row, clear_data) {
+			if ( typeof clear_data === 'undefined' ) {
+				clear_data = true;
+			}
 
 			// Retrieve the highest current key
 			var key = highest = 1;
@@ -210,7 +214,11 @@ var tweetLengthRed    = 117;
 			clone.removeClass( 'ppp-add-blank' );
 			clone.removeClass( 'ppp-row-warning' );
 			clone.attr( 'data-key', key );
-			clone.find( 'td input, td select, textarea' ).val( '' );
+
+			if ( clear_data ) {
+				clone.find( 'td input, td select, textarea' ).val( '' );
+			}
+
 			clone.find( 'input, select, textarea' ).each(function() {
 				var name = $( this ).attr( 'name' );
 
@@ -222,7 +230,6 @@ var tweetLengthRed    = 117;
 			});
 
 			clone.find( '.ppp-text-length' ).text('0').css('background-color', '#339933');
-			clone.find( '.ppp-remove-repeatable' ).css('display', 'inline-block');
 			clone.find( '.ppp-upload-file' ).show();
 
 			return clone;
@@ -234,6 +241,21 @@ var tweetLengthRed    = 117;
 				row = button.parent().parent().prevAll('tr').not('.past-share').first(),
 				clone = PPP_Twitter_Configuration.clone_repeatable(row);
 				clone.insertAfter( row );
+
+				$('.share-time-selector').timepicker({ 'step': 15 });
+				$('.share-date-selector').datepicker({ dateFormat : 'mm/dd/yy', minDate: 0});
+			});
+		},
+		duplicate: function() {
+			$( 'body' ).on( 'click', '.ppp-clone-tweet', function(e) {
+				e.preventDefault();
+				var button = $( this ),
+				row = button.parent().parent(),
+				clone = PPP_Twitter_Configuration.clone_repeatable(row, false);
+				clone.find('.share-time-selector').val('');
+				clone.find('.share-date-selector').val('');
+				clone.find('.ppp-action-icons a').show();
+				clone.insertBefore( '.ppp-add-repeatable-wrapper' );
 
 				$('.share-time-selector').timepicker({ 'step': 15 });
 				$('.share-date-selector').datepicker({ dateFormat : 'mm/dd/yy', minDate: 0});
