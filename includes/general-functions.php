@@ -95,7 +95,6 @@ function ppp_add_image_sizes() {
 function ppp_supported_post_types() {
 	$post_type_args = apply_filters( 'ppp_supported_post_type_args', array(
 		'public'             => true,
-		'publicly_queryable' => true,
 		'show_ui'            => true,
 	) );
 	$post_types = get_post_types( $post_type_args, NULL, 'and' );
