@@ -648,6 +648,7 @@ function ppp_li_share_on_publish( $new_status, $old_status, $post ) {
 
 	$log_meta = array(
 		'network'   => 'li',
+		'share_id'  => 0,
 	);
 
 	$log_entry = WP_Logging::insert_log( $log_data, $log_meta );
@@ -696,6 +697,7 @@ function ppp_li_scheduled_share(  $post_id = 0, $index = 1, $name = ''  ) {
 
 	$log_meta = array(
 		'network'   => 'li',
+		'share_id'  => $index,
 	);
 
 	$log_entry = WP_Logging::insert_log( $log_data, $log_meta );
