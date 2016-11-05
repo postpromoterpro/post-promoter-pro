@@ -390,7 +390,7 @@ function ppp_tw_add_metabox_content( $post ) {
 									<th style="width: 75px;"><?php _e( 'Time', 'ppp-txt' ); ?></th>
 									<th><?php _e( 'Text', 'ppp-txt' ); ?></th>
 									<th style"width: 200px;"><?php _e( 'Image', 'ppp-txt' ); ?></th>
-									<th style="width: 10px;"></th>
+									<th style="width: 30px;"></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -434,7 +434,7 @@ function ppp_tw_add_metabox_content( $post ) {
 
 								<?php endif; ?>
 
-								<tr>
+								<tr class="ppp-add-repeatable-wrapper">
 									<td class="submit" colspan="4" style="float: none; clear:both; background:#fff;">
 										<a class="button-secondary ppp-add-repeatable" style="margin: 6px 0;"><?php _e( 'Add New Tweet', 'ppp-txt' ); ?></a>
 										<?php if ( ! empty( $has_past_shares ) ) : ?>
@@ -558,8 +558,9 @@ function ppp_render_tweet_row( $key, $args = array(), $post_id ) {
 			</div>
 		</td>
 
-		<td>
-			<a href="#" class="ppp-repeatable-row ppp-remove-repeatable" data-type="twitter" style="background: url(<?php echo admin_url('/images/xit.gif'); ?>) no-repeat;<?php echo $hide; ?>">&times;</a>
+		<td class="ppp-action-icons">
+			<a title="<?php _e( 'Duplicate', 'ppp-txt' ); ?>" href="#" class="ppp-clone-tweet"><i class="fa fa-repeat" aria-hidden="true"></i></a>
+			&nbsp;<a title="<?php _e( 'Delete', 'ppp-txt' ); ?>" href="#" class="ppp-repeatable-row ppp-remove-repeatable" data-type="twitter" style="<?php echo $hide; ?>"><i class="fa fa-trash" aria-hidden="true"></i></a>
 		</td>
 
 	</tr>
