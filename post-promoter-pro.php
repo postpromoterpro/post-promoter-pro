@@ -430,10 +430,7 @@ class PostPromoterPro {
  * @return object The Post_Promoter_Pro instance
  */
 function post_promoter_pro() {
-	global $ppp_loaded;
-
-	$ppp_loaded = PostPromoterPro::getInstance();
-	return $ppp_loaded;
+	return PostPromoterPro::getInstance();
 }
 add_action( 'plugins_loaded', 'post_promoter_pro' );
 
