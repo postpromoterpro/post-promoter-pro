@@ -53,8 +53,6 @@ class PostPromoterPro {
 				include PPP_PATH . '/includes/admin/dashboard.php';
 			}
 
-			include PPP_PATH . '/install.php';
-
 			$ppp_options         = get_option( 'ppp_options' );
 			$ppp_social_settings = get_option( 'ppp_social_settings' );
 			$ppp_share_settings  = get_option( 'ppp_share_settings' );
@@ -432,9 +430,28 @@ class PostPromoterPro {
  * @return object The Post_Promoter_Pro instance
  */
 function post_promoter_pro() {
-	global $ppp_loaded;
-
-	$ppp_loaded = PostPromoterPro::getInstance();
-	return $ppp_loaded;
+	return PostPromoterPro::getInstance();
 }
 add_action( 'plugins_loaded', 'post_promoter_pro' );
+
+/**
+ * On activation, setup the default options
+ * @return void
+ */
+function post_promoter_pro_activation_setup() {
+	// If the settings already exist, don't do this
+	if ( get_option( 'ppp_options' ) ) {
+		return;
+	}
+
+	$default_settings['post_types']['post'] = '1';
+	update_option( 'ppp_options', $default_settings );
+
+	$default_share_settings['twitter']['share_on_publish']  = '1';
+	$default_share_settings['facebook']['share_on_publish'] = '1';
+	$default_share_settings['linkedin']['share_on_publish'] = '1';
+	update_option( 'ppp_share_settings', $default_share_settings );
+
+	update_option( 'ppp_completed_upgrades', array( 'upgrade_post_meta' ) );
+}
+register_activation_hook( PPP_FILE, 'post_promoter_pro_activation_setup' );
