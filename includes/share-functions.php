@@ -117,7 +117,7 @@ function ppp_set_social_tokens() {
 
 	$social_tokens = ppp_has_local_tokens();
 
-	if ( false === $social_tokens ) {
+	if ( empty( $social_tokens ) ) {
 		define( 'PPP_LOCAL_TOKENS', false );
 		$social_tokens = get_transient( 'ppp_social_tokens' );
 
