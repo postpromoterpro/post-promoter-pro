@@ -229,7 +229,6 @@ var tweetLengthRed    = 117;
 				$( this ).prop('readonly', false);
 			});
 
-			clone.find( '.ppp-text-length' ).text('0').css('background-color', '#339933');
 			clone.find( '.ppp-upload-file' ).show();
 
 			return clone;
@@ -240,6 +239,7 @@ var tweetLengthRed    = 117;
 				var button = $( this ),
 				row = button.parent().parent().prevAll('tr').not('.past-share').first(),
 				clone = PPP_Twitter_Configuration.clone_repeatable(row);
+				clone.find( '.ppp-text-length' ).text('0').css('background-color', '#339933');
 				clone.insertAfter( row );
 
 				$('.share-time-selector').timepicker({ 'step': 15 });
