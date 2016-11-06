@@ -255,7 +255,8 @@ var tweetLengthRed    = 117;
 				clone.find('.share-time-selector').val('');
 				clone.find('.share-date-selector').val('');
 				clone.find('.ppp-action-icons a').show();
-				clone.insertBefore( '.ppp-add-repeatable-wrapper' );
+				clone.removeClass('past-share');
+				clone.insertBefore( '.ppp-repeatable-twitter:last' );
 
 				$('.share-time-selector').timepicker({ 'step': 15 });
 				$('.share-date-selector').datepicker({ dateFormat : 'mm/dd/yy', minDate: 0});
