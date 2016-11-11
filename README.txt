@@ -2,8 +2,8 @@
 Contributors: cklosows
 Tags: post promoter pro, twitter, linkedin, facebook, bitly, social media
 Requires at least: 4.0
-Tested up to: 4.6
-Stable tag: 2.3.5
+Tested up to: 4.7
+Stable tag: 2.3.8
 Donate link: https://postpromoterpro.com
 License: GPLv2
 
@@ -16,6 +16,18 @@ You write great content, but it can get lost in the fast-moving world of social 
 Engage followers who may have missed the original post; Post Promoter Pro allows you to customize the text that sits before the link to your content. Experiment with hashtags, a call to action, or interesting text that starts a conversation and compels your followers to view your post.
 
 == Changelog ==
+
+= 2.3.8 November 11, 2016 =
+* Fix: Existing Twitter character counts were not loaded on initial editing of a post.
+* Fix: Twitter character count background colors were not correct on initial editing of a post.
+
+= 2.3.7 November 6, 2016 =
+* FIX: If local tokens file is empty, fallback to licensed tokens.
+* FIX: Old upgrade routine showing on initial installation.
+* New: Allow duplicating an existing Tweet.
+* New: Improved meta box UI with new icons.
+* New: Support pages natively.
+* New: Save the share_id to the logs as post meta.
 
 = 2.3.6 September 19, 2016 =
 * FIX: Remove support for Bit.ly avatar.
