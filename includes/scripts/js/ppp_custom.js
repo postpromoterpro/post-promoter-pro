@@ -188,6 +188,9 @@ var tweetLengthRed    = 117;
 			this.count_length();
 			this.check_timestamps();
 			this.show_hide_conflict_warning();
+			$('.ppp-tweet-wrapper .ppp-text-length').each( function () {
+				pppSetLengthColors($(this).prev('.ppp-tweet-text-repeatable').val().length, $(this));
+			});
 		},
 		clone_repeatable: function(row, clear_data) {
 			if ( typeof clear_data === 'undefined' ) {
@@ -329,13 +332,7 @@ var tweetLengthRed    = 117;
 					var length      = input.val().length;
 				}
 
-				if ( length < tweetLengthYellow ) {
-					lengthField.css('background-color', '#339933');
-				} else if ( length >= tweetLengthYellow && length <= tweetLengthRed ) {
-					lengthField.css('background-color', '#CC9933');
-				} else if ( length > tweetLengthRed ) {
-					lengthField.css('background-color', '#FF3333');
-				}
+				pppSetLengthColors( length, lengthField );
 
 				lengthField.text(length);
 			});
@@ -412,3 +409,13 @@ var tweetLengthRed    = 117;
 	});
 
 })(jQuery);
+
+function pppSetLengthColors( length, target ) {
+	if ( length < tweetLengthYellow ) {
+		target.css('background-color', '#339933');
+	} else if ( length >= tweetLengthYellow && length <= tweetLengthRed ) {
+		target.css('background-color', '#CC9933');
+	} else if ( length > tweetLengthRed ) {
+		target.css('background-color', '#FF3333');
+	}
+}
