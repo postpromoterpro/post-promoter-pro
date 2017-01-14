@@ -5,6 +5,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+function ppp_post_inserted( $post_id, $post, $updated ) {
+	if ( ! $updated ) {
+		ppp_share_on_publish( $post->post_status, 'draft', $post );
+	}
+}
+
+function ppp_post_updated( $post_id, $post_after, $post_before ) {
+	ppp_share_on_publish( $post_after->post_status, $post_before->post_status, $post_after );
+}
+
 /**
  * Determine if we should share this post when it's being published
  *
