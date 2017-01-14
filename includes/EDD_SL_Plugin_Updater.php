@@ -454,4 +454,3 @@ class EDD_SL_Plugin_Updater {
 	}
 
 }
-0
