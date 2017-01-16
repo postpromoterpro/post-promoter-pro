@@ -165,7 +165,7 @@ function ppp_get_default_conflict_window() {
 function ppp_trash_logs( $post_id ) {
 	global $wpdb;
 
-	$sql = $wpdb->prepare( "UPDATE $wpdb->posts SET post_status = 'trash' WHERE post_parent = $post_id && post_type = 'wp_log'" );
+	$sql = $wpdb->prepare( "UPDATE $wpdb->posts SET post_status = 'trash' WHERE post_parent = %d && post_type = 'wp_log'", $post_id );
 	$wpdb->query( $sql );
 }
 add_action( 'wp_trash_post', 'ppp_trash_logs', 10, 1 );
