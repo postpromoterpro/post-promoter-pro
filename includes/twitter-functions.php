@@ -223,7 +223,7 @@ add_action( 'ppp_share_scheduled_tw', 'ppp_tw_scheduled_share', 10, 3 );
  * @return string          The Full text for the social share
  */
 function ppp_tw_build_share_message( $post_id, $name, $scheduled = true, $include_link = true ) {
-	$share_content = ppp_tw_generate_share_content( $post_id, $name );
+	$share_content = ppp_tw_generate_share_content( $post_id, $name, $scheduled );
 
 	if ( $include_link ) {
 		$share_link    = ppp_generate_link( $post_id, $name, $scheduled );
@@ -248,7 +248,7 @@ function ppp_tw_generate_share_content( $post_id, $name, $is_scheduled = true ) 
 		$ppp_post_override_data = get_post_meta( $post_id, '_ppp_post_override_data', true );
 		$name_array    = explode( '_', $name );
 		$index         = $name_array[1];
-		$share_content = $ppp_tweets[$index]['text'];
+		$share_content = $ppp_tweets[ $index ]['text'];
 	}
 
 	// If an override was found, use it, otherwise try the default text content

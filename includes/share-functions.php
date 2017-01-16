@@ -41,8 +41,14 @@ function ppp_post_updated( $post_id, $post_after, $post_before ) {
  * @return void
  */
 function ppp_share_on_publish( $new_status, $old_status, $post ) {
-	// don't publish password protected posts
+
+	// don't publish password protected posts.
 	if ( '' !== $post->post_password ) {
+		return;
+	}
+
+	// Prevent this from firing twice in a single publish.
+	if ( did_action( 'ppp_share_on_publish' ) ) {
 		return;
 	}
 
