@@ -223,7 +223,7 @@ add_action( 'ppp_share_scheduled_tw', 'ppp_tw_scheduled_share', 10, 3 );
  * @return string          The Full text for the social share
  */
 function ppp_tw_build_share_message( $post_id, $name, $scheduled = true, $include_link = true ) {
-	$share_content = ppp_tw_generate_share_content( $post_id, $name );
+	$share_content = ppp_tw_generate_share_content( $post_id, $name, $scheduled );
 
 	if ( $include_link ) {
 		$share_link    = ppp_generate_link( $post_id, $name, $scheduled );
