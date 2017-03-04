@@ -5,11 +5,12 @@
  * @group ppp_social
  */
 class Tests_Twitter extends WP_UnitTestCase {
-	public function setUp() {
-		parent::setUp();
+	protected $object;
 
-		$this->_post_id = $this->factory->post->create( array( 'post_title' => 'Test Post', 'post_type' => 'post', 'post_status' => 'publish' ) );
+	public static $_post_id;
 
+	public static function wpSetUpBeforeClass() {
+		self::$_post_id = self::factory()->post->create( array( 'post_title' => 'Test Post', 'post_type' => 'post', 'post_status' => 'publish' ) );
 	}
 
 	public function test_twitter_enabled() {

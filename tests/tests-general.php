@@ -5,10 +5,12 @@
  * @group ppp_general
  */
 class Tests_General extends WP_UnitTestCase {
-	public function setUp() {
-		parent::setUp();
+	protected $object;
 
-		$this->_post_id = $this->factory->post->create( array( 'post_title' => 'Test Post', 'post_type' => 'post', 'post_status' => 'publish' ) );
+	public static $_post_id;
+
+	public static function wpSetUpBeforeClass() {
+		self::$_post_id = self::factory()->post->create( array( 'post_title' => 'Test Post', 'post_type' => 'post', 'post_status' => 'publish' ) );
 	}
 
 	public function test_load_function() {
@@ -30,7 +32,9 @@ class Tests_General extends WP_UnitTestCase {
 	}
 
 	public function test_post_slug_by_id() {
-		$this->assertEquals( 'test-post', ppp_get_post_slug_by_id( $this->_post_id ) );
+		$post_data = get_post( self::$_post_id, ARRAY_A );
+		$slug = $post_data['post_name'];
+		$this->assertEquals( $slug, ppp_get_post_slug_by_id( self::$_post_id ) );
 	}
 
 	public function test_text_tokens() {
@@ -52,7 +56,7 @@ class Tests_General extends WP_UnitTestCase {
 	}
 
 	public function test_token_replacement() {
-		$args = array( 'post_id' => $this->_post_id );
+		$args = array( 'post_id' => self::$_post_id );
 		$this->assertEquals( 'Test Post', ppp_replace_text_tokens( '{post_title}', $args ) );
 		$this->assertEquals( 'Test Blog', ppp_replace_text_tokens( '{site_title}', $args ) );
 
@@ -64,19 +68,20 @@ class Tests_General extends WP_UnitTestCase {
 	}
 
 	public function test_unique_link() {
-		$link = get_post_permalink( $this->_post_id );
-		$name = 'sharedate_0_' . $this->_post_id . '_tw';
+		$link = get_post_permalink( self::$_post_id );
+		$name = 'sharedate_0_' . self::$_post_id . '_tw';
 
-		$unique_link = ppp_generate_unique_link( $link, $this->_post_id, $name );
-		$this->assertEquals( 'http://example.org/?post_type=post&p=' . $this->_post_id . '&ppp=' . $this->_post_id . '-0', $unique_link );
+		$unique_link = ppp_generate_unique_link( $link, self::$_post_id, $name );
+		$this->assertEquals( 'http://example.org/?post_type=post&p=' . self::$_post_id . '&ppp=' . self::$_post_id . '-0', $unique_link );
 	}
 
 	public function test_google_utm_link() {
-		$link = get_post_permalink( $this->_post_id );
-		$name = 'sharedate_0_' . $this->_post_id . '_tw';
+		$link = get_post_permalink( self::$_post_id );
+		$name = 'sharedate_0_' . self::$_post_id . '_tw';
 
-		$unique_link = ppp_generate_google_utm_link( $link, $this->_post_id, $name );
-		$this->assertEquals( 'http://example.org/?post_type=post&p=' . $this->_post_id . '&utm_source=Twitter&utm_medium=social&utm_term=test-post&utm_content=0&utm_campaign=PostPromoterPro', $unique_link );
+		$unique_link = ppp_generate_google_utm_link( $link, self::$_post_id, $name );
+		$slug        = ppp_get_post_slug_by_id( self::$_post_id );
+		$this->assertEquals( 'http://example.org/?post_type=post&p=' . self::$_post_id . '&utm_source=Twitter&utm_medium=social&utm_term=' . $slug . '&utm_content=0&utm_campaign=PostPromoterPro', $unique_link );
 	}
 
 	public function test_supported_post_types() {
