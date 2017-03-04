@@ -259,7 +259,7 @@ class PostPromoterPro {
 	 * @return void
 	 */
 	public function plugin_updater() {
-
+		global $ppp_options;
 		if ( defined( 'NO_AUTO_UPDATE' ) && true === NO_AUTO_UPDATE ) {
 			return;
 		}
@@ -276,7 +276,8 @@ class PostPromoterPro {
 				'version'   => PPP_VERSION,         // current version number
 				'license'   => $license_key,        // license key (used get_option above to retrieve from DB)
 				'item_name' => PPP_PLUGIN_NAME,     // name of this plugin
-				'author'    => 'Post Promoter Pro'  // author of this plugin
+				'author'    => 'Post Promoter Pro',  // author of this plugin
+				'beta'      => ! empty( $ppp_options['enable_betas'] ) ? true : false, // If we should install beta versions
 			)
 		);
 	}
