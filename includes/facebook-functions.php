@@ -568,7 +568,7 @@ function ppp_render_fb_share_row( $key, $args = array(), $post_id ) {
 		</td>
 
 		<td>
-			<a href="#" class="ppp-repeatable-row ppp-remove-repeatable" data-type="facebook" style="background: url(<?php echo admin_url('/images/xit.gif'); ?>) no-repeat;<?php echo $hide; ?>">&times;</a>
+			<a href="#" class="ppp-repeatable-row ppp-remove-repeatable" data-type="facebook" style="<?php echo $hide; ?>"><i class="fa fa-trash" aria-hidden="true"></i></a>
 		</td>
 
 	</tr>
