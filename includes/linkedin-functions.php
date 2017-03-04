@@ -750,10 +750,12 @@ function ppp_li_generate_share_content( $post_id, $name, $is_scheduled = true ) 
 	$default_text = isset( $ppp_options['default_text'] ) ? $ppp_options['default_text'] : '';
 	$li_shares    = get_post_meta( $post_id, '_ppp_li_shares', true );
 
-	if ( $is_scheduled && ! empty( $li_shares ) ) {
+	if ( ! empty( $li_shares ) ) {
 		$name_array    = explode( '_', $name );
 		$index         = $name_array[1];
-		$share_content = $li_shares[ $index ]['text'];
+		if ( isset( $li_shares[ $index ] ) ) {
+			$share_content = $li_shares[ $index ]['text'];
+		}
 	}
 
 	// If an override was found, use it, otherwise try the default text content
