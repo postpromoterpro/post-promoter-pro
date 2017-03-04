@@ -32,7 +32,9 @@ class Tests_General extends WP_UnitTestCase {
 	}
 
 	public function test_post_slug_by_id() {
-		$this->assertEquals( 'test-post', ppp_get_post_slug_by_id( self::$_post_id ) );
+		$post_data = get_post( self::$_post_id, ARRAY_A );
+		$slug = $post_data['post_name'];
+		$this->assertEquals( $slug, ppp_get_post_slug_by_id( self::$_post_id ) );
 	}
 
 	public function test_text_tokens() {
@@ -78,7 +80,8 @@ class Tests_General extends WP_UnitTestCase {
 		$name = 'sharedate_0_' . self::$_post_id . '_tw';
 
 		$unique_link = ppp_generate_google_utm_link( $link, self::$_post_id, $name );
-		$this->assertEquals( 'http://example.org/?post_type=post&p=' . self::$_post_id . '&utm_source=Twitter&utm_medium=social&utm_term=test-post&utm_content=0&utm_campaign=PostPromoterPro', $unique_link );
+		$slug        = ppp_get_post_slug_by_id( self::$_post_id );
+		$this->assertEquals( 'http://example.org/?post_type=post&p=' . self::$_post_id . '&utm_source=Twitter&utm_medium=social&utm_term=' . $slug . '&utm_content=0&utm_campaign=PostPromoterPro', $unique_link );
 	}
 
 	public function test_supported_post_types() {
