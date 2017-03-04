@@ -5,12 +5,14 @@
  * @group ppp_cron
  */
 class Tests_Cron extends WP_UnitTestCase {
-	public function setUp() {
-		parent::setUp();
+	protected $object;
 
-		$this->_post_id = $this->factory->post->create( array( 'post_title' => 'Test Post', 'post_type' => 'post', 'post_status' => 'publish' ) );
+	public static $_post_id;
 
-		add_filter( 'ppp_get_scheduled_crons', array( $this, 'add_crons' ) );
+	public static function wpSetUpBeforeClass() {
+		self::$_post_id = self::factory()->post->create( array( 'post_title' => 'Test Post', 'post_type' => 'post', 'post_status' => 'publish' ) );
+
+		add_filter( 'ppp_get_scheduled_crons', array( 'Tests_Cron', 'add_crons' ) );
 	}
 
 	public function test_get_scheduled_crons() {
@@ -30,13 +32,13 @@ class Tests_Cron extends WP_UnitTestCase {
 
 	}
 
-	public function add_crons() {
+	public static function add_crons() {
 		$test_crons = array(
 			'ef1e2ad70394f45f6281fe7281be8c2e' => array(
 				'schedule' => false,
 				'args'     => array(
-					$this->_post_id,
-					'sharedate_3_' . $this->_post_id
+					self::$_post_id,
+					'sharedate_3_' . self::$_post_id
 				),
 				'timestamp' => current_time( 'timestamp' )
 			)
