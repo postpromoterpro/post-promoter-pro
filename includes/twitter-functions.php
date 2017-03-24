@@ -244,11 +244,12 @@ function ppp_tw_generate_share_content( $post_id, $name, $is_scheduled = true ) 
 	$default_text = isset( $ppp_options['default_text'] ) ? $ppp_options['default_text'] : '';
 	$ppp_tweets   = get_post_meta( $post_id, '_ppp_tweets', true );
 
-	if ( $is_scheduled && ! empty( $ppp_tweets ) ) {
-		$ppp_post_override_data = get_post_meta( $post_id, '_ppp_post_override_data', true );
+	if ( ! empty( $ppp_tweets ) ) {
 		$name_array    = explode( '_', $name );
 		$index         = $name_array[1];
-		$share_content = $ppp_tweets[ $index ]['text'];
+		if ( isset( $ppp_tweets[ $index ] ) ) {
+			$share_content = $ppp_tweets[ $index ]['text'];
+		}
 	}
 
 	// If an override was found, use it, otherwise try the default text content

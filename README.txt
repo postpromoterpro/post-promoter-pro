@@ -3,7 +3,7 @@ Contributors: cklosows
 Tags: post promoter pro, twitter, linkedin, facebook, bitly, social media
 Requires at least: 4.0
 Tested up to: 4.7
-Stable tag: 2.3.8
+Stable tag: 2.3.10
 Donate link: https://postpromoterpro.com
 License: GPLv2
 
@@ -16,6 +16,17 @@ You write great content, but it can get lost in the fast-moving world of social 
 Engage followers who may have missed the original post; Post Promoter Pro allows you to customize the text that sits before the link to your content. Experiment with hashtags, a call to action, or interesting text that starts a conversation and compels your followers to view your post.
 
 == Changelog ==
+
+= 2.3.10 - March 5, 2017 =
+* Fix: Schedule view and dashboard widget using default text instead of custom text.
+* Fix: Possible fatal error when authorizing LinkedIn on PHP 7.1.
+* Tweak: Use new delete icon for Facebook and LinkedIn.
+* New: Add support for beta versions.
+
+= 2.3.9 February 6, 2017 =
+* Fix: Possible PHP notice when building share message.
+* Fix: Trashing posts with shares caused PHP warnings.
+* Tweak: Updated plugin updater class to newest version.
 
 = 2.3.8 November 11, 2016 =
 * Fix: Existing Twitter character counts were not loaded on initial editing of a post.

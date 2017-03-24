@@ -92,6 +92,10 @@ function ppp_admin_page() {
 						<input type="checkbox" name="ppp_options[enable_debug]" <?php checked( true, $debug_enabled, true ); ?> value="1" /> <?php _e( 'Enable Debug', 'ppp-txt' ); ?>
 						</p>
 						<p>
+						<?php $betas_enabled = isset( $ppp_options['enable_betas'] ) ? true : false; ?>
+						<input type="checkbox" name="ppp_options[enable_betas]" <?php checked( true, $betas_enabled, true ); ?> value="1" /> <?php _e( 'Enable Beta Versions', 'ppp-txt' ); ?>
+						</p>
+						<p>
 						<?php $delete_on_uninstall = isset( $ppp_options['delete_on_uninstall'] ) ? true : false; ?>
 						<input type="checkbox" name="ppp_options[delete_on_uninstall]" <?php checked( true, $delete_on_uninstall, true ); ?> value="1" /> <?php _e( 'Delete All Data On Uninstall', 'ppp-txt' ); ?>
 						</p>

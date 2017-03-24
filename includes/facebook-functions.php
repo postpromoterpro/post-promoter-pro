@@ -568,7 +568,7 @@ function ppp_render_fb_share_row( $key, $args = array(), $post_id ) {
 		</td>
 
 		<td>
-			<a href="#" class="ppp-repeatable-row ppp-remove-repeatable" data-type="facebook" style="background: url(<?php echo admin_url('/images/xit.gif'); ?>) no-repeat;<?php echo $hide; ?>">&times;</a>
+			<a href="#" class="ppp-repeatable-row ppp-remove-repeatable" data-type="facebook" style="<?php echo $hide; ?>"><i class="fa fa-trash" aria-hidden="true"></i></a>
 		</td>
 
 	</tr>
@@ -758,10 +758,12 @@ function ppp_fb_generate_share_content( $post_id, $name, $is_scheduled = true ) 
 	$default_text = isset( $ppp_options['default_text'] ) ? $ppp_options['default_text'] : '';
 	$fb_shares    = get_post_meta( $post_id, '_ppp_fb_shares', true );
 
-	if ( $is_scheduled && ! empty( $fb_shares ) ) {
+	if ( ! empty( $fb_shares ) ) {
 		$name_array    = explode( '_', $name );
 		$index         = $name_array[1];
-		$share_content = $fb_shares[ $index ]['text'];
+		if ( isset( $fb_shares[ $index ] ) ) {
+			$share_content = $fb_shares[ $index ]['text'];
+		}
 	}
 
 	// If an override was found, use it, otherwise try the default text content

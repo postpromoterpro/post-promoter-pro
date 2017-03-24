@@ -3,14 +3,14 @@
 Plugin Name: Post Promoter Pro
 Plugin URI: https://postpromoterpro.com
 Description: Maximize your social media presence on Twitter, Facebook, and LinkedIn.
-Version: 2.3.8
+Version: 2.3.10
 Author: Post Promoter Pro
 Author URI: https://postpromoterpro.com
 License: GPLv2
 */
 
 define( 'PPP_PATH', plugin_dir_path( __FILE__ ) );
-define( 'PPP_VERSION', '2.3.8' );
+define( 'PPP_VERSION', '2.3.10' );
 define( 'PPP_FILE', plugin_basename( __FILE__ ) );
 define( 'PPP_URL', plugins_url( '/', PPP_FILE ) );
 
@@ -260,7 +260,7 @@ class PostPromoterPro {
 	 * @return void
 	 */
 	public function plugin_updater() {
-
+		global $ppp_options;
 		if ( defined( 'NO_AUTO_UPDATE' ) && true === NO_AUTO_UPDATE ) {
 			return;
 		}
@@ -277,7 +277,8 @@ class PostPromoterPro {
 				'version'   => PPP_VERSION,         // current version number
 				'license'   => $license_key,        // license key (used get_option above to retrieve from DB)
 				'item_name' => PPP_PLUGIN_NAME,     // name of this plugin
-				'author'    => 'Post Promoter Pro'  // author of this plugin
+				'author'    => 'Post Promoter Pro',  // author of this plugin
+				'beta'      => ! empty( $ppp_options['enable_betas'] ) ? true : false, // If we should install beta versions
 			)
 		);
 	}

@@ -5,10 +5,12 @@
  * @group ppp_filters
  */
 class Tests_Filters extends WP_UnitTestCase {
-	public function setUp() {
-		parent::setUp();
+	protected $object;
 
-		$this->_post_id = $this->factory->post->create( array( 'post_title' => 'Test Post', 'post_type' => 'post', 'post_status' => 'publish' ) );
+	public static $_post_id;
+
+	public static function wpSetUpBeforeClass() {
+		self::$_post_id = self::factory()->post->create( array( 'post_title' => 'Test Post', 'post_type' => 'post', 'post_status' => 'publish' ) );
 	}
 
 	public function test_bitly_filters() {
@@ -33,29 +35,36 @@ class Tests_Filters extends WP_UnitTestCase {
 		$tokens = ppp_set_default_text_tokens( array() );
 		$this->assertEquals( 2, count( $tokens ) );
 
-		$this->assertEquals( 'Test Post', ppp_replace_text_tokens( '{post_title}', array( 'post_id' => $this->_post_id ) ) );
-		$this->assertEquals( 'Test Blog', ppp_replace_text_tokens( '{site_title}', array( 'post_id' => $this->_post_id ) ) );
+		$this->assertEquals( 'Test Post', ppp_replace_text_tokens( '{post_title}', array( 'post_id' => self::$_post_id ) ) );
+		$this->assertEquals( 'Test Blog', ppp_replace_text_tokens( '{site_title}', array( 'post_id' => self::$_post_id ) ) );
 
 		// Test the negative replacements when post_id is missing
 		$this->assertEquals( '{post_title}', ppp_post_title_token( '{post_title}', array() ) );
 	}
 
 	public function test_unique_link_genreation() {
-		$link = ppp_generate_unique_link( get_permalink( $this->_post_id ), $this->_post_id, 'sharedate_1_' . $this->_post_id . '_tw' );
-		$this->assertEquals( 'http://example.org/?p=' . $this->_post_id . '&ppp=' . $this->_post_id . '-1', $link );
+		$link = ppp_generate_unique_link( get_permalink( self::$_post_id ), self::$_post_id, 'sharedate_1_' . self::$_post_id . '_tw' );
+		$this->assertEquals( 'http://example.org/?p=' . self::$_post_id . '&ppp=' . self::$_post_id . '-1', $link );
 	}
 
-	public function test_google_utm_links() {
-		$link = ppp_generate_google_utm_link( get_permalink( $this->_post_id ), $this->_post_id, 'sharedate_1_' . $this->_post_id . '_tw' );
-		$expected = 'http://example.org/?p=' . $this->_post_id . '&utm_source=Twitter&utm_medium=social&utm_term=test-post&utm_content=1&utm_campaign=PostPromoterPro';
+	public function test_google_utm_links_twitter() {
+		$link = ppp_generate_google_utm_link( get_permalink( self::$_post_id ), self::$_post_id, 'sharedate_1_' . self::$_post_id . '_tw' );
+		$slug = ppp_get_post_slug_by_id( self::$_post_id );
+		$expected = 'http://example.org/?p=' . self::$_post_id . '&utm_source=Twitter&utm_medium=social&utm_term=' . $slug . '&utm_content=1&utm_campaign=PostPromoterPro';
 		$this->assertEquals( $expected, $link );
+	}
 
-		$link = ppp_generate_google_utm_link( get_permalink( $this->_post_id ), $this->_post_id, 'sharedate_1_' . $this->_post_id . '_li' );
-		$expected = 'http://example.org/?p=' . $this->_post_id . '&utm_source=LinkedIn&utm_medium=social&utm_term=test-post&utm_content=1&utm_campaign=PostPromoterPro';
+	public function test_google_utm_links_facebook() {
+		$link = ppp_generate_google_utm_link( get_permalink( self::$_post_id ), self::$_post_id, 'sharedate_1_' . self::$_post_id . '_fb' );
+		$slug = ppp_get_post_slug_by_id( self::$_post_id );
+		$expected = 'http://example.org/?p=' . self::$_post_id . '&utm_source=Facebook&utm_medium=social&utm_term=' . $slug . '&utm_content=1&utm_campaign=PostPromoterPro';
 		$this->assertEquals( $expected, $link );
+	}
 
-		$link = ppp_generate_google_utm_link( get_permalink( $this->_post_id ), $this->_post_id, 'sharedate_1_' . $this->_post_id . '_fb' );
-		$expected = 'http://example.org/?p=' . $this->_post_id . '&utm_source=Facebook&utm_medium=social&utm_term=test-post&utm_content=1&utm_campaign=PostPromoterPro';
+	public function test_google_utm_links_linkedin() {
+		$link = ppp_generate_google_utm_link( get_permalink( self::$_post_id ), self::$_post_id, 'sharedate_1_' . self::$_post_id . '_li' );
+		$slug = ppp_get_post_slug_by_id( self::$_post_id );
+		$expected = 'http://example.org/?p=' . self::$_post_id . '&utm_source=LinkedIn&utm_medium=social&utm_term=' . $slug . '&utm_content=1&utm_campaign=PostPromoterPro';
 		$this->assertEquals( $expected, $link );
 	}
 
