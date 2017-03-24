@@ -129,7 +129,7 @@
 	width: 25px;
 }
 
-.socialmediaservices .icon.column-icon, .avatar.column-avatar, .name.column-name, .actions.column-actions, .extras.column-extras {
+.socialmediaservices td {
 	vertical-align: middle;
 }
 
@@ -149,12 +149,12 @@
 	width: 40%;
 }
 
-.column-image, .manage-column.column-image {
+.scheduledshares .column-image, .manage-column.column-image {
 	width: 18%;
 	text-align: center;
 }
 
-.column-image img {
+.scheduledshares .column-image img {
 	width: 100%
 }
 
