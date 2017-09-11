@@ -842,3 +842,26 @@ function ppp_fb_get_post_shares( $items, $post_id ) {
 	return $items;
 }
 add_filter( 'ppp_get_post_scheduled_shares', 'ppp_fb_get_post_shares', 10, 2 );
+
+/**
+ * When a post is updated, if the status is 'publish', clear the Open Graph cache
+ *
+ * @since 2.3.11
+ * 
+ * @param $post_id
+ * @param $post_after
+ * @param $post_before
+ */
+function ppp_fb_clear_open_graph_cache( $post_id, $post_after, $post_before ) {
+	$post_types = ppp_allowed_post_types();
+	if ( ! in_array( $post_after->post_type, $post_types ) ) {
+		return;
+	}
+
+	if ( 'publish' == $post_after->post_status ) {
+		global $ppp_facebook_oauth;
+
+		return $ppp_facebook_oauth->clear_og_cache( $post_id );
+	}
+}
+add_action( 'post_updated', 'ppp_fb_clear_open_graph_cache', 10, 3 );
