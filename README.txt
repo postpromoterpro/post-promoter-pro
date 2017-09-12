@@ -2,8 +2,8 @@
 Contributors: cklosows
 Tags: post promoter pro, twitter, linkedin, facebook, bitly, social media
 Requires at least: 4.0
-Tested up to: 4.7
-Stable tag: 2.3.10
+Tested up to: 4.8
+Stable tag: 2.3.11
 Donate link: https://postpromoterpro.com
 License: GPLv2
 
@@ -16,6 +16,10 @@ You write great content, but it can get lost in the fast-moving world of social 
 Engage followers who may have missed the original post; Post Promoter Pro allows you to customize the text that sits before the link to your content. Experiment with hashtags, a call to action, or interesting text that starts a conversation and compels your followers to view your post.
 
 == Changelog ==
+
+= 2.3.11 - September 11, 2017 =
+* Fix: Prevent possible duplicate scheuled share from being sent.
+* New: When a post is published or updated (after being published) send a request to Facebook to clear the Open Graph cache.
 
 = 2.3.10 - March 5, 2017 =
 * Fix: Schedule view and dashboard widget using default text instead of custom text.
