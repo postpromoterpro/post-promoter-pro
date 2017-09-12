@@ -100,6 +100,9 @@ function ppp_share_post( $post_id, $name ) {
 
 	do_action( 'ppp_share_scheduled_' . $service, $post_id, $index, $name );
 
+	// Just in case we get caught in a weird state, kill this share immediately after we execute it.
+	wp_clear_scheduled_hook( 'ppp_share_post_event', array( $post_id, $name ) );
+
 }
 
 /**

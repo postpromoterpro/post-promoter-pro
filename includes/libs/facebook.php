@@ -313,5 +313,18 @@ if( !class_exists( 'PPP_Facebook' ) ) {
 
 			return $data;
 		}
+
+		/**
+		 * Flush the Open Graph cache for a given post_id
+		 *
+		 * @param $post_id The post ID to flush the OG cache for
+		 */
+		public function clear_og_cache( $post_id ) {
+			$post_url = get_permalink( $post_id );
+			if ( ! empty( $post_url ) ) {
+				$args     = array( 'body' => array( 'id' => $post_url, 'scrape' => true ) );
+				$response = json_decode( wp_remote_retrieve_body( wp_remote_post( 'https://graph.facebook.com/', $args ) ) );
+			}
+		}
 	}
 }
