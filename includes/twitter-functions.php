@@ -210,6 +210,28 @@ function ppp_tw_scheduled_share( $post_id = 0, $index = 1, $name = '' ) {
 			$twitter_user->retweet( $status->id_str );
 		}
 
+		/* Get an array of users who should retweet if another author has a scheduled share
+		 * Exclude the author that retweeted earlier to avoid duplicate retweets.
+		 */
+		$args = array(
+			'meta_query' => array(
+				array(
+					'key' 		=> '_ppp_share_others_scheduled',
+					'value'		=> true,
+					'compare'	=> '='
+				),
+			),
+			'fields'	=> array( 'ID' ),
+			'exclude'	=> array( $author_id )
+		);
+		$other_rt = get_users( $args );
+
+		if ( $other_rt ){
+			foreach ( $other_rt as $user ) {
+				$twitter_user = new PPP_Twitter_User( $user->ID );
+				$twitter_user->retweet( $status->id_str );
+			}
+		}
 	}
 }
 add_action( 'ppp_share_scheduled_tw', 'ppp_tw_scheduled_share', 10, 3 );
@@ -660,6 +682,29 @@ function ppp_tw_share_on_publish( $new_status, $old_status, $post ) {
 			$twitter_user->retweet( $status->id_str );
 		}
 
+		/* Get an array of users who should retweet if another author has a post published
+		 * Exclude the author that shared earlier to avoid duplicate retweets.
+		 */
+		$args = array(
+			'meta_query' => array(
+				array(
+					'key' 		=> '_ppp_share_others_on_publish',
+					'value'		=> true,
+					'compare'	=> '='
+				),
+			),
+			'fields'	=> array( 'ID' ),
+			'exclude'	=> array( $author_id )
+		);
+		$other_rt = get_users( $args );
+
+		if ( $other_rt ){
+			foreach ( $other_rt as $user ) {
+				$twitter_user = new PPP_Twitter_User( $user->ID );
+				$twitter_user->retweet( $status->id_str );
+			}
+		}
+
 	}
 }
 add_action( 'ppp_share_on_publish', 'ppp_tw_share_on_publish', 10, 3 );
@@ -912,8 +957,10 @@ function ppp_tw_profile_settings( $user ) {
 
 		<?php if ( $connected ) : ?>
 		<?php
-			$share_on_publish = get_user_meta( $user->ID, '_ppp_share_on_publish', true );
-			$share_scheduled  = get_user_meta( $user->ID, '_ppp_share_scheduled' , true );
+			$share_on_publish 			= get_user_meta( $user->ID, '_ppp_share_on_publish', true );
+			$share_scheduled  			= get_user_meta( $user->ID, '_ppp_share_scheduled' , true );
+			$share_others_on_publish 	= get_user_meta( $user->ID, '_ppp_share_others_on_publish', true );
+			$share_others_scheduled  	= get_user_meta( $user->ID, '_ppp_share_others_scheduled' , true );
 		?>
 		<tr>
 			<th><?php _e( 'Sharing Options', 'ppp-txt' ); ?></th>
@@ -927,6 +974,20 @@ function ppp_tw_profile_settings( $user ) {
 			<td>
 				<input type="checkbox" <?php checked( true, $share_scheduled, true ); ?> name="share_scheduled" value="1" id="share-scheduled" /> <label for="share-scheduled"><?php _e( 'Retweet scheduled shares of my posts', 'ppp-txt' ); ?></label>
 				<p class="description"><?php printf( __( 'When the primary account schedules a Tweet for one of my posts, Retweet it as %s.', 'ppp-txt' ), $tw_user['user']->screen_name ); ?></p>
+			</td>
+		</tr>
+		<tr>
+			<th></th>
+			<td>
+				<input type="checkbox" <?php checked( true, $share_others_on_publish, true ); ?> name="share_others_on_publish" value="1" id="share-others-on-publish" /> <label for="share-others-on-publish"><?php _e( 'Retweet other author\'s posts when they are published', 'ppp-txt' ); ?></label>
+				<p class="description"><?php printf( __( 'Retweet the primary account as %s when it Tweets on publishing another author\'s posts.', 'ppp-txt' ), $tw_user['user']->screen_name ); ?></p>
+			</td>
+		</tr>
+		<tr>
+			<th></th>
+			<td>
+				<input type="checkbox" <?php checked( true, $share_others_scheduled, true ); ?> name="share_others_scheduled" value="1" id="share-others-scheduled" /> <label for="share-others-scheduled"><?php _e( 'Retweet scheduled shares of other author\'s posts', 'ppp-txt' ); ?></label>
+				<p class="description"><?php printf( __( 'When the primary account schedules a Tweet for another author\'s post, Retweet it as %s.', 'ppp-txt' ), $tw_user['user']->screen_name ); ?></p>
 			</td>
 		</tr>
 
@@ -946,11 +1007,15 @@ add_action( 'edit_user_profile', 'ppp_tw_profile_settings' );
  */
 function ppp_tw_save_profile( $user_id ) {
 
-	$share_on_publish = ! empty( $_POST['share_on_publish'] ) ? true : false;
-	$share_scheduled  = ! empty( $_POST['share_scheduled'] )  ? true : false;
+	$share_on_publish 			= ! empty( $_POST['share_on_publish'] ) ? true : false;
+	$share_scheduled  			= ! empty( $_POST['share_scheduled'] )  ? true : false;
+	$share_others_on_publish 	= ! empty( $_POST['share_others_on_publish'] ) ? true : false;
+	$share_others_scheduled  	= ! empty( $_POST['share_others_scheduled'] )  ? true : false;
 
 	update_user_meta( $user_id, '_ppp_share_on_publish', $share_on_publish );
-	update_user_meta( $user_id, '_ppp_share_scheduled' , $share_scheduled  );
+	update_user_meta( $user_id, '_ppp_share_scheduled', $share_scheduled  );
+	update_user_meta( $user_id, '_ppp_share_others_on_publish', $share_others_on_publish );
+	update_user_meta( $user_id, '_ppp_share_others_scheduled', $share_others_scheduled  );
 
 }
 add_action( 'personal_options_update', 'ppp_tw_save_profile' );
