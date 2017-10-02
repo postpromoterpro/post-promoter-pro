@@ -85,7 +85,7 @@ function ppp_tw_account_list_actions( $string = '' ) {
 
 	if ( ! ppp_twitter_enabled() ) {
 		global $ppp_twitter_oauth, $ppp_social_settings;
-		$tw_auth = $ppp_twitter_oauth->ppp_verify_twitter_credentials();
+		$tw_auth    = $ppp_twitter_oauth->ppp_verify_twitter_credentials();
 		$tw_authurl = $ppp_twitter_oauth->ppp_get_twitter_auth_url();
 
 		$string .= '<a href="' . $tw_authurl . '"><img src="' . PPP_URL . '/includes/images/sign-in-with-twitter-gray.png" /></a>';
