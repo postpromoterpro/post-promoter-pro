@@ -55,6 +55,10 @@ function ppp_get_timestamps( $post_id ) {
 function ppp_share_post( $post_id, $name ) {
 	global $ppp_options, $ppp_social_settings, $ppp_share_settings, $ppp_twitter_oauth;
 
+	if ( ppp_is_dev_or_staging() ) {
+		return;
+	}
+
 	// If we've already started to share this, don't share it again.
 	// Compensates for wp-cron's race conditions
 	if ( get_transient( 'ppp_sharing' . $name ) === 'true' ) {

@@ -102,6 +102,10 @@ class PostPromoterPro {
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_custom_scripts' ), 99 );
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_styles' ), PHP_INT_MAX );
 			add_action( 'wp_trash_post', 'ppp_remove_scheduled_shares', 10, 1 );
+
+			if ( ppp_is_dev_or_staging() ) {
+				add_action( 'admin_notices', array( $this, 'local_site_nag' ) );
+			}
 		}
 
 		add_action( 'init', array( $this, 'get_actions' ) );
@@ -294,6 +298,22 @@ class PostPromoterPro {
 					 __( 'Post Promoter Pro requires your license key to work, please <a href="%s">enter it now</a>.', 'ppp-txt' ),
 						  admin_url( 'admin.php?page=ppp-options' )
 					 );
+				?>
+			</p>
+		</div>
+		<?php
+	}
+
+	/**
+	 * If site is detected as local, show notice
+	 * @return void
+	 */
+	public function local_site_nag() {
+		?>
+		<div class="updated dismissible">
+			<p>
+				<?php
+					_e( 'Post Promoter Pro has detected a development or staging site. To prevent unintended social media posts, sharing has been disabled.', 'ppp-txt' );
 				?>
 			</p>
 		</div>
