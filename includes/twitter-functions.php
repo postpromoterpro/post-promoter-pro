@@ -490,7 +490,7 @@ function ppp_render_tweet_share_on_publish_row() {
 		</td>
 
 		<td>
-			<input <?php if ( $disabled ): ?>readonly<?php endif; ?> class="ppp-tweet-text-repeatable" type="text" name="_ppp_share_on_publish_text" value="<?php echo esc_attr( $ppp_share_on_publish_text ); ?>" />
+			<textarea <?php if ( $disabled ): ?>readonly<?php endif; ?> class="ppp-tweet-text-repeatable" type="text" name="_ppp_share_on_publish_text"><?php echo esc_attr( $ppp_share_on_publish_text ); ?></textarea>
 			<?php $length = ! empty( $ppp_share_on_publish_text ) ? strlen( $ppp_share_on_publish_text ) : 0; ?>
 			&nbsp;<span class="ppp-text-length"><?php echo $length; ?></span>
 		</td>
@@ -541,7 +541,7 @@ function ppp_render_tweet_row( $key, $args = array(), $post_id ) {
 		</td>
 
 		<td>
-			<input <?php echo $readonly; ?>class="ppp-tweet-text-repeatable" type="text" name="_ppp_tweets[<?php echo $key; ?>][text]" value="<?php echo esc_attr( $args['text'] ); ?>" />
+			<textarea class="ppp-tweet-text-repeatable" type="text" name="_ppp_tweets[<?php echo $key; ?>][text]" <?php echo $readonly; ?>><?php echo esc_attr( $args['text'] ); ?></textarea>
 			<?php $length = ! empty( $args['text'] ) ? strlen( $args['text'] ) : 0; ?>
 			&nbsp;<span class="ppp-text-length"><?php echo $length; ?></span>
 		</td>
