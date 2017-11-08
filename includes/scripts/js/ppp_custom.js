@@ -1,5 +1,5 @@
-var tweetLengthYellow = 100;
-var tweetLengthRed    = 117;
+var tweetLengthYellow = 240;
+var tweetLengthRed    = 257;
 
 (function ($) {
 	$('.share-time-selector').timepicker({ 'step': 15 });
