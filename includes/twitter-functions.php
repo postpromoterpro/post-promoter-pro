@@ -85,7 +85,7 @@ function ppp_tw_account_list_actions( $string = '' ) {
 
 	if ( ! ppp_twitter_enabled() ) {
 		global $ppp_twitter_oauth, $ppp_social_settings;
-		$tw_auth = $ppp_twitter_oauth->ppp_verify_twitter_credentials();
+		$tw_auth    = $ppp_twitter_oauth->ppp_verify_twitter_credentials();
 		$tw_authurl = $ppp_twitter_oauth->ppp_get_twitter_auth_url();
 
 		$string .= '<a href="' . $tw_authurl . '"><img src="' . PPP_URL . '/includes/images/sign-in-with-twitter-gray.png" /></a>';
@@ -873,12 +873,17 @@ add_filter( 'user_contactmethods', 'ppp_tw_add_contact_method' );
  * @return void         Displays HTML
  */
 function ppp_tw_profile_settings( $user ) {
+	global $ppp_social_settings;
 
 	if ( $user->ID == get_current_user_id() && ! current_user_can( 'edit_posts' ) ) {
 		return;
 	}
 
 	if ( $user->ID !== get_current_user_id() && ! current_user_can( 'manage_options' ) ) {
+		return;
+	}
+
+	if ( ! isset( $ppp_social_settings['twitter'] ) || is_null( $ppp_social_settings['twitter'] ) ) {
 		return;
 	}
 
@@ -945,6 +950,11 @@ add_action( 'edit_user_profile', 'ppp_tw_profile_settings' );
  * @return void         Saves to Usermeta
  */
 function ppp_tw_save_profile( $user_id ) {
+	global $ppp_social_settings;
+
+	if ( ! isset( $ppp_social_settings['twitter'] ) || is_null( $ppp_social_settings['twitter'] ) ) {
+		return;
+	}
 
 	$share_on_publish = ! empty( $_POST['share_on_publish'] ) ? true : false;
 	$share_scheduled  = ! empty( $_POST['share_scheduled'] )  ? true : false;

@@ -125,7 +125,9 @@ function ppp_set_social_tokens() {
 	$social_tokens = ppp_has_local_tokens();
 
 	if ( empty( $social_tokens ) ) {
-		define( 'PPP_LOCAL_TOKENS', false );
+		if ( ! defined( 'PPP_LOCAL_TOKENS' ) ) {
+			define( 'PPP_LOCAL_TOKENS', false );
+		}
 		$social_tokens = get_transient( 'ppp_social_tokens' );
 
 		if ( ! $social_tokens ) {
@@ -142,7 +144,10 @@ function ppp_set_social_tokens() {
 		}
 
 	} else {
-		define( 'PPP_LOCAL_TOKENS', true );
+		if ( ! defined ( 'PPP_LOCAL_TOKENS' ) ) {
+			define( 'PPP_LOCAL_TOKENS', true );
+		}
+
 		delete_transient( 'ppp_social_tokens' );
 
 		if ( isset( $social_tokens->options ) ) {
@@ -159,7 +164,9 @@ function ppp_set_social_tokens() {
 					case 'NO_AUTO_UPDATE':
 						// Avoid the call to the API to check for software updates
 						$value = is_bool( $value ) ? $value : false;
-						define( 'NO_AUTO_UPDATE', $value );
+						if ( ! defined( 'NO_AUTO_UPDATE' ) ) {
+							define( 'NO_AUTO_UPDATE', $value );
+						}
 						break;
 
 				}
