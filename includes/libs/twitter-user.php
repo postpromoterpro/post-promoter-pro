@@ -125,10 +125,6 @@ if( !class_exists( 'PPP_Twitter_User' ) ) {
 
 			//load twitter class
 			$twitter       = $this->load();
-			if ( false !== $twitter ) {
-				return '';
-			}
-
 			$request_token = $this->twitter->getRequestToken( $return_url );
 
 			// If last connection failed don't display authorization link.
