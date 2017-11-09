@@ -32,3 +32,12 @@ To set up local keys, do the following:
 5. Code amazing things
 
 6. Submit pull requests
+
+If you are running Nginx, you will need to put this into your server configuration to prevent direct access to the file.
+```
+  location ~* ppp-social-tokens.json$ {
+  	deny all;
+  	access_log off;
+  	log_not_found off;
+  }
+```
