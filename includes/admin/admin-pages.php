@@ -60,7 +60,7 @@ function ppp_admin_page() {
 							<small>
 							<?php _e( 'The typical length of a link shortened on Twitter is 23 characters, so keep that in mind when writing your default text.', 'ppp-txt' ); ?>
 							<br />
-							<?php _e( 'Status updates over 140 characters will fail to post.', 'ppp-txt' ); ?>
+							<?php _e( 'Status updates over 280 characters will fail to post.', 'ppp-txt' ); ?>
 							<br />
 							<?php _e( 'Possible Replacements:', 'ppp-txt' ); ?>
 							<br />
