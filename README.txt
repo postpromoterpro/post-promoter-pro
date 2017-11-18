@@ -3,7 +3,7 @@ Contributors: cklosows
 Tags: post promoter pro, twitter, linkedin, facebook, bitly, social media
 Requires at least: 4.0
 Tested up to: 4.8
-Stable tag: 2.3.12
+Stable tag: 2.3.13
 Donate link: https://postpromoterpro.com
 License: GPLv2
 
@@ -16,6 +16,11 @@ You write great content, but it can get lost in the fast-moving world of social 
 Engage followers who may have missed the original post; Post Promoter Pro allows you to customize the text that sits before the link to your content. Experiment with hashtags, a call to action, or interesting text that starts a conversation and compels your followers to view your post.
 
 == Changelog ==
+
+= 2.3.13 - November 18, 2017 =
+* Fix: Possible issue loading translation files when directory has been changed.
+* Fix: Incorrect spelling of function name.
+* Tweak: Corrected a reference to 140 characters for Twitter.
 
 = 2.3.12 - November 8, 2017 =
 * New: Support Twitter's new 280 character count.
