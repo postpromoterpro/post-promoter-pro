@@ -69,7 +69,7 @@ function ppp_remove_scheduled_share( $args ) {
  * Get all the crons hooked into 'ppp_share_post_event'
  * @return array All crons scheduled for Post Promoter Pro
  */
-function ppp_get_shceduled_crons( $post_id = false ) {
+function ppp_get_scheduled_crons( $post_id = false ) {
 	$all_crons = get_option( 'cron' );
 	$ppp_crons = array();
 
@@ -92,6 +92,17 @@ function ppp_get_shceduled_crons( $post_id = false ) {
 
 	return apply_filters( 'ppp_get_scheduled_crons', $ppp_crons );
 }
+
+	/**
+	 * Leaving in for backwards compatibility
+	 *
+	 * @param bool $post_id
+	 *
+	 * @return array
+	 */
+	function ppp_get_shceduled_crons( $post_id = false ) {
+		return ppp_get_scheduled_crons( $post_id );
+	}
 
 /**
  * Given a time, see if there are any tweets scheduled within the range of the within
