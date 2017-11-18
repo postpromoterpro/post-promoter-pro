@@ -255,7 +255,7 @@ class PostPromoterPro {
 	 * @access public
 	 */
 	public function ppp_loaddomain() {
-		load_plugin_textdomain( 'ppp-txt', false, '/post-promoter-pro/languages/' );
+		load_plugin_textdomain( 'ppp-txt', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 	}
 
 	/**
