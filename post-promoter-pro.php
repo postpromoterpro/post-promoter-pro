@@ -182,17 +182,26 @@ class PostPromoterPro {
 	}
 
 	/**
+	 * Returns the capability (or role) required to manage the plugin.
+	 *
+	 * @return string A WordPress capability or role name.
+	 */
+	public static function get_manage_capability() {
+		return apply_filters( 'ppp_manage_role', 'manage_options' );
+	}
+
+	/**
 	 * Add the Pushover Notifications item to the Settings menu
 	 * @return void
 	 * @access public
 	 */
 	public function ppp_setup_admin_menu() {
-		$role = apply_filters( 'ppp_manage_role', 'administrator' );
+		$capability = self::get_manage_capability();
 
 		add_menu_page(
 			__( 'Post Promoter', 'ppp-txt' ),
 			__( 'Post Promoter', 'ppp-txt' ),
-			$role,
+			$capability,
 			'ppp-options',
 			'ppp_admin_page'
 		);
@@ -201,7 +210,7 @@ class PostPromoterPro {
 			'ppp-options',
 			__( 'Social Settings', 'ppp-txt' ),
 			__( 'Social Settings', 'ppp-txt' ),
-			$role,
+			$capability,
 			'ppp-social-settings',
 			'ppp_display_social'
 		);
@@ -210,7 +219,7 @@ class PostPromoterPro {
 			'ppp-options',
 			__( 'Schedule', 'ppp-txt' ),
 			__( 'Schedule', 'ppp-txt' ),
-			$role,
+			$capability,
 			'ppp-schedule-info',
 			'ppp_display_schedule'
 		);
@@ -219,7 +228,7 @@ class PostPromoterPro {
 			'ppp-options',
 			__( 'System Info', 'ppp-txt' ),
 			__( 'System Info', 'ppp-txt' ),
-			$role,
+			$capability,
 			'ppp-system-info',
 			'ppp_display_sysinfo'
 		);
@@ -228,7 +237,7 @@ class PostPromoterPro {
 			null,
 			__( 'PPP Upgrades', 'ppp-txt' ),
 			__( 'PPP Upgrades', 'ppp-txt' ),
-			$role,
+			$capability,
 			'ppp-upgrades',
 			'ppp_upgrades_screen'
 		);

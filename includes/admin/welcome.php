@@ -25,11 +25,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 class PPP_Welcome {
 
 	/**
-	 * @var string The capability users should have to view the page
-	 */
-	public $minimum_capability = 'manage_options';
-
-	/**
 	 * Get things started
 	 *
 	 * @since 1.2
@@ -53,7 +48,7 @@ class PPP_Welcome {
 		add_dashboard_page(
 			__( 'Welcome to Post Promoter Pro', 'ppp-txt' ),
 			__( 'Welcome to Post Promoter Pro', 'ppp-txt' ),
-			$this->minimum_capability,
+			PostPromoterPro::get_manage_capability(),
 			'ppp-about',
 			array( $this, 'about_screen' )
 		);
@@ -62,7 +57,7 @@ class PPP_Welcome {
 		add_dashboard_page(
 			__( 'Getting started with Post Promoter Pro', 'ppp-txt' ),
 			__( 'Getting started with Post Promoter Pro', 'ppp-txt' ),
-			$this->minimum_capability,
+			PostPromoterPro::get_manage_capability(),
 			'ppp-getting-started',
 			array( $this, 'getting_started_screen' )
 		);

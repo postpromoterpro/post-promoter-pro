@@ -129,7 +129,7 @@ add_action( 'admin_head', 'ppp_capture_twitter_oauth', 10 );
 function ppp_disconnect_twitter() {
 	if ( ! empty( $_GET['user_id'] ) ) {
 		$user_id = (int) sanitize_text_field( $_GET['user_id'] );
-		if ( $user_id !== get_current_user_id() || ! current_user_can( 'manage_options' ) ) {
+		if ( $user_id !== get_current_user_id() || ! current_user_can( PostPromoterPro::get_manage_capability() ) ) {
 			wp_die( __( 'Unable to disconnect Twitter account', 'ppp-txt' ) );
 		}
 		delete_user_meta( $user_id, '_ppp_twitter_data' );
@@ -879,7 +879,7 @@ function ppp_tw_profile_settings( $user ) {
 		return;
 	}
 
-	if ( $user->ID !== get_current_user_id() && ! current_user_can( 'manage_options' ) ) {
+	if ( $user->ID !== get_current_user_id() && ! current_user_can( PostPromoterPro::get_manage_capability() ) ) {
 		return;
 	}
 
