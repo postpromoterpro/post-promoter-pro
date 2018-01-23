@@ -68,4 +68,15 @@ class Tests_Filters extends WP_UnitTestCase {
 		$this->assertEquals( $expected, $link );
 	}
 
+	public function test_ppp_manage_role_filter() {
+		$callback = function() {
+			return 'another_cap';
+		};
+
+		add_filter( 'ppp_manage_role', $callback );
+		$this->assertEquals( 'another_cap', PostPromoterPro::get_manage_capability() );
+		remove_filter( 'ppp_manage_role', $callback );
+		$this->assertEquals( 'manage_options', PostPromoterPro::get_manage_capability() );
+	}
+
 }

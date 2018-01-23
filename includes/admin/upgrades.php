@@ -133,7 +133,7 @@ function ppp_v21_upgrades() {
  */
 function ppp_v22_postmeta_upgrade() {
 
-	if( ! current_user_can( 'manage_options' ) ) {
+	if( ! current_user_can( PostPromoterPro::get_manage_capability() ) ) {
 		wp_die( __( 'You do not have permission to do upgrades', 'ppp-txt' ), __( 'Error', 'ppp-txt' ), array( 'response' => 403 ) );
 	}
 

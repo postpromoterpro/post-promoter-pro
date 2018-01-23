@@ -17,7 +17,7 @@ class PPP_Dashboard_Shares {
 	 * @since  2.2.3
 	 */
 	public static function init() {
-		if ( ! current_user_can( 'manage_options' ) ) {
+		if ( ! current_user_can( PostPromoterPro::get_manage_capability() ) ) {
 			return;
 		}
 
