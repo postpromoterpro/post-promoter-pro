@@ -150,20 +150,6 @@ class PostPromoterPro {
 
 		global $wp_styles;
 
-		$allowed_screens = apply_filters( 'ppp_style_pages', array(
-			'ppp-options',
-			'post-promoter_page_ppp-social-settings',
-			'ppp-schedule-info',
-			'ppp-system-info',
-			'post',
-		) );
-
-		$current_screen = get_current_screen()->base;
-
-		if ( ! in_array( $current_screen, $allowed_screens ) ) {
-			return;
-		}
-
 		// List of people who make it impossible to override their jQuery UI as it's in their core CSS...so only
 		// load ours if they don't exist
 		if ( ! wp_style_is( 'ot-admin-css' ) && ! wp_style_is( 'jquery-ui-css' ) ) {
