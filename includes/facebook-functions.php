@@ -82,14 +82,25 @@ add_filter( 'ppp_account_list_name-fb', 'ppp_fb_account_list_name', 10, 1 );
  * @return string         The HTML for the actions
  */
 function ppp_fb_account_list_actions( $string = '' ) {
+	global $ppp_facebook_oauth, $ppp_social_settings;
 
 	if ( ! ppp_facebook_enabled() ) {
-		global $ppp_facebook_oauth, $ppp_social_settings;
+
 		$fb_authurl = $ppp_facebook_oauth->ppp_get_facebook_auth_url( admin_url( 'admin.php?page=ppp-social-settings' ) );
 
 		$string .= '<a class="button-primary" href="' . $fb_authurl . '">' . __( 'Connect to Facebook', 'ppp-txt' ) . '</a>';
 	} else {
 		$string  .= '<a class="button-primary" href="' . admin_url( 'admin.php?page=ppp-social-settings&ppp_social_disconnect=true&ppp_network=facebook' ) . '" >' . __( 'Disconnect from Facebook', 'ppp-txt' ) . '</a>&nbsp;';
+
+		$refresh_date = (int) get_option( '_ppp_facebook_refresh', true );
+
+		if ( current_time( 'timestamp' ) > $refresh_date ) {
+			$token       = $ppp_social_settings['facebook']->access_token;
+			$url         = $ppp_facebook_oauth->ppp_get_facebook_auth_url( admin_url( 'admin.php?page=ppp-social-settings' ) );
+			$refresh_url = str_replace( '?ppp-social-auth', '?ppp-social-auth&ppp-refresh=true&access_token=' . $token, $url );
+
+			$string  .= '<a class="button-secondary" href="' . $refresh_url . '" >' . __( 'Re-Authorize Facebook', 'ppp-txt' ) . '</a>&nbsp;';
+		}
 	}
 
 	return $string;
