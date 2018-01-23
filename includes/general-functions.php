@@ -290,7 +290,7 @@ function ppp_is_dev_or_staging() {
 		$check_tlds = apply_filters( 'ppp_validate_tlds', true );
 		if ( $check_tlds ) {
 			$tlds_to_check = apply_filters( 'ppp_url_tlds', array(
-				'.dev', '.local',
+				'.dev', '.local', '.test',
 			) );
 
 			foreach ( $tlds_to_check as $tld ) {
@@ -303,11 +303,15 @@ function ppp_is_dev_or_staging() {
 
 		if ( substr_count( $host, '.' ) > 1 ) {
 			$subdomains_to_check = apply_filters( 'ppp_url_subdomains', array(
-				'dev.', 'staging.',
+				'dev.', '*.staging.',
 			) );
 
 			foreach ( $subdomains_to_check as $subdomain ) {
-				if ( 0 === strpos( $host, $subdomain ) ) {
+
+				$subdomain = str_replace( '.', '(.)', $subdomain );
+				$subdomain = str_replace( array( '*', '(.)' ), '(.*)', $subdomain );
+
+				if ( preg_match( '/^(' . $subdomain . ')/', $host ) ) {
 					$is_local_url = true;
 					continue;
 				}
