@@ -146,7 +146,7 @@ class PostPromoterPro {
 
 	}
 
-	public function load_styles( $hook ) {
+	public function load_styles() {
 
 		global $wp_styles;
 
