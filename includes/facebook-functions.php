@@ -223,7 +223,7 @@ function ppp_fb_execute_refresh() {
 
 	$refresh_date = (int) get_option( '_ppp_facebook_refresh', true );
 
-	if ( current_time( 'timestamp' ) > $refresh_date ) {
+	if ( ( empty( $_GET['page' ] ) || $_GET['page'] !== 'ppp-social-settings' ) && current_time( 'timestamp' ) > $refresh_date ) {
 		add_action( 'admin_notices', 'ppp_facebook_refresh_notice' );
 	}
 }

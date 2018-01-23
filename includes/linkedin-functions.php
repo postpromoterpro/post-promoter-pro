@@ -188,7 +188,7 @@ function ppp_li_execute_refresh() {
 
 	$refresh_date = (int) get_option( '_ppp_linkedin_refresh', true );
 
-	if ( current_time( 'timestamp' ) > $refresh_date ) {
+	if ( ( empty( $_GET['page' ] ) || $_GET['page'] !== 'ppp-social-settings' ) && current_time( 'timestamp' ) > $refresh_date ) {
 		add_action( 'admin_notices', 'ppp_linkedin_refresh_notice' );
 	}
 }
