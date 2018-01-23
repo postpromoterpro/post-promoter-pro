@@ -87,8 +87,9 @@ function ppp_li_account_list_actions( $string = '' ) {
 
 		$refresh_date = (int) get_option( '_ppp_linkedin_refresh', true );
 
-		$token = $ppp_social_settings['linkedin']->access_token;
-		if ( ! empty( $token ) && current_time( 'timestamp' ) > $refresh_date ) {
+
+		if ( defined( 'LINKEDIN_KEY' ) && current_time( 'timestamp' ) > $refresh_date ) {
+			$token       = $ppp_social_settings['linkedin']->access_token;
 			$url         = $ppp_linkedin_oauth->ppp_get_linkedin_auth_url( admin_url( 'admin.php?page=ppp-social-settings' ) );
 			$refresh_url = str_replace( '?ppp-social-auth', '?ppp-social-auth&ppp-refresh=true&access_token=' . $token, $url );
 
