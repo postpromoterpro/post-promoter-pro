@@ -76,14 +76,25 @@ add_filter( 'ppp_account_list_name-li', 'ppp_li_account_list_name', 10, 1 );
  * @return string         HTML for the LinkedIn Actions
  */
 function ppp_li_account_list_actions( $string = '' ) {
+	global $ppp_linkedin_oauth, $ppp_social_settings;
 
 	if ( ! ppp_linkedin_enabled() ) {
-		global $ppp_linkedin_oauth, $ppp_social_settings;
 		$li_authurl = $ppp_linkedin_oauth->ppp_get_linkedin_auth_url( admin_url( 'admin.php?page=ppp-social-settings' ) );
 
 		$string .= '<a class="button-primary" href="' . $li_authurl . '">' . __( 'Connect to Linkedin', 'ppp-txt' ) . '</a>';
 	} else {
 		$string  .= '<a class="button-primary" href="' . admin_url( 'admin.php?page=ppp-social-settings&ppp_social_disconnect=true&ppp_network=linkedin' ) . '" >' . __( 'Disconnect from Linkedin', 'ppp-txt' ) . '</a>&nbsp;';
+
+		$refresh_date = (int) get_option( '_ppp_linkedin_refresh', true );
+
+
+		if ( defined( 'LINKEDIN_KEY' ) && current_time( 'timestamp' ) > $refresh_date ) {
+			$token       = $ppp_social_settings['linkedin']->access_token;
+			$url         = $ppp_linkedin_oauth->ppp_get_linkedin_auth_url( admin_url( 'admin.php?page=ppp-social-settings' ) );
+			$refresh_url = str_replace( '?ppp-social-auth', '?ppp-social-auth&ppp-refresh=true&access_token=' . $token, $url );
+
+			$string  .= '<a class="button-secondary" href="' . $refresh_url . '" >' . __( 'Re-Authorize Linkedin', 'ppp-txt' ) . '</a>&nbsp;';
+		}
 	}
 
 	return $string;
@@ -178,7 +189,7 @@ function ppp_li_execute_refresh() {
 
 	$refresh_date = (int) get_option( '_ppp_linkedin_refresh', true );
 
-	if ( current_time( 'timestamp' ) > $refresh_date ) {
+	if ( ( empty( $_GET['page' ] ) || $_GET['page'] !== 'ppp-social-settings' ) && current_time( 'timestamp' ) > $refresh_date ) {
 		add_action( 'admin_notices', 'ppp_linkedin_refresh_notice' );
 	}
 }
