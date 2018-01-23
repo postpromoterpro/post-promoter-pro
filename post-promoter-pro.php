@@ -51,6 +51,10 @@ class PostPromoterPro {
 				include PPP_PATH . '/includes/admin/meta-boxes.php';
 				include PPP_PATH . '/includes/admin/welcome.php';
 				include PPP_PATH . '/includes/admin/dashboard.php';
+
+				if ( class_exists( 'edit_flow' ) ) {
+					include PPP_PATH . '/includes/integrations/edit-flow.php';
+				}
 			}
 
 			$ppp_options         = get_option( 'ppp_options' );
