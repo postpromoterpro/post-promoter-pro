@@ -94,8 +94,8 @@ function ppp_fb_account_list_actions( $string = '' ) {
 
 		$refresh_date = (int) get_option( '_ppp_facebook_refresh', true );
 
-		if ( current_time( 'timestamp' ) > $refresh_date ) {
-			$token       = $ppp_social_settings['facebook']->access_token;
+		$token = $ppp_social_settings['facebook']->access_token;
+		if ( ! empty( $token ) && current_time( 'timestamp' ) > $refresh_date ) {
 			$url         = $ppp_facebook_oauth->ppp_get_facebook_auth_url( admin_url( 'admin.php?page=ppp-social-settings' ) );
 			$refresh_url = str_replace( '?ppp-social-auth', '?ppp-social-auth&ppp-refresh=true&access_token=' . $token, $url );
 
