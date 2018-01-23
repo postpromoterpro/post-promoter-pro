@@ -100,7 +100,7 @@ class PostPromoterPro {
 			add_action( 'admin_menu', array( $this, 'ppp_setup_admin_menu' ), 1000, 0 );
 			add_filter( 'plugin_action_links', array( $this, 'plugin_settings_links' ), 10, 2 );
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_custom_scripts' ), 99 );
-			add_action( 'admin_enqueue_scripts', array( $this, 'load_styles' ), PHP_INT_MAX );
+			add_action( 'admin_enqueue_scripts', array( $this, 'load_styles' ), 99999 );
 			add_action( 'wp_trash_post', 'ppp_remove_scheduled_shares', 10, 1 );
 
 			if ( ppp_is_dev_or_staging() ) {
@@ -148,6 +148,22 @@ class PostPromoterPro {
 
 	public function load_styles( $hook ) {
 
+		global $wp_styles;
+
+		$allowed_screens = apply_filters( 'ppp_style_pages', array(
+			'ppp-options',
+			'post-promoter_page_ppp-social-settings',
+			'ppp-schedule-info',
+			'ppp-system-info',
+			'post',
+		) );
+
+		$current_screen = get_current_screen()->base;
+
+		if ( ! in_array( $current_screen, $allowed_screens ) ) {
+			return;
+		}
+
 		// List of people who make it impossible to override their jQuery UI as it's in their core CSS...so only
 		// load ours if they don't exist
 		if ( ! wp_style_is( 'ot-admin-css' ) && ! wp_style_is( 'jquery-ui-css' ) ) {
@@ -157,8 +173,11 @@ class PostPromoterPro {
 		wp_register_style( 'ppp_admin_css', PPP_URL . 'includes/scripts/css/admin-style.css', false, PPP_VERSION );
 		wp_enqueue_style( 'ppp_admin_css' );
 
-		wp_register_style( 'ppp_admin_fa_css', '//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css', false, PPP_VERSION );
-		wp_enqueue_style( 'ppp_admin_fa_css' );
+		$sources = array_map( 'basename', (array) wp_list_pluck( $wp_styles->registered, 'src' ) );
+		if ( ! in_array( 'font-awesome.css', $sources ) || in_array( 'font-awesome.min.css', $sources )  ) {
+			wp_register_style( 'font-awesome', '//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css', false, null );
+			wp_enqueue_style( 'font-awesome' );
+		}
 
 	}
 
