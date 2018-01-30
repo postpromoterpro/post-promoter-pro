@@ -2,8 +2,8 @@
 Contributors: cklosows
 Tags: post promoter pro, twitter, linkedin, facebook, bitly, social media
 Requires at least: 4.0
-Tested up to: 4.8
-Stable tag: 2.3.13
+Tested up to: 4.9
+Stable tag: 2.3.14
 Donate link: https://postpromoterpro.com
 License: GPLv2
 
@@ -16,6 +16,12 @@ You write great content, but it can get lost in the fast-moving world of social 
 Engage followers who may have missed the original post; Post Promoter Pro allows you to customize the text that sits before the link to your content. Experiment with hashtags, a call to action, or interesting text that starts a conversation and compels your followers to view your post.
 
 == Changelog ==
+
+= 2.3.14 - January 30, 2018 =
+* Fix: Improved the detection for staging sites.
+* Fix: Attempt to not load Font Awesome if it is already included from another source.
+* Fix: Set capability required for Post Promoter Pro settings to 'manage_options'.
+* Tweak: Added a 'Refresh Access' button to the Account list table.
 
 = 2.3.13 - November 18, 2017 =
 * Fix: Possible issue loading translation files when directory has been changed.
