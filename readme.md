@@ -41,3 +41,4 @@ If you are running Nginx, you will need to put this into your server configurati
   	log_not_found off;
   }
 ```
+
