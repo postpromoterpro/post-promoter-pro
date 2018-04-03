@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Register the Pinterest metabox tab
  * @param  array $tabs The tabs
- * @return array       The tabs with Twitter added
+ * @return array       The tabs with Pinterest added
  */
 function ppp_pt_add_meta_tab( $tabs ) {
 	$tabs['pt'] = array( 'name' => __( 'Pinterest', 'ppp-txt' ), 'class' => 'icon-ppp-pt' );
