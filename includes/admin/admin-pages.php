@@ -176,37 +176,46 @@ function ppp_display_social() {
 					</td>
 				</tr>
 
-				<?php
-				$tw_sop = ! empty( $ppp_share_settings['twitter']['share_on_publish'] ) ? true : false;
-				$fb_sop = ! empty( $ppp_share_settings['facebook']['share_on_publish'] ) ? true : false;
-				$li_sop = ! empty( $ppp_share_settings['linkedin']['share_on_publish'] ) ? true : false;
-				?>
 				<tr valign="top">
 					<th scope="row" valign="top">
 						<?php _e( 'Share on Publish Defaults', 'ppp-txt' ); ?></span><br />
 						<small><em><?php _e( 'Enabled sharing on publish by default', 'ppp-txt' ); ?></em></small>
 					</th>
 					<td id="ppp-share-on-publish-wrapper">
-						<?php if ( ppp_twitter_enabled() ) : ?>
-						<p>
-							<input type="checkbox" id="twitter-share-on-publish" value="1" <?php checked( true, $tw_sop, true ); ?> name="ppp_share_settings[twitter][share_on_publish]" />
-							<label for="twitter-share-on-publish"><?php _e( 'Twitter', 'ppp-txt' ); ?></label>
-						</p>
-						<?php endif; ?>
+						<?php $supported_post_types = ppp_supported_post_types(); ?>
+						<?php foreach ( $supported_post_types as $post_type => $post_type_details ) : ?>
+							<?php if ( ppp_twitter_enabled() || ppp_facebook_enabled() || ppp_linkedin_enabled() ) : ?>
+								<?php
+									$enabled_post_types   = ppp_allowed_post_types();
+									if ( ! in_array( $post_type, $enabled_post_types ) ) {
+										continue;
+									}
+								?>
+								<strong><?php echo $supported_post_types[ $post_type ]->label; ?></strong>
+							<?php endif; ?>
+							<?php $post_type_settings = ! empty( $ppp_share_settings['share_on_publish'][ $post_type ] ) ? $ppp_share_settings['share_on_publish'][ $post_type ] : array(); ?>
+							<?php if ( ppp_twitter_enabled() ) : ?>
+							<p>
+								<input type="checkbox" id="<?php echo $post_type; ?>-twitter-share-on-publish" value="1" <?php checked( true, ! empty( $post_type_settings['twitter'] ), true ); ?> name="ppp_share_settings[share_on_publish][<?php echo $post_type; ?>][twitter]" />
+								<label for="<?php echo $post_type; ?>-twitter-share-on-publish"><?php _e( 'Twitter', 'ppp-txt' ); ?></label>
+							</p>
+							<?php endif; ?>
 
-						<?php if ( ppp_facebook_enabled() ) : ?>
-						<p>
-							<input type="checkbox" id="facebook-share-on-publish" value="1" <?php checked( true, $fb_sop, true ); ?> name="ppp_share_settings[facebook][share_on_publish]" />
-							<label for="facebook-share-on-publish"><?php _e( 'Facebook', 'ppp-txt' ); ?></label>
-						</p>
-						<?php endif; ?>
+							<?php if ( ppp_facebook_enabled() ) : ?>
+							<p>
+								<input type="checkbox" id="<?php echo $post_type; ?>-facebook-share-on-publish" value="1" <?php checked( true, ! empty( $post_type_settings['facebook'] ), true ); ?> name="ppp_share_settings[share_on_publish][<?php echo $post_type; ?>][facebook]" />
+								<label for="<?php echo $post_type; ?>-facebook-share-on-publish"><?php _e( 'Facebook', 'ppp-txt' ); ?></label>
+							</p>
+							<?php endif; ?>
 
-						<?php if ( ppp_linkedin_enabled() ) : ?>
-						<p>
-							<input type="checkbox" id="linkedin-share-on-publish" value="1" <?php checked( true, $li_sop, true ); ?> name="ppp_share_settings[linkedin][share_on_publish]" />
-							<label for="linkedin-share-on-publish"><?php _e( 'LinkedIn', 'ppp-txt' ); ?></label>
-						</p>
-						<?php endif; ?>
+							<?php if ( ppp_linkedin_enabled() ) : ?>
+							<p>
+								<input type="checkbox" id="<?php echo $post_type; ?>-linkedin-share-on-publish" value="1" <?php checked( true, ! empty( $post_type_settings['linkedin'] ), true ); ?> name="ppp_share_settings[share_on_publish][<?php echo $post_type; ?>][linkedin]" />
+								<label for="<?php echo $post_type; ?>-linkedin-share-on-publish"><?php _e( 'LinkedIn', 'ppp-txt' ); ?></label>
+							</p>
+							<?php endif; ?>
+							<br />
+						<?php endforeach; ?>
 					</td>
 				</tr>
 

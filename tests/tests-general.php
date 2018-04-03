@@ -102,9 +102,9 @@ class Tests_General extends WP_UnitTestCase {
 	public function test_share_on_publish_defaults() {
 		$share_settings = get_option( 'ppp_share_settings', true );
 
-		$this->assertEquals( '1', $share_settings['twitter']['share_on_publish'] );
-		$this->assertEquals( '1', $share_settings['facebook']['share_on_publish'] );
-		$this->assertEquals( '1', $share_settings['linkedin']['share_on_publish'] );
+		$this->assertEquals( '1', $share_settings['share_on_publish']['post']['twitter'] );
+		$this->assertEquals( '1', $share_settings['share_on_publish']['post']['facebook'] );
+		$this->assertEquals( '1', $share_settings['share_on_publish']['post']['linkedin'] );
 	}
 
 
