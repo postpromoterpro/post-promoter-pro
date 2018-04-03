@@ -29,3 +29,5 @@ global $ppp_linkedin_oauth;
 include_once( PPP_PATH . '/includes/linkedin-functions.php' );
 require_once( PPP_PATH . '/includes/libs/linkedin.php' );
 $ppp_linkedin_oauth = new PPP_Linkedin();
+
+include_once( PPP_PATH . '/includes/pinterest-functions.php' );
