@@ -415,7 +415,7 @@ function ppp_fb_add_metabox_content( $post ) {
 
 	$show_share_on_publish = false;
 
-	$share_by_default      = empty( $ppp_share_settings['facebook']['share_on_publish'] ) ? false : true;
+	$share_by_default      = empty( $ppp_share_settings['share_on_publish'][ $post->post_type ]['facebook'] ) ? false : true;
 
 	if ( $ppp_fb_share_on_publish == '1' || ( $ppp_fb_share_on_publish == '' && $share_by_default ) ) {
 		$show_share_on_publish = true;

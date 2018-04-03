@@ -57,6 +57,28 @@ class PostPromoterPro {
 			$ppp_social_settings = get_option( 'ppp_social_settings' );
 			$ppp_share_settings  = get_option( 'ppp_share_settings' );
 
+			// Do some leg work on the social settings for Issue #257
+			if ( is_array( $ppp_share_settings ) && ! array_key_exists( 'share_on_publish', $ppp_share_settings ) ) {
+				$tw_share_on_publish = ! empty( $ppp_share_settings['twitter']['share_on_publish'] ) ? true : false;
+				$fb_share_on_publish = ! empty( $ppp_share_settings['facebook']['share_on_publish'] ) ? true : false;
+				$li_share_on_publish = ! empty( $ppp_share_settings['linkedin']['share_on_publish'] ) ? true : false;
+
+				unset(
+					$ppp_share_settings['twitter']['share_on_publish'],
+					$ppp_share_settings['facebook']['share_on_publish'],
+					$ppp_share_settings['linkedin']['share_on_publish']
+				);
+
+				$post_types = ppp_supported_post_types();
+				foreach ( $post_types as $key => $post_type ) {
+					$ppp_share_settings['share_on_publish'][ $key ]['twitter'] = $tw_share_on_publish;
+					$ppp_share_settings['share_on_publish'][ $key ]['facebook'] = $fb_share_on_publish;
+					$ppp_share_settings['share_on_publish'][ $key ]['linkedin'] = $li_share_on_publish;
+				}
+
+				update_option( 'ppp_share_settings', $ppp_share_settings );
+			}
+
 			$this->hooks();
 		}
 
@@ -482,9 +504,13 @@ function post_promoter_pro_activation_setup() {
 	$default_settings['post_types']['post'] = '1';
 	update_option( 'ppp_options', $default_settings );
 
-	$default_share_settings['twitter']['share_on_publish']  = '1';
-	$default_share_settings['facebook']['share_on_publish'] = '1';
-	$default_share_settings['linkedin']['share_on_publish'] = '1';
+	$default_share_settings['share_on_publish'] = array(
+		'post' => array(
+			'twitter'  => 1,
+			'facebook' => 1,
+			'linkedin' => 1,
+		),
+	);
 	update_option( 'ppp_share_settings', $default_share_settings );
 
 	update_option( 'ppp_completed_upgrades', array( 'upgrade_post_meta' ) );

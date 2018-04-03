@@ -494,7 +494,7 @@ function ppp_render_tweet_share_on_publish_row() {
 	$ppp_share_on_publish  = get_post_meta( $post->ID, '_ppp_share_on_publish', true );
 	$show_share_on_publish = false;
 
-	$share_by_default      = empty( $ppp_share_settings['twitter']['share_on_publish'] ) ? false : true;
+	$share_by_default      = empty( $ppp_share_settings['share_on_publish'][ $post->post_type ]['twitter'] ) ? false : true;
 
 	if ( $ppp_share_on_publish == '1' || ( $ppp_share_on_publish == '' && $share_by_default ) ) {
 		$show_share_on_publish = true;
