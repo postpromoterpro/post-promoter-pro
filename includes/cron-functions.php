@@ -7,14 +7,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /**
  * Schedule social media posts with wp_schedule_single_event
- * @param  id $post_id
- * @param  object $post
+ * @param  int $post_id
+ * @param WP_Post $post
  * @return void
  */
 function ppp_schedule_share( $post_id, $post ) {
-	global $ppp_options;
-	$allowed_post_types = isset( $ppp_options['post_types'] ) ? $ppp_options['post_types'] : array();
-	$allowed_post_types = apply_filters( 'ppp_schedule_share_post_types', $allowed_post_types );
+	$allowed_post_types = ppp_allowed_post_types();
 
 	if ( ! isset( $_POST['post_status'] ) || ! array_key_exists( $post->post_type, $allowed_post_types ) ) {
 		return;
@@ -25,7 +23,6 @@ function ppp_schedule_share( $post_id, $post ) {
 	if( ( $_POST['post_status'] == 'publish' && $_POST['original_post_status'] != 'publish' ) || // From anything to published
 		( $_POST['post_status'] == 'future' && $_POST['original_post_status'] == 'future' ) || // Updating a future post
 		( $_POST['post_status'] == 'publish' && $_POST['original_post_status'] == 'publish' ) ) { // Updating an already published post
-		global $ppp_options, $ppp_social_settings;
 
 		$timestamps = ppp_get_timestamps( $post_id );
 

@@ -118,7 +118,7 @@ function ppp_supported_post_types() {
 function ppp_allowed_post_types() {
 	$ppp_options = get_option( 'ppp_options' );
 
-	return array_keys( $ppp_options['post_types'] );
+	return apply_filters( 'ppp_schedule_share_post_types', array_keys( $ppp_options['post_types'] ) );
 }
 
 /**
