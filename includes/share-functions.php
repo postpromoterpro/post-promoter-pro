@@ -276,3 +276,35 @@ function ppp_post_has_media( $post_id, $network, $use_media, $attachment_id = fa
 
 	return false;
 }
+
+/**
+ * Attempt to get an attachment ID from an Image URL
+ * @since 2.4
+ * @param $image_url
+ *
+ * @return int The Attachment ID
+ */
+function ppp_get_attachment_id_from_image_url( $image_url ) {
+	global $wpdb;
+	$attachment_id = 0;
+	$parts    = parse_url( $image_url );
+	$path     = explode( '/', $parts['path'] );
+	$filename = end( $path );
+	$thumb_id = $wpdb->get_col( $wpdb->prepare( "SELECT post_id FROM $wpdb->postmeta WHERE meta_value LIKE '%s';", '%' . $wpdb->esc_like( $filename ) . '%' ) );
+	if ( ! empty( $thumb_id[0] ) ) {
+		$attachment_id = $thumb_id[0];
+	}
+	return $attachment_id;
+}
+
+/**
+ * Get the alt-text defined in the WP Media Uploader for an attachment.
+ * @since 2.4
+ * @param $attachment_id
+ *
+ * @return string The alt-text
+ */
+function ppp_get_attachment_alt_text( $attachment_id ) {
+	$alt_text = get_post_meta( $attachment_id, '_wp_attachment_image_alt', true );
+	return apply_filters( 'ppp_attachment_alt_text', $alt_text, $attachment_id );
+}
