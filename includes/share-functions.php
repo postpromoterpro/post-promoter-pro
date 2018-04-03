@@ -6,17 +6,49 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Listen for the wp_insert_post action and take action if it's the first insert.
+ *
+ * @since 2.3.9
+ * @param $post_id
+ * @param $post
+ * @param $updated
+ */
+function ppp_post_inserted( $post_id, $post, $updated ) {
+	if ( ! $updated ) {
+		ppp_share_on_publish( $post->post_status, 'draft', $post );
+	}
+}
+
+/**
+ * Listen for the post_updated action and take action if necessary.
+ *
+ * @since 2.3.9
+ * @param $post_id
+ * @param $post_after
+ * @param $post_before
+ */
+function ppp_post_updated( $post_id, $post_after, $post_before ) {
+	ppp_share_on_publish( $post_after->post_status, $post_before->post_status, $post_after );
+}
+
+/**
  * Determine if we should share this post when it's being published
  *
  * @param string $new_status The new status of the post
- * @param string $old_status The old status of the poast
+ * @param string $old_status The old status of the post
  * @param  object $post      The Post Object
  *
  * @return void
  */
 function ppp_share_on_publish( $new_status, $old_status, $post ) {
-	// don't publish password protected posts
+
+	// don't publish password protected posts.
 	if ( '' !== $post->post_password ) {
+		return;
+	}
+
+	// Prevent this from firing twice in a single publish.
+	if ( did_action( 'ppp_share_on_publish' ) ) {
 		return;
 	}
 
