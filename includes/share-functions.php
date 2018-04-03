@@ -276,3 +276,25 @@ function ppp_post_has_media( $post_id, $network, $use_media, $attachment_id = fa
 
 	return false;
 }
+
+function ppp_get_attachment_id_from_image_url( $image_url ) {
+	global $wpdb;
+	$attachment_id = false;
+
+	$parts    = parse_url( $image_url );
+	$path     = explode( '/', $parts['path'] );
+	$filename = end( $path );
+
+	$thumb_id = $wpdb->get_col( $wpdb->prepare( "SELECT post_id FROM $wpdb->postmeta WHERE meta_value LIKE '%s';", '%' . $wpdb->esc_like( $filename ) . '%' ) );
+	if ( ! empty( $thumb_id[0] ) ) {
+		$attachment_id = $thumb_id[0];
+	}
+
+	return $attachment_id;
+}
+
+function ppp_get_attachment_alt_text( $attachment_id ) {
+	$alt_text = get_post_meta( $attachment_id, '_wp_attachment_image_alt', true );
+
+	return apply_filters( 'ppp_attachment_alt_text', $alt_text, $attachment_id );
+}

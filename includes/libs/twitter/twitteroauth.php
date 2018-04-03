@@ -175,6 +175,7 @@ class TwitterOAuth {
     if (strrpos($url, 'https://') !== 0 && strrpos($url, 'http://') !== 0) {
       $url = "{$this->host}{$url}.{$this->format}";
     }
+
     $signature_parameters = array();
     // When making a multipart request, use only oauth_* -keys for signature
     foreach ($parameters AS $key => $value) {

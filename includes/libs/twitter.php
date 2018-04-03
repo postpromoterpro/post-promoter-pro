@@ -1,4 +1,5 @@
 <?php
+use Abraham\TwitterOAuth\TwitterOAuth;
 
 // Exit if accessed directly
 if ( !defined( 'ABSPATH' ) ) {
@@ -29,19 +30,15 @@ if( !class_exists( 'PPP_Twitter' ) ) {
 		 * Handles to load twitter class
 		 */
 		public function ppp_load_twitter() {
-				if( !class_exists( 'TwitterOAuth' ) ) {
-					require_once ( PPP_PATH . '/includes/libs/twitter/twitteroauth.php' );
-				}
+			ppp_set_social_tokens();
 
-				ppp_set_social_tokens();
+			if ( ! defined( 'PPP_TW_CONSUMER_KEY' ) || ! defined( 'PPP_TW_CONSUMER_SECRET' ) ) {
+				return false;
+			}
 
-				if ( ! defined( 'PPP_TW_CONSUMER_KEY' ) || ! defined( 'PPP_TW_CONSUMER_SECRET' ) ) {
-					return false;
-				}
+			$this->twitter = new TwitterOAuth( PPP_TW_CONSUMER_KEY, PPP_TW_CONSUMER_SECRET );
 
-				$this->twitter = new TwitterOAuth( PPP_TW_CONSUMER_KEY, PPP_TW_CONSUMER_SECRET );
-
-				return true;
+			return true;
 		}
 
 		public function revoke_access() {
@@ -73,12 +70,9 @@ if( !class_exists( 'PPP_Twitter' ) ) {
 				$this->twitter = new TwitterOAuth( PPP_TW_CONSUMER_KEY, PPP_TW_CONSUMER_SECRET, $_SESSION['ppp_twt_oauth_token'], $_SESSION['ppp_twt_oauth_token_secret'] );
 
 				// Request access tokens from twitter
-				$ppp_tw_access_token = $this->twitter->getAccessToken($_REQUEST['oauth_verifier']);
+				$ppp_tw_access_token = $this->twitter->oauth( 'oauth/access_token', array( 'oauth_verifier' => $_REQUEST['oauth_verifier'] ) );
 
-				//session for verifier
-				$verifier['oauth_verifier'] = $_REQUEST['oauth_verifier'];
-
-				$_SESSION[ 'ppp_twt_user_cache' ] = $verifier;
+				$this->twitter = new TwitterOAuth( PPP_TW_CONSUMER_KEY, PPP_TW_CONSUMER_SECRET, $ppp_tw_access_token['oauth_token'], $ppp_tw_access_token['oauth_token_secret'] );
 
 				//getting user data from twitter
 				$response = $this->twitter->get('account/verify_credentials');
@@ -134,24 +128,30 @@ if( !class_exists( 'PPP_Twitter' ) ) {
 				$return_url = admin_url( 'admin.php?page=ppp-social-settings' );
 			}
 			//load twitter class
-			$twitter = $this->ppp_load_twitter();
+			$twitter_loaded = $this->ppp_load_twitter();
 
 			//check twitter class is loaded or not
-			if( !$twitter ) {
+			if( ! $twitter_loaded ) {
 				return false;
 			}
 
-			$request_token = $this->twitter->getRequestToken( $return_url );
+			$request_token = $this->twitter->oauth( 'oauth/request_token', array( 'oauth_callback' => $return_url ) );
 
 			// If last connection failed don't display authorization link.
-			switch( $this->twitter->http_code ) {
+			switch( $this->twitter->getLastHttpCode() ) {
 
 			case 200:
 				$_SESSION['ppp_twt_oauth_token']        = $request_token['oauth_token'];
 				$_SESSION['ppp_twt_oauth_token_secret'] = $request_token['oauth_token_secret'];
 
 				$token = $request_token['oauth_token'];
-				$url = $this->twitter->getAuthorizeURL( $token, NULL );
+				$url = $this->twitter->oauth(
+					'oauth/authenticate',
+					array(
+						'oauth_token' => $token,
+						'force_login' => 'true',
+					)
+				);
 				break;
 			default:
 				$url = '';
@@ -168,18 +168,81 @@ if( !class_exists( 'PPP_Twitter' ) ) {
 			$verify = $this->ppp_verify_twitter_credentials();
 			if ( $verify === true ) {
 				$args = array();
+				$media_ids = array();
+
 				if ( ! empty( $media ) ) {
-					$endpoint = 'statuses/update_with_media';
-					$args['media[]'] = wp_remote_retrieve_body( wp_remote_get( $media ) );
-				} else {
-					$endpoint = 'statuses/update';
+					if ( is_array( $media ) ) {
+
+						foreach ( $media as $media_item ) {
+							$media_id = $this->upload_media( $media_item );
+							if ( false !== $media_id ) {
+								$media_ids[] = $media_id;
+							}
+						}
+
+					} else {
+
+						$media_id = $this->upload_media( $media );
+						if ( false !== $media_id ) {
+							$media_ids[] = $media_id;
+						}
+
+					}
 				}
+
 				$args['status'] = $message;
 
-				return $this->twitter->post( $endpoint, $args, true );
+				if ( ! empty( $media_ids ) ) {
+					if ( count( $media_ids ) > 4 ) {
+						$media_ids = array_slice( $media_ids, 0, 4 );
+					}
+					$args['media_ids'] = implode( ',', $media_ids );
+				}
+
+				return $this->twitter->post( 'statuses/update', $args, false );
 			} else {
 				return false;
 			}
+		}
+
+		public function upload_media( $media_url )  {
+			$this->ppp_verify_twitter_credentials();
+			$attachment_id = ppp_get_attachment_id_from_image_url( $media_url );
+
+			$alt_text = false;
+
+			if ( ! empty( $attachment_id ) ) {
+				$alt_text = ppp_get_attachment_alt_text( $attachment_id );
+			}
+
+			$media_upload = array(
+				'media' => $media_url,
+			);
+
+			$media_data = $this->twitter->upload( 'media/upload', $media_upload );
+
+			if ( ! empty( $media_data->media_id ) ) {
+
+				// We got a media ID back, if we have alt text, supply it.
+				if ( ! empty( $alt_text ) ) {
+
+					$media_meta = array(
+						'media_id' => (string) $media_data->media_id,
+						'alt_text' => array(
+							'text' => $alt_text
+						)
+					);
+
+					$media_meta = array( 'json' => json_encode( $media_meta ) );
+					var_dump( $this->twitter->http( 'POST', $this->twitter->UPLOAD_HOST, 'media/metadata/create', $media_meta ) );
+
+				}
+exit;
+				return $media_data->media_id;
+
+			}
+
+			return false;
 		}
 
 	}

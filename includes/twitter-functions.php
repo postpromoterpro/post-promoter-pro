@@ -784,12 +784,14 @@ function ppp_tw_default_meta_elements() {
 		$elements['twitter:card']      = 'summary_large_image';
 		$elements['twitter:image:src'] = $image_url;
 
-		$thumb_id = get_post_thumbnail_id( $post->ID );
-		$alt_text = get_post_meta( $thumb_id, '_wp_attachment_image_alt', true );
+		$thumb_id = ppp_get_attachment_id_from_image_url( $image_url );
+		if ( ! empty( $thumb_id ) ) {
+			$alt_text = ppp_get_attachment_alt_text( $thumb_id );
 
-		// When adding media via the WP Uploader, any 'alt text' supplied will be used as the accessible alt text.
-		if ( ! empty( $alt_text ) ) {
-			$elements['twitter:image:alt'] = esc_attr( $alt_text );
+			// When adding media via the WP Uploader, any 'alt text' supplied will be used as the accessible alt text.
+			if ( ! empty( $alt_text ) ) {
+				$elements['twitter:image:alt'] = esc_attr( $alt_text );
+			}
 		}
 	} else {
 		$elements['twitter:card'] = 'summary';

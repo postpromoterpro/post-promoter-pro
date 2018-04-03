@@ -1,4 +1,5 @@
 <?php
+require_once ( PPP_PATH . '/includes/libs/twitter/autoload.php' );
 
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) {
