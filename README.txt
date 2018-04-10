@@ -2,8 +2,8 @@
 Contributors: cklosows
 Tags: post promoter pro, twitter, linkedin, facebook, bitly, social media
 Requires at least: 4.0
-Tested up to: 4.9
-Stable tag: 2.3.14
+Tested up to: 4.9.5
+Stable tag: 2.3.15
 Donate link: https://postpromoterpro.com
 License: GPLv2
 
@@ -16,6 +16,13 @@ You write great content, but it can get lost in the fast-moving world of social 
 Engage followers who may have missed the original post; Post Promoter Pro allows you to customize the text that sits before the link to your content. Experiment with hashtags, a call to action, or interesting text that starts a conversation and compels your followers to view your post.
 
 == Changelog ==
+
+= 2.3.15 - April 9, 2018 =
+* Fix: Better compatibility with saving Post Promoter Pro content when saving posts created with page builders.
+* New: Added support for alt-text on Twitter Card images.
+* New: Added ability to assign 'Share on Publish' defaults on a per-post type basis.
+* New: Authors can now opt-in to Retweet any initial or scheduled shares.
+* New: Added ability to define a Pinterest image for Open Graph.
 
 = 2.3.14 - January 30, 2018 =
 * Fix: Improved the detection for staging sites.
