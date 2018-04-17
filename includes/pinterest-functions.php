@@ -43,36 +43,36 @@ function ppp_pt_add_metabox_content( $post ) {
 
 	$pinterest_data = wp_parse_args( $pinterest_data, $defaults );
 	?>
-	<p>
 	<div class="ppp-post-override-wrap">
 	<p><h3><?php _e( 'Pinterest Data', 'ppp-txt' ); ?></h3></p>
-	<div id="ppp-pinterest-fields" class="ppp-pinterest-fields">
-		<div id="ppp-pinterest-fields" class="ppp-meta-table-wrap">
-			<table class="widefat ppp-repeatable-table" width="100%" cellpadding="0" cellspacing="0">
-				<thead>
-				<tr>
-					<th style="width: 80%"><?php _e( 'Pinterest Image', 'ppp-txt' ); ?></th>
-				</tr>
-				</thead>
-				<tbody>
-					<tr class="ppp-pinterest-wrapper ppp-repeatable-row on-publish-row">
-						<td class="ppp-repeatable-upload-wrapper" style="width: 200px">
-							<div class="ppp-repeatable-upload-field-container">
-								<input type="hidden" name="_ppp_pinterest_data[attachment_id]" class="ppp-repeatable-attachment-id-field" value="<?php echo esc_attr( absint( $pinterest_data['attachment_id'] ) ); ?>"/>
-								<input type="text" class="ppp-repeatable-upload-field ppp-upload-field" name="_ppp_pinterest_data[image]" placeholder="<?php _e( 'Upload or Enter URL', 'ppp-txt' ); ?>" value="<?php echo esc_attr( $pinterest_data['image'] ); ?>" />
-
-								<span class="ppp-upload-file">
-							<a href="#" title="<?php _e( 'Insert File', 'ppp-txt' ) ?>" data-uploader-title="<?php _e( 'Insert File', 'ppp-txt' ); ?>" data-uploader-button-text="<?php _e( 'Insert', 'ppp-txt' ); ?>" class="ppp-upload-file-button" onclick="return false;">
-								<span class="dashicons dashicons-upload"></span>
-							</a>
-						</span>
-							</div>
-						</td>
+		<div id="ppp-pinterest-fields" class="ppp-pinterest-fields">
+			<div id="ppp-pinterest-fields" class="ppp-meta-table-wrap">
+				<table class="widefat ppp-repeatable-table" width="100%" cellpadding="0" cellspacing="0">
+					<thead>
+					<tr>
+						<th style="width: 80%"><?php _e( 'Pinterest Image', 'ppp-txt' ); ?></th>
 					</tr>
-				</tbody>
-			</table>
+					</thead>
+					<tbody>
+						<tr class="ppp-pinterest-wrapper ppp-repeatable-row on-publish-row">
+							<td class="ppp-repeatable-upload-wrapper" style="width: 200px">
+								<div class="ppp-repeatable-upload-field-container">
+									<input type="hidden" name="_ppp_pinterest_data[attachment_id]" class="ppp-repeatable-attachment-id-field" value="<?php echo esc_attr( absint( $pinterest_data['attachment_id'] ) ); ?>"/>
+									<input type="text" class="ppp-repeatable-upload-field ppp-upload-field" name="_ppp_pinterest_data[image]" placeholder="<?php _e( 'Upload or Enter URL', 'ppp-txt' ); ?>" value="<?php echo esc_attr( $pinterest_data['image'] ); ?>" />
+
+									<span class="ppp-upload-file">
+								<a href="#" title="<?php _e( 'Insert File', 'ppp-txt' ) ?>" data-uploader-title="<?php _e( 'Insert File', 'ppp-txt' ); ?>" data-uploader-button-text="<?php _e( 'Insert', 'ppp-txt' ); ?>" class="ppp-upload-file-button" onclick="return false;">
+									<span class="dashicons dashicons-upload"></span>
+								</a>
+							</span>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</div>
-	</div><!--end #edd_variable_price_fields-->
+	</div>
 	<?php
 }
 add_action( 'ppp_generate_metabox_content-pt', 'ppp_pt_add_metabox_content', 10, 1 );
