@@ -242,7 +242,7 @@ class PPP_Welcome {
 	public function welcome() {
 
 		$version_level = explode( '.', PPP_VERSION );
-		if ( count( $version_level > 2 ) ) {
+		if ( count( $version_level ) > 2 ) {
 			return;
 		}
 
