@@ -150,13 +150,16 @@ class WP_Logging {
 		/* logs post type */
 
 		$log_args = array(
-			'labels'          => array( 'name' => __( 'Logs', 'wp-logging' ) ),
-			'public'          => defined( 'WP_DEBUG' ) && WP_DEBUG,
-			'query_var'       => false,
-			'rewrite'         => false,
-			'capability_type' => 'post',
-			'supports'        => array( 'title', 'editor' ),
-			'can_export'      => false
+			'labels'              => array( 'name' => __( 'Logs', 'wp-logging' ) ),
+			'public'              => defined( 'WP_DEBUG' ) && WP_DEBUG,
+			'query_var'           => false,
+			'rewrite'             => false,
+			'capability_type'     => 'post',
+			'supports'            => array( 'title', 'editor' ),
+			'can_export'          => false,
+			'exclude_from_search' => true,
+			'publicly_queryable'  => false,
+
 		);
 		register_post_type( 'wp_log', apply_filters( 'wp_logging_post_type_args', $log_args ) );
 
