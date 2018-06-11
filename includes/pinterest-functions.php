@@ -88,15 +88,12 @@ function ppp_pt_save_post_meta_boxes( $post_id, $post ) {
 		return;
 	}
 
-	if ( ! is_array( $_POST['_ppp_pinterest_data'] ) ) {
+	if ( ! isset( $_POST['_ppp_pinterest_data'] ) || ! is_array( $_POST['_ppp_pinterest_data'] ) ) {
 		return;
 	}
 
-	if ( isset( $_POST['_ppp_pinterest_data'] ) ) {
-		$pinterest_data = $_POST['_ppp_pinterest_data'];
-		update_post_meta( $post_id, '_ppp_pt_media', $pinterest_data );
-	}
-
+	$pinterest_data = $_POST['_ppp_pinterest_data'];
+	update_post_meta( $post_id, '_ppp_pt_media', $pinterest_data );
 }
 add_action( 'save_post', 'ppp_pt_save_post_meta_boxes', 10, 2 ); // save the custom fields
 
