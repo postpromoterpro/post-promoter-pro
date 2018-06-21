@@ -310,6 +310,7 @@ function ppp_fix_scheduled_shares_2319() {
 				continue;
 			}
 
+			ppp_remove_scheduled_shares( $result->post_id );
 			$timestamps = ppp_get_timestamps( $result->post_id );
 
 			foreach ( $timestamps as $timestamp => $name ) {
