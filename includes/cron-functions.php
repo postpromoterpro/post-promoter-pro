@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 function ppp_schedule_share( $post_id, $post ) {
 	$allowed_post_types = ppp_allowed_post_types();
 
-	if ( ! isset( $_POST['post_status'] ) || ! array_key_exists( $post->post_type, $allowed_post_types ) ) {
+	if ( ! isset( $_POST['post_status'] ) || ! in_array( $post->post_type, $allowed_post_types ) ) {
 		return;
 	}
 
