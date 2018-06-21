@@ -513,6 +513,6 @@ function post_promoter_pro_activation_setup() {
 	);
 	update_option( 'ppp_share_settings', $default_share_settings );
 
-	update_option( 'ppp_completed_upgrades', array( 'upgrade_post_meta' ) );
+	update_option( 'ppp_completed_upgrades', array( 'upgrade_post_meta', 'fix_scheduled_shares_2319' ) );
 }
 register_activation_hook( PPP_FILE, 'post_promoter_pro_activation_setup' );
