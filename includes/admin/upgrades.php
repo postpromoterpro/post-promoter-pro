@@ -299,7 +299,7 @@ function ppp_fix_scheduled_shares_2319() {
 		$total     = $results->total;
 	}
 
-	$results = $wpdb->get_results( $wpdb->prepare( "SELECT DISTINCT post_id FROM $wpdb->postmeta WHERE meta_key IN ( '_ppp_tweets', '_ppp_fb_shares', '_ppp_li_shares' ) ORDER BY meta_id DESC LIMIT %d,%d;", $offset, $number ) );
+	$results = $wpdb->get_results( $wpdb->prepare( "SELECT DISTINCT post_id FROM $wpdb->postmeta WHERE meta_key IN ( '_ppp_tweets', '_ppp_fb_shares', '_ppp_li_shares' ) ORDER BY post_id DESC LIMIT %d,%d;", $offset, $number ) );
 
 	if ( $results ) {
 		$allowed_post_types = ppp_allowed_post_types();
@@ -322,7 +322,7 @@ function ppp_fix_scheduled_shares_2319() {
 		$step++;
 		$redirect = add_query_arg( array(
 			'page'        => 'ppp-upgrades',
-			'ppp-upgrade' => 'ppp_fix_scheduled_shares_2319',
+			'ppp-upgrade' => 'fix_scheduled_shares_2319',
 			'step'        => $step,
 			'number'      => $number,
 			'total'       => $total
