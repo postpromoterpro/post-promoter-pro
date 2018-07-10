@@ -88,7 +88,9 @@ function ppp_tw_account_list_actions( $string = '' ) {
 		$tw_auth    = $ppp_twitter_oauth->ppp_verify_twitter_credentials();
 		$tw_authurl = $ppp_twitter_oauth->ppp_get_twitter_auth_url();
 
-		$string .= '<a href="' . $tw_authurl . '"><img src="' . PPP_URL . '/includes/images/sign-in-with-twitter-gray.png" /></a>';
+		$string .= '<span id="tw-oob-auth-link-wrapper"><a id="tw-oob-auth-link" href="' . $tw_authurl . '" target="_blank"><img src="' . PPP_URL . '/includes/images/sign-in-with-twitter-gray.png" /></a></span>';
+		$string .= '<span style="display:none;" id="tw-oob-pin-notice">' . __( 'You are being directed to Twitter to authenticate. When complete, return here and enter the PIN you were provided.', 'ppp-txt' ) . '</span>';
+		$string .= '<span style="display:none;" id="tw-oob-pin-wrapper"><input type="text" size="10" placeholder="Enter your PIN" value="" id="tw-oob-pin" data-nonce="' . wp_create_nonce( 'ppp-tw-pin' ) . '" /> <a href="#" class="button-secondary tw-oob-pin-submit">' . __( 'Submit', 'ppp-txt' ) . '</a><span class="spinner"></span></span>';
 	} else {
 		$string .= '<a class="button-primary" href="' . admin_url( 'admin.php?page=ppp-social-settings&ppp_social_disconnect=true&ppp_network=twitter' ) . '" >' . __( 'Disconnect from Twitter', 'ppp-txt' ) . '</a>&nbsp;';
 		$string .= '<a class="button-secondary" href="https://twitter.com/settings/applications" target="blank">' . __( 'Revoke Access via Twitter', 'ppp-txt' ) . '</a>';
@@ -97,6 +99,40 @@ function ppp_tw_account_list_actions( $string = '' ) {
 	return $string;
 }
 add_filter( 'ppp_account_list_actions-tw', 'ppp_tw_account_list_actions', 10, 1 );
+
+
+function ppp_tw_capture_pin_auth() {
+	global $ppp_social_settings, $ppp_twitter_oauth;
+
+	ppp_set_social_tokens();
+
+	$nonce = isset( $_POST['nonce'] ) ? sanitize_text_field( $_POST['nonce'] ) : '';
+	$nonce_verified = wp_verify_nonce( $nonce, 'ppp-tw-pin' );
+
+	if ( ! $nonce_verified ) {
+		wp_die();
+	}
+
+	$pin = isset( $_POST['pin'] ) ? absint( $_POST['pin'] ) : false;
+
+	if ( empty( $pin ) ) {
+		wp_die();
+	}
+
+	$_REQUEST['oauth_verifier'] = $pin;
+	$twitter = new PPP_Twitter;
+	$twitter->ppp_initialize_twitter();
+	$settings = get_option( 'ppp_social_settings', true );
+
+	if ( ! empty( $settings['twitter']['user']->id ) ) {
+		echo 1;
+	} else {
+		echo 0;
+	}
+
+	die(); // this is required to return a proper result
+}
+add_action( 'wp_ajax_ppp_tw_auth_pin', 'ppp_tw_capture_pin_auth' );
 
 /**
  * Listen for the oAuth tokens and verifiers from Twitter when in admin
@@ -120,7 +156,7 @@ function ppp_capture_twitter_oauth() {
 		<?php
 	}
 }
-add_action( 'admin_head', 'ppp_capture_twitter_oauth', 10 );
+//add_action( 'admin_head', 'ppp_capture_twitter_oauth', 10 );
 
 /**
  * Listen for the disconnect from Twitter
@@ -954,7 +990,7 @@ function ppp_tw_profile_settings( $user ) {
 			if ( empty( $tw_user ) ) {
 				$tw_authurl = $twitter->get_auth_url( admin_url( 'user-edit.php?user_id=' . $user->ID ) );
 
-				echo '<a href="' . $tw_authurl . '"><img src="' . PPP_URL . '/includes/images/sign-in-with-twitter-gray.png" /></a>';
+				echo '<a target="_blank" href="' . $tw_authurl . '"><img src="' . PPP_URL . '/includes/images/sign-in-with-twitter-gray.png" /></a>';
 			} else {
 				$connected = true;
 				?>
