@@ -59,7 +59,7 @@ if( !class_exists( 'PPP_Twitter' ) ) {
 		public function ppp_initialize_twitter() {
 
 			//when user is going to logged in in twitter and verified successfully session will create
-			if ( ! empty( $_SESSION['ppp_twt_user_cache']['oauth_verifier'] ) ) {
+			if ( ! empty( $_REQUEST['oauth_verifier'] ) ) {
 				$ppp_social_settings = get_option( 'ppp_social_settings' );
 
 				//load twitter class
