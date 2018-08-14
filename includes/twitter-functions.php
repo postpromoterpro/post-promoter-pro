@@ -120,14 +120,26 @@ function ppp_tw_capture_pin_auth() {
 	}
 
 	$_REQUEST['oauth_verifier'] = $pin;
-	$twitter = new PPP_Twitter;
-	$twitter->ppp_initialize_twitter();
-	$settings = get_option( 'ppp_social_settings', true );
+	if ( ! empty( $_POST['ppp_user_auth'] ) ) {
+		$twitter = new PPP_Twitter;
+		$twitter->ppp_initialize_twitter();
+		$settings = get_option( 'ppp_social_settings', true );
 
-	if ( ! empty( $settings['twitter']['user']->id ) ) {
-		echo 1;
+		if ( ! empty( $settings['twitter']['user']->id ) ) {
+			echo 1;
+		} else {
+			echo 0;
+		}
 	} else {
-		echo 0;
+		$twitter = new PPP_Twitter_User( get_current_user_id() );
+		$twitter->init();
+
+		$user = get_user_meta( get_current_user_id(), '_ppp_twitter_data', true );
+		if ( ! empty( $user['user']->id ) ) {
+			echo 1;
+		} else {
+			echo 0;
+		}
 	}
 
 	die(); // this is required to return a proper result
@@ -990,7 +1002,12 @@ function ppp_tw_profile_settings( $user ) {
 			if ( empty( $tw_user ) ) {
 				$tw_authurl = $twitter->get_auth_url( admin_url( 'user-edit.php?user_id=' . $user->ID ) );
 
-				echo '<a target="_blank" href="' . $tw_authurl . '"><img src="' . PPP_URL . '/includes/images/sign-in-with-twitter-gray.png" /></a>';
+				$string  = '<span id="tw-oob-auth-link-wrapper"><a id="tw-oob-auth-link" href="' . $tw_authurl . '" target="_blank"><img src="' . PPP_URL . '/includes/images/sign-in-with-twitter-gray.png" /></a></span>';
+				$string .= '<span style="display:none;" id="tw-oob-pin-notice">' . __( 'You are being directed to Twitter to authenticate. When complete, return here and enter the PIN you were provided.', 'ppp-txt' ) . '</span>';
+				$string .= '<span style="display:none;" id="tw-oob-pin-wrapper"><input type="text" size="10" placeholder="Enter your PIN" value="" id="tw-oob-pin" data-nonce="' . wp_create_nonce( 'ppp-tw-pin' ) . '" /> <a href="#" class="button-secondary tw-oob-pin-submit">' . __( 'Submit', 'ppp-txt' ) . '</a><span class="spinner"></span></span>';
+				$string .= '<input type="hidden" name="ppp_user_auth" value="1" />';
+
+				echo $string;
 			} else {
 				$connected = true;
 				?>

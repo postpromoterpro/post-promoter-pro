@@ -56,7 +56,7 @@ if( !class_exists( 'PPP_Twitter_User' ) ) {
 		public function init() {
 
 			//when user is going to logged in in twitter and verified successfully session will create
-			if ( isset( $_REQUEST['oauth_verifier'] ) && isset( $_REQUEST['oauth_token'] ) ) {
+			if ( isset( $_REQUEST['oauth_verifier'] ) ) {
 				$ppp_social_settings = get_option( 'ppp_social_settings' );
 
 				//load twitter class
@@ -125,7 +125,7 @@ if( !class_exists( 'PPP_Twitter_User' ) ) {
 
 			//load twitter class
 			$twitter       = $this->load();
-			$request_token = $this->twitter->getRequestToken( $return_url );
+			$request_token = $this->twitter->getRequestToken( 'oob' );
 
 			// If last connection failed don't display authorization link.
 			switch( $this->twitter->http_code ) {
