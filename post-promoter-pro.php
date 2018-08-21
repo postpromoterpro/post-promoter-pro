@@ -151,6 +151,7 @@ class PostPromoterPro {
 			'post-new.php',
 			'post.php',
 			'post-promoter_page_ppp-schedule-info',
+			'profile.php',
 		);
 
 		$allowed_pages = apply_filters( 'ppp_admin_scripts_pages', $allowed_pages, $hook );

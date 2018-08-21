@@ -54,6 +54,51 @@ var tweetLengthRed    = 257;
 		});
 	});
 
+	$('#tw-oob-auth-link').click( function(e) {
+		e.preventDefault();
+		$('#tw-oob-auth-link-wrapper').hide();
+		$('#tw-oob-pin-notice').show();
+
+		setTimeout( function() {
+			window.open($('#tw-oob-auth-link').attr('href'), '_blank');
+			setTimeout( function() {
+				$('#tw-oob-pin-notice').hide();
+				$('#tw-oob-pin-wrapper').show();
+			}, 3000 );
+		}, 5000 );
+	});
+
+	$('.tw-oob-pin-submit').click( function(e) {
+		e.preventDefault();
+
+		var target = $('#tw-oob-pin'),
+			pin    = target.val(),
+			nonce  = target.data('nonce');
+
+		var data = {
+			'action': 'ppp_tw_auth_pin',
+			'nonce': nonce,
+			'pin'  : pin,
+		};
+
+		$.ajaxSetup({
+			crossDomain: false,
+			xhrFields: {
+				withCredentials: true
+			},
+		});
+
+		$.post(ajaxurl, data, function(response) {
+			if ( response === '1' ) {
+				location.reload();
+			} else {
+
+			}
+		});
+
+		return false;
+	});
+
 	$('#ppp-tabs li').click( function(e) {
 		e.preventDefault();
 		$('#ppp-tabs li').removeClass('tabs');

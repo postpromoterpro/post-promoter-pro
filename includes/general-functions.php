@@ -10,8 +10,12 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return void
  */
 function ppp_maybe_start_session() {
+	if( !class_exists( 'TwitterOAuth' ) ) {
+		require_once ( PPP_PATH . '/includes/libs/twitter/twitteroauth.php' );
+	}
+
 	$ret = false;
-	if ( ( is_admin() || ( defined( 'DOING_CRON' ) && DOING_CRON ) ) && !isset( $_SESSION ) && !defined( 'DOING_AJAX' ) ) {
+	if ( ( is_admin() || ( defined( 'DOING_CRON' ) && DOING_CRON ) ) && ! isset( $_SESSION ) ) {
 		$ret = session_start();
 	}
 
