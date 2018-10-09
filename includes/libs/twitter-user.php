@@ -57,7 +57,6 @@ if( !class_exists( 'PPP_Twitter_User' ) ) {
 
 			//when user is going to logged in in twitter and verified successfully session will create
 			if ( isset( $_REQUEST['oauth_verifier'] ) ) {
-				$ppp_social_settings = get_option( 'ppp_social_settings' );
 
 				//load twitter class
 				$twitter       = $this->load();
@@ -75,7 +74,6 @@ if( !class_exists( 'PPP_Twitter_User' ) ) {
 
 				//if user data get successfully
 				if ( $response->id_str ) {
-
 					$data['user'] = $response;
 					$data['user']->accessToken = $ppp_tw_access_token;
 

@@ -71,14 +71,16 @@ var tweetLengthRed    = 257;
 	$('.tw-oob-pin-submit').click( function(e) {
 		e.preventDefault();
 
-		var target = $('#tw-oob-pin'),
-			pin    = target.val(),
-			nonce  = target.data('nonce');
+		var target    = $('#tw-oob-pin'),
+			pin       = target.val(),
+			nonce     = target.data('nonce');
+			user_auth = target.data('user');
 
 		var data = {
-			'action': 'ppp_tw_auth_pin',
-			'nonce': nonce,
-			'pin'  : pin,
+			'action'    : 'ppp_tw_auth_pin',
+			'nonce'    : nonce,
+			'pin'      : pin,
+			'user_auth': user_auth,
 		};
 
 		$.ajaxSetup({

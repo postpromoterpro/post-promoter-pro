@@ -90,7 +90,7 @@ function ppp_tw_account_list_actions( $string = '' ) {
 
 		$string .= '<span id="tw-oob-auth-link-wrapper"><a id="tw-oob-auth-link" href="' . $tw_authurl . '" target="_blank"><img src="' . PPP_URL . '/includes/images/sign-in-with-twitter-gray.png" /></a></span>';
 		$string .= '<span style="display:none;" id="tw-oob-pin-notice">' . __( 'You are being directed to Twitter to authenticate. When complete, return here and enter the PIN you were provided.', 'ppp-txt' ) . '</span>';
-		$string .= '<span style="display:none;" id="tw-oob-pin-wrapper"><input type="text" size="10" placeholder="Enter your PIN" value="" id="tw-oob-pin" data-nonce="' . wp_create_nonce( 'ppp-tw-pin' ) . '" /> <a href="#" class="button-secondary tw-oob-pin-submit">' . __( 'Submit', 'ppp-txt' ) . '</a><span class="spinner"></span></span>';
+		$string .= '<span style="display:none;" id="tw-oob-pin-wrapper"><input type="text" size="10" placeholder="Enter your PIN" value="" id="tw-oob-pin" data-nonce="' . wp_create_nonce( 'ppp-tw-pin' ) . '" data-user="0" /> <a href="#" class="button-secondary tw-oob-pin-submit">' . __( 'Submit', 'ppp-txt' ) . '</a><span class="spinner"></span></span>';
 	} else {
 		$string .= '<a class="button-primary" href="' . admin_url( 'admin.php?page=ppp-social-settings&ppp_social_disconnect=true&ppp_network=twitter' ) . '" >' . __( 'Disconnect from Twitter', 'ppp-txt' ) . '</a>&nbsp;';
 		$string .= '<a class="button-secondary" href="https://twitter.com/settings/applications" target="blank">' . __( 'Revoke Access via Twitter', 'ppp-txt' ) . '</a>';
@@ -120,7 +120,8 @@ function ppp_tw_capture_pin_auth() {
 	}
 
 	$_REQUEST['oauth_verifier'] = $pin;
-	if ( ! empty( $_POST['ppp_user_auth'] ) ) {
+
+	if ( empty( $_POST['user_auth'] ) ) {
 		$twitter = new PPP_Twitter;
 		$twitter->ppp_initialize_twitter();
 		$settings = get_option( 'ppp_social_settings', true );
@@ -999,12 +1000,13 @@ function ppp_tw_profile_settings( $user ) {
 			<?php
 			$twitter = new PPP_Twitter_User( get_current_user_id() );
 			$tw_user = get_user_meta( $user->ID, '_ppp_twitter_data', true );
+
 			if ( empty( $tw_user ) ) {
 				$tw_authurl = $twitter->get_auth_url( admin_url( 'user-edit.php?user_id=' . $user->ID ) );
 
 				$string  = '<span id="tw-oob-auth-link-wrapper"><a id="tw-oob-auth-link" href="' . $tw_authurl . '" target="_blank"><img src="' . PPP_URL . '/includes/images/sign-in-with-twitter-gray.png" /></a></span>';
 				$string .= '<span style="display:none;" id="tw-oob-pin-notice">' . __( 'You are being directed to Twitter to authenticate. When complete, return here and enter the PIN you were provided.', 'ppp-txt' ) . '</span>';
-				$string .= '<span style="display:none;" id="tw-oob-pin-wrapper"><input type="text" size="10" placeholder="Enter your PIN" value="" id="tw-oob-pin" data-nonce="' . wp_create_nonce( 'ppp-tw-pin' ) . '" /> <a href="#" class="button-secondary tw-oob-pin-submit">' . __( 'Submit', 'ppp-txt' ) . '</a><span class="spinner"></span></span>';
+				$string .= '<span style="display:none;" id="tw-oob-pin-wrapper"><input type="text" size="10" placeholder="Enter your PIN" value="" id="tw-oob-pin" data-nonce="' . wp_create_nonce( 'ppp-tw-pin' ) . '" data-user="1" /> <a href="#" class="button-secondary tw-oob-pin-submit">' . __( 'Submit', 'ppp-txt' ) . '</a><span class="spinner"></span></span>';
 				$string .= '<input type="hidden" name="ppp_user_auth" value="1" />';
 
 				echo $string;
