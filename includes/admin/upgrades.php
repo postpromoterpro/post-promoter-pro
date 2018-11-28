@@ -35,6 +35,13 @@ function ppp_upgrade_notices() {
 			);
 		}
 
+		if ( version_compare( $ppp_version, '2.3.19', '<' ) || ! ppp_has_upgrade_completed( 'fix_scheduled_shares_2319' ) ) {
+			printf(
+				'<div class="notice notice-info"><p>' . __( 'Post Promoter Pro needs to fix an issue with scheduled shares, click <a href="%s">here</a> to start the upgrade.', 'ppp-txt' ) . '</p></div>',
+				esc_url( admin_url( 'index.php?page=ppp-upgrades&ppp-upgrade=fix_scheduled_shares_2319' ) )
+			);
+		}
+
 		// End 'Stepped' upgrade process notices
 
 	}
@@ -249,3 +256,88 @@ function ppp_v22_postmeta_upgrade() {
 	}
 }
 add_action( 'ppp_upgrade_post_meta', 'ppp_v22_postmeta_upgrade' );
+
+function ppp_fix_scheduled_shares_2319() {
+
+	if( ! current_user_can( PostPromoterPro::get_manage_capability() ) ) {
+		wp_die( __( 'You do not have permission to do upgrades', 'ppp-txt' ), __( 'Error', 'ppp-txt' ), array( 'response' => 403 ) );
+	}
+
+	ignore_user_abort( true );
+
+	if ( ! ini_get( 'safe_mode' ) ) {
+		@set_time_limit(0);
+	}
+
+	global $wpdb;
+
+
+	$step   = isset( $_GET['step'] ) ? absint( $_GET['step'] ) : 1;
+	$number = 25;
+	$offset = $step == 1 ? 0 : ( $step - 1 ) * $number;
+
+	if ( $step < 2 ) {
+		// Check if we have any payments before moving on
+		$sql = "SELECT DISTINCT post_id FROM $wpdb->postmeta WHERE meta_key IN ( '_ppp_tweets', '_ppp_fb_shares', '_ppp_li_shares' ) LIMIT 1";
+		$has_shares = $wpdb->get_col( $sql );
+
+		if( empty( $has_shares ) ) {
+			// We had no payments, just complete
+			update_option( 'ppp_version', preg_replace( '/[^0-9.].*/', '', PPP_VERSION ) );
+			ppp_set_upgrade_complete( 'fix_scheduled_shares_2319' );
+			delete_option( 'ppp_doing_upgrade' );
+			wp_redirect( admin_url() ); exit;
+		}
+	}
+
+	$total = isset( $_GET['total'] ) ? absint( $_GET['total'] ) : false;
+
+	if ( empty( $total ) || $total <= 1 ) {
+		$total_sql = "SELECT COUNT( DISTINCT post_id ) as total FROM $wpdb->postmeta WHERE meta_key IN ( '_ppp_tweets', '_ppp_fb_shares', '_ppp_li_shares' )";
+		$results   = $wpdb->get_row( $total_sql, 0 );
+
+		$total     = $results->total;
+	}
+
+	$results = $wpdb->get_results( $wpdb->prepare( "SELECT DISTINCT post_id FROM $wpdb->postmeta WHERE meta_key IN ( '_ppp_tweets', '_ppp_fb_shares', '_ppp_li_shares' ) ORDER BY post_id DESC LIMIT %d,%d;", $offset, $number ) );
+
+	if ( $results ) {
+		$allowed_post_types = ppp_allowed_post_types();
+
+		foreach ( $results as $result ) {
+			$post = get_post( $result->post_id );
+			if ( ! in_array( $post->post_type, $allowed_post_types ) ) {
+				continue;
+			}
+
+			ppp_remove_scheduled_shares( $result->post_id );
+			$timestamps = ppp_get_timestamps( $result->post_id );
+
+			foreach ( $timestamps as $timestamp => $name ) {
+				$timestamp = substr( $timestamp, 0, strlen( $timestamp ) - 3 );
+				wp_schedule_single_event( $timestamp, 'ppp_share_post_event', array( $result->post_id, $name ) );
+			}
+		}
+
+		// Postmeta found so upgrade them
+		$step++;
+		$redirect = add_query_arg( array(
+			'page'        => 'ppp-upgrades',
+			'ppp-upgrade' => 'fix_scheduled_shares_2319',
+			'step'        => $step,
+			'number'      => $number,
+			'total'       => $total
+		), admin_url( 'index.php' ) );
+		wp_redirect( $redirect ); exit;
+
+	} else {
+
+		// No more postmeta found, finish up
+		update_option( 'ppp_version', preg_replace( '/[^0-9.].*/', '', PPP_VERSION ) );
+		ppp_set_upgrade_complete( 'fix_scheduled_shares_2319' );
+		delete_option( 'ppp_doing_upgrade' );
+		wp_redirect( admin_url() ); exit;
+
+	}
+}
+add_action( 'ppp_fix_scheduled_shares_2319', 'ppp_fix_scheduled_shares_2319' );
