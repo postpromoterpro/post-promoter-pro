@@ -347,8 +347,29 @@ class PostPromoterPro {
 	 * @return void
 	 */
 	public function local_site_nag() {
+		$dismissed = get_option( 'ppp_local_url_notice_dismissed' );
+		if ( ! empty( $dismissed ) ) {
+			return;
+		}
 		?>
-		<div class="updated dismissible">
+		<script type="text/javascript">
+			jQuery( document ).ready( function() {
+				jQuery('#ppp-local-url-notice').on('click', '.notice-dismiss', function (event) {
+					event.preventDefault();
+					jQuery.ajax({
+						type   : 'post',
+						url    : ajaxurl,
+						data   : {
+							action: 'ppp_local_url_notice_dismiss',
+							nonce : jQuery(this).parent().data('nonce'),
+						},
+						success: function (response) {
+						}
+					});
+				});
+			} );
+		</script>
+		<div id="ppp-local-url-notice" data-nonce="<?php echo wp_create_nonce( 'ppp_local_url_notice_nonce' ); ?>" class="notice notice-info is-dismissible">
 			<p>
 				<?php
 					_e( 'Post Promoter Pro has detected a development or staging site. To prevent unintended social media posts, sharing has been disabled.', 'ppp-txt' );

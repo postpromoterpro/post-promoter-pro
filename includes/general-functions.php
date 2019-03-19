@@ -294,7 +294,7 @@ function ppp_is_dev_or_staging() {
 		$check_tlds = apply_filters( 'ppp_validate_tlds', true );
 		if ( $check_tlds ) {
 			$tlds_to_check = apply_filters( 'ppp_url_tlds', array(
-				'.dev', '.local', '.test',
+				'.dev', '.local', '.test'
 			) );
 
 			foreach ( $tlds_to_check as $tld ) {
