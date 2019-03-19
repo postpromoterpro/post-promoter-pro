@@ -46,7 +46,7 @@ if( !class_exists( 'PPP_Twitter_User' ) ) {
 		}
 
 		public function revoke_access() {
-			delete_user_meta( '_ppp_twitter_data' );
+			delete_user_meta( $this->user_id, '_ppp_twitter_data' );
 		}
 
 		/**
