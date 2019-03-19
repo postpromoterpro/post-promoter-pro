@@ -73,12 +73,10 @@ if( !class_exists( 'PPP_Facebook' ) ) {
 				$params .= '&redirect_uri=' . admin_url( 'admin.php?page=ppp-social-settings' );
 				$url = 'https://graph.facebook.com/oauth/access_token' . $params;
 
-				$access_token = '';
-				$expires      = '';
-				parse_str( wp_remote_retrieve_body( wp_remote_post( $url ) ) );
+				parse_str( wp_remote_retrieve_body( wp_remote_post( $url ) ), $result );
 
-				$access_token = ! empty( $access_token ) ? $access_token : false;
-				$expires_in   = ! empty( $expires ) ? $expires : false;
+				$access_token = ! empty( $result['access_token'] ) ? $result['access_token'] : false;
+				$expires_in   = ! empty( $result['expires'] ) ? $result['expires'] : false;
 
 			}
 

@@ -146,10 +146,6 @@ function ppp_v22_postmeta_upgrade() {
 
 	ignore_user_abort( true );
 
-	if ( ! ini_get( 'safe_mode' ) ) {
-		@set_time_limit(0);
-	}
-
 	global $wpdb;
 
 
@@ -264,10 +260,6 @@ function ppp_fix_scheduled_shares_2319() {
 	}
 
 	ignore_user_abort( true );
-
-	if ( ! ini_get( 'safe_mode' ) ) {
-		@set_time_limit(0);
-	}
 
 	global $wpdb;
 

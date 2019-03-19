@@ -39,7 +39,6 @@ function ppp_check_for_schedule_conflict() {
 add_action( 'wp_ajax_ppp_has_schedule_conflict', 'ppp_check_for_schedule_conflict' );
 
 add_action( 'wp_ajax_ppp_local_url_notice_dismiss', function() {
-
 	$error_message = __( 'There was an error dismissing the local URL notice. Please try again.', 'ppp-txt' );
 	if( ! wp_verify_nonce( $_POST['nonce'], 'ppp_local_url_notice_nonce' ) || ! current_user_can( post_promoter_pro()->get_manage_capability() ) ) {
 		wp_send_json_error( array(
