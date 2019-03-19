@@ -175,6 +175,7 @@ if( !class_exists( 'PPP_Facebook' ) ) {
 			global $ppp_social_settings;
 			$facebook_settings = $ppp_social_settings['facebook'];
 
+
 			if ( ! isset( $facebook_settings->available_pages ) ||
 				 ! isset( $facebook_settings->pages_last_updated ) ||
 				 $facebook_settings->pages_last_updated < current_time( 'timestamp' ) ) {
@@ -184,7 +185,7 @@ if( !class_exists( 'PPP_Facebook' ) ) {
 
 				if ( !empty( $all_pages ) ) {
 					foreach ( $all_pages->data as $page ) {
-						if ( in_array( 'CREATE_CONTENT', $page->perms ) ) {
+						if ( in_array( 'CREATE_CONTENT', $page->tasks ) ) {
 							$pages[] = $page;
 
 							if ( ! empty( $ppp_social_settings['facebook']->page ) && strpos( $ppp_social_settings['facebook']->page, $page->id ) ) {
