@@ -104,11 +104,11 @@ if( !class_exists( 'PPP_Linkedin' ) ) {
 				$ppp_social_settings['linkedin'] = $data;
 				update_option( 'ppp_social_settings', $ppp_social_settings );
 				// Now that we have a valid auth, get some user info
-				$user_info = json_decode( $this->ppp_linkedin_profile() );
+				$user_info = json_decode( $this->ppp_linkedin_profile( $data->access_token ) );
 
-				$ppp_social_settings['linkedin']->firstName = $user_info->firstName;
-				$ppp_social_settings['linkedin']->lastName  = $user_info->lastName;
-				$ppp_social_settings['linkedin']->headline  = $user_info->headline;
+				$ppp_social_settings['linkedin']->id        = $user_info->id;
+				$ppp_social_settings['linkedin']->firstName = $user_info->localizedFirstName;
+				$ppp_social_settings['linkedin']->lastName  = $user_info->localizedLastName;
 
 				update_option( 'ppp_social_settings', $ppp_social_settings );
 
@@ -150,38 +150,45 @@ if( !class_exists( 'PPP_Linkedin' ) ) {
 
 			$this->ppp_load_linkedin();
 			global $ppp_social_settings;
-			$url = 'https://api.linkedin.com/v1/people/~/shares?oauth2_access_token=' . $ppp_social_settings['linkedin']->access_token;
+			$li_user_info = $ppp_social_settings['linkedin'];
+			$url          = 'https://api.linkedin.com/v2/shares/';
+
 			$share = array(
-						'content' => array(
-							'title' => $args['title'],
-							'description' => $args['description'],
-							'submitted-url' => $args['submitted-url']
-						),
-						'visibility' => array(
-							'code' => 'anyone'
+				'content' => array(
+					'contentEntities' => array(
+						array(
+							'entityLocation' => $args['submitted-url'],
 						)
-						);
+					),
+					'description' => $args['description'],
+					'title' => $args['title'],
+				),
+				'owner' => 'urn:li:person:' . $li_user_info->id,
+			);
+
 
 			if ( $args['submitted-image-url'] !== false ) {
-				$share['content']['submitted-image-url'] = $args['submitted-image-url'];
+				$share['content']['contentEntities'][0]['thumbnails'] = array(
+					array(
+						'resolvedUrl' => $args['submitted-image-url'],
+					)
+				);
 			}
 
+			$headers = array( 'X-Restli-Protocol-Version' => '2.0.0', 'Authorization' => 'Bearer ' . $ppp_social_settings['linkedin']->access_token, 'Content-Type' => 'application/json' );
+			$request = wp_remote_post( $url, array( 'httpversion' => '1.1', 'timeout' => '30', 'headers' => $headers, 'body' => json_encode( $share ) ) );
 
-			$headers = array( 'x-li-format' => 'json', 'Content-Type' => 'application/json' );
-			$body = json_encode( $share );
-
-			return json_decode( wp_remote_retrieve_body( wp_remote_post( $url, array( 'headers' => $headers, 'body' => $body ) ) ) );
+			return json_decode( wp_remote_retrieve_body( $request ) );
 		}
 
-		public function ppp_linkedin_profile() {
+		public function ppp_linkedin_profile( $access_token ) {
+			$url = 'https://api.linkedin.com/v2/me';
 
-			$this->ppp_load_linkedin();
-			global $ppp_social_settings;
-			$url = 'https://api.linkedin.com/v1/people/~?oauth2_access_token=' . $ppp_social_settings['linkedin']->access_token;
+			$headers = array( 'Authorization' => 'Bearer ' . $access_token );
 
-			$headers = array( 'x-li-format' => 'json', 'Content-Type' => 'application/json' );
-
-			return wp_remote_retrieve_body( wp_remote_get( $url, array( 'headers' => $headers ) ) );
+			$request = wp_remote_get( $url, array( 'headers' => $headers ) );
+			$data = wp_remote_retrieve_body( $request );
+			return $data;
 		}
 	}
 

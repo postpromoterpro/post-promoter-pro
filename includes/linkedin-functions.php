@@ -63,7 +63,6 @@ function ppp_li_account_list_name( $string = '' ) {
 	if ( ppp_linkedin_enabled() ) {
 		global $ppp_social_settings;
 		$string .= $ppp_social_settings['linkedin']->firstName . ' ' . $ppp_social_settings['linkedin']->lastName;
-		$string .= '<br />' . $ppp_social_settings['linkedin']->headline;
 	}
 
 	return $string;
