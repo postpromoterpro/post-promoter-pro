@@ -128,6 +128,8 @@ class PostPromoterPro {
 			if ( ppp_is_dev_or_staging() ) {
 				add_action( 'admin_notices', array( $this, 'local_site_nag' ) );
 			}
+
+			add_action( 'admin_notices', array( $this, 'general_notices' ) );
 		}
 
 		add_action( 'init', array( $this, 'get_actions' ) );
@@ -378,6 +380,21 @@ class PostPromoterPro {
 			</p>
 		</div>
 		<?php
+	}
+
+	public function general_notices() {
+		global $ppp_social_settings;
+		if ( ! empty( $ppp_social_settings['linkedin'] ) && empty( $ppp_social_settings['linkedin']->id ) ) {
+			?>
+			<div id="ppp-linked-update-notice" class="notice notice-error">
+				<p>
+					<?php
+					_e( 'Due to changes in the LinkedIn API, you will need to reauthenticate your LinkedIn account with Post Promoter Pro. Please disconnect your LinkedIn account and re-connect it in order to continue sharing your content to LinkedIn.', 'ppp-txt' );
+					?>
+				</p>
+			</div>
+			<?php
+		}
 	}
 
 	/**
