@@ -292,7 +292,7 @@ function ppp_get_attachment_id_from_image_url( $image_url ) {
 	$filename = end( $path );
 
 	// First check a social media share (thumbnail sizes)
-	$thumb_id = $wpdb->get_col( $wpdb->prepare( "SELECT post_id FROM $wpdb->postmeta WHERE meta_value LIKE '%s';", '%' . $wpdb->esc_like( $filename ) . '%' ) );
+	$thumb_id = $wpdb->get_col( $wpdb->prepare( "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = '_wp_attached_file' AND meta_value LIKE '%s';", '%' . $wpdb->esc_like( $filename ) . '%' ) );
 	if ( ! empty( $thumb_id[0] ) ) {
 		$attachment_id = $thumb_id[0];
 	} else {
