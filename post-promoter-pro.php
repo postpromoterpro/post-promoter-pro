@@ -3,14 +3,14 @@
 Plugin Name: Post Promoter Pro
 Plugin URI: https://postpromoterpro.com
 Description: Maximize your social media presence on Twitter, Facebook, and LinkedIn.
-Version: 2.3.25
+Version: 2.3.26
 Author: Post Promoter Pro
 Author URI: https://postpromoterpro.com
 License: GPLv2
 */
 
 define( 'PPP_PATH', plugin_dir_path( __FILE__ ) );
-define( 'PPP_VERSION', '2.3.25' );
+define( 'PPP_VERSION', '2.3.26' );
 define( 'PPP_FILE', plugin_basename( __FILE__ ) );
 define( 'PPP_URL', plugins_url( '/', PPP_FILE ) );
 
