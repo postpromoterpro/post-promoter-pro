@@ -15,7 +15,7 @@ function ppp_maybe_start_session() {
 	}
 
 	$ret = false;
-	if ( ( is_admin() || ( defined( 'DOING_CRON' ) && DOING_CRON ) ) && session_status() == PHP_SESSION_NONE && ! headers_sent() ) {
+	if ( ( is_admin() || ( defined( 'DOING_CRON' ) && DOING_CRON ) ) && ! session_id() && ! headers_sent() ) {
 		$ret = session_start();
 	}
 
