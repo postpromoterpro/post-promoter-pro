@@ -2,7 +2,12 @@ var tweetLengthYellow = 240;
 var tweetLengthRed    = 257;
 
 (function ($) {
-	$('.share-time-selector').timepicker({ 'step': 15 });
+	$('.share-time-selector').timepicker({
+		timeFormat: 'h:mmtt',
+		stepHour: 1,
+		stepMinute: 15,
+		controlType: 'select',
+	});
 	$('.share-date-selector').datepicker({
 		dateFormat: 'mm/dd/yy',
 		minDate: 0
@@ -292,7 +297,12 @@ var tweetLengthRed    = 257;
 				clone.find( '.ppp-text-length' ).text('0').css('background-color', '#339933');
 				clone.insertAfter( row );
 
-				$('.share-time-selector').timepicker({ 'step': 15 });
+				$('.share-time-selector').timepicker({
+					timeFormat: 'h:mmtt',
+					stepHour: 1,
+					stepMinute: 15,
+					controlType: 'select',
+				});
 				$('.share-date-selector').datepicker({ dateFormat : 'mm/dd/yy', minDate: 0});
 			});
 		},
@@ -308,7 +318,12 @@ var tweetLengthRed    = 257;
 				clone.removeClass('past-share');
 				clone.insertBefore( '.ppp-repeatable-twitter:last' );
 
-				$('.share-time-selector').timepicker({ 'step': 15 });
+				$('.share-time-selector').timepicker({
+					timeFormat: 'h:mmtt',
+					stepHour: 1,
+					stepMinute: 15,
+					controlType: 'select',
+				});
 				$('.share-date-selector').datepicker({ dateFormat : 'mm/dd/yy', minDate: 0});
 			});
 		},
